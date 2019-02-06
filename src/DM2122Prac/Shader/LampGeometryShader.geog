@@ -1,0 +1,43 @@
+#version 330 core
+
+/* File: LampVertexShader.vert
+   Use: To simply apply projection matrix to vertices
+		Only used to handle rendering of lamp (sphere). All other meshes except axes use SingleColorXXXXShader.XXXX */
+
+// Info about primitive from vertex shader
+layout (triangles) in; // Draw type
+layout (triangle_strip, max_vertices = 3) out; // Type of primitive emitted
+
+// Input from vertex shader
+in VS_OUT
+{
+	vec3 aPos; // Vertex position
+} gs_in[];
+
+// Uniform block for projection matrix
+layout (std140) uniform MatrixP
+{
+	mat4 projection;
+};
+
+void main()
+{
+	// This geometry shader follows the following flow:
+	// 1. Set vertex position for OpenGL
+	// 2. Emit and finalize vertex position
+
+	// Vertex 1
+	gl_Position = projection * gl_in[0].gl_Position;
+	EmitVertex();
+
+	// Vertex 2
+	gl_Position = projection * gl_in[1].gl_Position;
+	EmitVertex();
+
+	// Vertex 3
+	gl_Position = projection * gl_in[2].gl_Position;
+	EmitVertex();
+
+	// No more vertices to add
+	EndPrimitive();
+}

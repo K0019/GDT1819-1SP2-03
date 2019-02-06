@@ -1,0 +1,50 @@
+#version 330 core
+
+/* File: AxesGeometryShader.geog
+   Use: To simply apply projection matrix to vertices 
+		Only used to handle rendering of axes. All other meshes except lamp use SingleColorXXXXShader.XXXX */
+
+// Info about line from vertex shader
+layout (lines) in; // Draw type
+layout (line_strip, max_vertices = 2) out; // Type of primitive emitted
+
+// Input from vertex shader
+in VS_OUT
+{
+	vec3 color; // Color info
+	vec3 aPos; // Vertex info
+} gs_in[];
+
+// Output to fragment shader
+out vec3 fColor; // Color info
+out vec3 pos; // Position of vertex in view space
+
+// Uniform block for projection matrix
+layout (std140) uniform MatrixP
+{
+	mat4 projection;
+};
+
+void main()
+{
+	// This geometry shader follows the following flow:
+	// 1. Set color
+	// 2. Set vertex position for fragment shader
+	// 3. Set vertex position for OpenGL
+	// 4. Emit and finalize vertex position
+
+	// Vertex 1
+	fColor = gs_in[0].color;
+	pos = gs_in[0].aPos;
+	gl_Position = projection * gl_in[0].gl_Position;
+	EmitVertex();
+
+	// Vertex 2
+	fColor = gs_in[1].color;
+	pos = gs_in[1].aPos;
+	gl_Position = projection * gl_in[1].gl_Position;
+	EmitVertex();
+
+	// No more vertices to add
+	EndPrimitive();
+}

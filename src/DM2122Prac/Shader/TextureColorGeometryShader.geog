@@ -1,0 +1,118 @@
+#version 330 core
+
+/* File: TextureColorGeometryShader.geog
+   Use: To apply projection matrix to vertices, and calculate the normal of each primitive
+		General shader used in most meshes */
+
+// No. of point lights and spotlights
+#define NO_OF_POINTLIGHTS 1
+#define NO_OF_SPOTLIGHTS 2
+
+// Info about primitive from vertex shader
+layout (triangles) in; // Draw type
+layout (triangle_strip, max_vertices = 3) out; // Type of primitive emitted
+
+// Definition of struct PointLight
+struct PointLight {
+	// Size and offset are calculated in vertex shader
+    vec3 position;
+    
+    float constant;
+    float linear;
+    float quadratic;
+	
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+};
+
+struct SpotLight {
+				   // Offset, Size
+	vec3 position; // 0, 12
+	
+	float constant; // 12, 4
+	float linear; // 16, 4
+	float quadratic; // 20, 4
+	
+	vec3 ambient; // 32, 12
+	vec3 diffuse; // 48, 12
+	vec3 specular; // 64, 12
+	
+	vec3 direction; // 80, 12
+	float cosInner; // 92, 4
+	float cosOuter; // 96, 4
+};
+
+// Input from vertex shader
+in VS_OUT
+{
+	vec3 aPos; // Vertex info
+	vec2 aTexCoord; // Texture info
+
+	vec3 aSunDir; // Sun direction
+	PointLight aPointLights[NO_OF_POINTLIGHTS]; // Point lights
+	SpotLight aSpotLights[NO_OF_SPOTLIGHTS]; // Spotlights
+} gs_in[];
+
+// Output to fragment shader
+out vec3 normal; // Normal of primitive
+out vec3 pos; // Position of vertex in view space
+out vec2 texCoord; // Texture coordinate of vertex
+out vec3 sunDir; // Directional light
+out PointLight cPointLights[NO_OF_POINTLIGHTS]; // All the point lights
+out SpotLight cSpotLights[NO_OF_SPOTLIGHTS]; // All the spotlights
+
+// Uniform block for projection matrix
+layout (std140) uniform MatrixP
+{
+	mat4 projection;
+};
+
+void main()
+{
+	// Calculate normal
+	vec3 vector1, vector2;
+	gl_Position = gl_in[0].gl_Position; // Choose one point
+	// Get both vectors of triangle
+	vector1 = vec3(gl_in[1].gl_Position - gl_Position);
+	vector2 = vec3(gl_in[2].gl_Position - gl_Position);
+	normal = normalize(cross(vector1, vector2)); // Cross to get normal
+
+	// Pass on lights
+	sunDir = gs_in[0].aSunDir;
+	for (int i = 0; i < NO_OF_POINTLIGHTS; ++i)
+	{
+		cPointLights[i] = gs_in[0].aPointLights[i];
+	}
+	for (int i = 0; i < NO_OF_SPOTLIGHTS; ++i)
+	{
+		cSpotLights[i] = gs_in[0].aSpotLights[i];
+	}
+
+	// This geometry shader follows the following flow:
+	// 1. Set vertex position for fragment shader
+	// 2. Set vertex position for OpenGL
+	// 3. Set texture coordinate of vertex for fragment shader
+	// 3. Emit and finalize vertex position
+
+	// Vertex 1
+	pos = gs_in[0].aPos;
+	gl_Position = projection * gl_Position;
+	texCoord = gs_in[0].aTexCoord;
+	EmitVertex();
+
+	// Vertex 2
+	pos = gs_in[1].aPos;
+	gl_Position = projection * gl_in[1].gl_Position;
+	texCoord = gs_in[1].aTexCoord;
+	EmitVertex();
+
+	// Vertex 3
+	pos = gs_in[2].aPos;
+	gl_Position = projection * gl_in[2].gl_Position;
+	texCoord = gs_in[2].aTexCoord;
+	EmitVertex();
+
+	// No more vertices to add
+	EndPrimitive();
+}

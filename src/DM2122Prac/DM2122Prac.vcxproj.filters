@@ -1,0 +1,275 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\Shader">
+      <UniqueIdentifier>{360689ce-1856-4162-a89c-027613f3f61d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Objects">
+      <UniqueIdentifier>{21d589cf-3905-4f21-baa3-0c880a7f93b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Objects">
+      <UniqueIdentifier>{e5467ddf-4fb0-4f7f-aa42-a73b733bc1b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Objects\Old">
+      <UniqueIdentifier>{18643061-a4d1-43f5-ac2d-e721993b5240}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Objects\Old">
+      <UniqueIdentifier>{a8c86d27-5cfa-42ff-8383-38bb27ed5e99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Objects\Mesh Classes">
+      <UniqueIdentifier>{a181baf0-63d3-4441-97ee-2d31f1808b7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Objects\Mesh Classes">
+      <UniqueIdentifier>{0607c4da-91b6-4828-bb52-ede022bef4e4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Application.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ShaderPrograms.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\MeshBuilder.cpp">
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Lamp.cpp">
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Base3DPoly.cpp">
+      <Filter>Source Files\Objects\Old</Filter>
+    </ClCompile>
+    <ClCompile Include="TreeWinter.cpp">
+      <Filter>Source Files\Objects\Old</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\LoadOBJ.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\LoadTGA.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Mesh.cpp">
+      <Filter>Source Files\Objects\Mesh Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\MeshSkybox.cpp">
+      <Filter>Source Files\Objects\Mesh Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshText.cpp">
+      <Filter>Source Files\Objects\Mesh Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UsefulFunctions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Kart.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshFloor.cpp">
+      <Filter>Source Files\Objects\Mesh Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="Hotbar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshPlaceable.cpp">
+      <Filter>Source Files\Objects\Mesh Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PlaceObjectHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AABB.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshSprite.cpp">
+      <Filter>Source Files\Objects\Mesh Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="Bear.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\shader.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Application.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ShaderPrograms.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\MeshBuilder.h">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Definitions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PointLight.h">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Lamp.h">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Base3DPoly.h">
+      <Filter>Header Files\Objects\Old</Filter>
+    </ClInclude>
+    <ClInclude Include="TreeWinter.h">
+      <Filter>Header Files\Objects\Old</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\LoadOBJ.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\TexCoord.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Material.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\LoadTGA.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Mesh.h">
+      <Filter>Header Files\Objects\Mesh Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\MeshSkybox.h">
+      <Filter>Header Files\Objects\Mesh Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshText.h">
+      <Filter>Header Files\Objects\Mesh Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UsefulFunctions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Kart.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshFloor.h">
+      <Filter>Header Files\Objects\Mesh Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Hotbar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshPlaceable.h">
+      <Filter>Header Files\Objects\Mesh Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PlaceObjectHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AABB.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshSprite.h">
+      <Filter>Header Files\Objects\Mesh Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="SpotLight.h">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Bear.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shader\SingleColorGeometryShader.geog">
+      <Filter>Header Files\Shader</Filter>
+    </None>
+    <None Include="Shader\SingleColorVertexShader.vert">
+      <Filter>Header Files\Shader</Filter>
+    </None>
+    <None Include="Shader\SingleColorFragmentShader.frag">
+      <Filter>Header Files\Shader</Filter>
+    </None>
+    <None Include="Shader\AxesGeometryShader.geog">
+      <Filter>Header Files\Shader</Filter>
+    </None>
+    <None Include="Shader\AxesVertexShader.vert">
+      <Filter>Header Files\Shader</Filter>
+    </None>
+    <None Include="Shader\AxesFragmentShader.frag">
+      <Filter>Header Files\Shader</Filter>
+    </None>
+    <None Include="Shader\LampFragmentShader.frag">
+      <Filter>Header Files\Shader</Filter>
+    </None>
+    <None Include="Shader\LampGeometryShader.geog">
+      <Filter>Header Files\Shader</Filter>
+    </None>
+    <None Include="Shader\LampVertexShader.vert">
+      <Filter>Header Files\Shader</Filter>
+    </None>
+    <None Include="Shader\TextureColorFragmentShader.frag">
+      <Filter>Header Files\Shader</Filter>
+    </None>
+    <None Include="Shader\TextureColorGeometryShader.geog">
+      <Filter>Header Files\Shader</Filter>
+    </None>
+    <None Include="Shader\TextureColorVertexShader.vert">
+      <Filter>Header Files\Shader</Filter>
+    </None>
+    <None Include="Shader\SkyboxFragmentShader.frag">
+      <Filter>Header Files\Shader</Filter>
+    </None>
+    <None Include="Shader\SkyboxVertexShader.vert">
+      <Filter>Header Files\Shader</Filter>
+    </None>
+    <None Include="Shader\TextVertexShader.vert">
+      <Filter>Header Files\Shader</Filter>
+    </None>
+    <None Include="Shader\TextFragmentShader.frag">
+      <Filter>Header Files\Shader</Filter>
+    </None>
+    <None Include="Shader\PlacementFragmentShader.frag">
+      <Filter>Header Files\Shader</Filter>
+    </None>
+    <None Include="Shader\PlacementVertexShader.vert">
+      <Filter>Header Files\Shader</Filter>
+    </None>
+  </ItemGroup>
+</Project>
