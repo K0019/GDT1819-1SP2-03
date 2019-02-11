@@ -34,6 +34,12 @@
     <Filter Include="Source Files\Objects\Mesh Classes">
       <UniqueIdentifier>{0607c4da-91b6-4828-bb52-ede022bef4e4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Colliders">
+      <UniqueIdentifier>{ee339087-173a-4d98-b9c3-fb8ae49f0d46}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Colliders">
+      <UniqueIdentifier>{0a993ab1-056b-4422-aeb7-b0c4daae90e1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\shader.cpp">
@@ -108,14 +114,20 @@
     <ClCompile Include="PlaceObjectHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="AABB.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="MeshSprite.cpp">
       <Filter>Source Files\Objects\Mesh Classes</Filter>
     </ClCompile>
     <ClCompile Include="Bear.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AABB.cpp">
+      <Filter>Source Files\Colliders</Filter>
+    </ClCompile>
+    <ClCompile Include="Collider.cpp">
+      <Filter>Source Files\Colliders</Filter>
+    </ClCompile>
+    <ClCompile Include="OBB.cpp">
+      <Filter>Source Files\Colliders</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -203,9 +215,6 @@
     <ClInclude Include="PlaceObjectHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="AABB.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="MeshSprite.h">
       <Filter>Header Files\Objects\Mesh Classes</Filter>
     </ClInclude>
@@ -214,6 +223,15 @@
     </ClInclude>
     <ClInclude Include="Bear.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AABB.h">
+      <Filter>Header Files\Colliders</Filter>
+    </ClInclude>
+    <ClInclude Include="Collider.h">
+      <Filter>Header Files\Colliders</Filter>
+    </ClInclude>
+    <ClInclude Include="OBB.h">
+      <Filter>Header Files\Colliders</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

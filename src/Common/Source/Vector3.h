@@ -56,7 +56,7 @@ struct Vector3
 	
 	float Dot( const Vector3& rhs ) const; //Dot product
 	Vector3 Cross( const Vector3& rhs ) const; //Cross product
-	
+
 	//Return a copy of this vector, normalized
 	//Throw a divide by zero exception if normalizing a zero vector
 	Vector3 Normalized( void ) const throw( DivideByZero );

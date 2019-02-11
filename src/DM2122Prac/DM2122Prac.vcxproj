@@ -149,6 +149,7 @@
     <ClCompile Include="Base3DPoly.cpp" />
     <ClCompile Include="Bear.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Collider.cpp" />
     <ClCompile Include="Hotbar.cpp" />
     <ClCompile Include="Kart.cpp" />
     <ClCompile Include="Lamp.cpp" />
@@ -156,6 +157,7 @@
     <ClCompile Include="MeshPlaceable.cpp" />
     <ClCompile Include="MeshSprite.cpp" />
     <ClCompile Include="MeshText.cpp" />
+    <ClCompile Include="OBB.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="ObjectList.cpp" />
     <ClCompile Include="PlaceObjectHandler.cpp" />
@@ -178,6 +180,7 @@
     <ClInclude Include="Base3DPoly.h" />
     <ClInclude Include="Bear.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Collider.h" />
     <ClInclude Include="Definitions.h" />
     <ClInclude Include="Hotbar.h" />
     <ClInclude Include="Kart.h" />
@@ -186,6 +189,7 @@
     <ClInclude Include="MeshPlaceable.h" />
     <ClInclude Include="MeshSprite.h" />
     <ClInclude Include="MeshText.h" />
+    <ClInclude Include="OBB.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="ObjectList.h" />
     <ClInclude Include="PlaceObjectHandler.h" />
