@@ -7,11 +7,11 @@ public:
 	enum Type // Collider types
 	{
 		AABB,
-		OBB
+		OBB,
+		TRIANGLE
 	};
 
 	~Collider(); // Destructor
-	virtual bool collide(const Collider& other) const = 0; // Function to determine collision against another collider
 
 	Type getType() const; // Get collider type
 protected:

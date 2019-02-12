@@ -3,6 +3,7 @@
 #include <vector>
 #include "Object.h"
 #include "Source/MeshBuilder.h"
+#include "CollisionChecker.h"
 
 /* File: ObjectList.h
    Use: Contain all objects placed and all meshPlaceables */

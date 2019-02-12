@@ -129,6 +129,12 @@
     <ClCompile Include="OBB.cpp">
       <Filter>Source Files\Colliders</Filter>
     </ClCompile>
+    <ClCompile Include="CollisionChecker.cpp">
+      <Filter>Source Files\Colliders</Filter>
+    </ClCompile>
+    <ClCompile Include="Triangle.cpp">
+      <Filter>Source Files\Colliders</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\shader.hpp">
@@ -231,6 +237,12 @@
       <Filter>Header Files\Colliders</Filter>
     </ClInclude>
     <ClInclude Include="OBB.h">
+      <Filter>Header Files\Colliders</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionChecker.h">
+      <Filter>Header Files\Colliders</Filter>
+    </ClInclude>
+    <ClInclude Include="Triangle.h">
       <Filter>Header Files\Colliders</Filter>
     </ClInclude>
   </ItemGroup>

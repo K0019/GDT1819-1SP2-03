@@ -13,7 +13,8 @@ public:
 	AABB(const Vector3& corner1, const Vector3& corner2); // Constructor
 	~AABB(); // Destructor
 
-	virtual bool collide(const Collider& other) const override; // Check for collision against another collider
+	const Vector3& getCorner1() const;
+	const Vector3& getCorner2() const;
 protected:
 
 private:

@@ -88,7 +88,7 @@ std::vector<Object>::iterator ObjectList::queryOccupied(int lengthX, int lengthY
 
 	for (std::vector<Object>::iterator obj = objects.begin(); obj != objects.end(); ++obj)
 	{
-		if (selection.collide(obj->getAABB()))
+		if (CollisionChecker::collide(selection, obj->getAABB()))
 			return obj;
 	}
 	return objects.end();
@@ -110,7 +110,7 @@ bool ObjectList::queryOccupiedArea(int lengthX, int lengthY, int lengthZ, int gr
 	// Check collision against each object
 	for (const Object& obj : objects)
 	{
-		if (selection.collide(obj.getAABB()) || obj.getAABB().collide(selection))
+		if (CollisionChecker::collide(selection, obj.getAABB()) || CollisionChecker::collide(obj.getAABB(), selection))
 		{
 			collides = true;
 			break;

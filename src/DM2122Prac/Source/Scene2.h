@@ -13,6 +13,7 @@
 #include "MeshFloor.h"
 #include "ObjectList.h"
 #include "Hotbar.h"
+#include "CollisionChecker.h"
 #include "UsefulFunctions.h"
 
 #include "PlaceObjectHandler.h"

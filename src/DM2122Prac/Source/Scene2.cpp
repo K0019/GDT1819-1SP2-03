@@ -363,4 +363,8 @@ void Scene2::drawCoordinates() const
 	convertZ.precision(1);
 	convertZ << std::fixed << player->getCam().pos.z;
 	text->PrintTextForward("z:" + convertZ.str(), uMatrixMVS, 0.0f, 17.0f, 1.0f);
+
+	OBB one = OBB(Vector3(0, 0, 0), Vector3(1, 0, 0), Vector3(0, 1, 0), Vector3(0, 0, 1), 2, 2, 2),
+		two = OBB(Vector3(4, 4, 4), Vector3(1, 0, 0), Vector3(0, 1, 0), Vector3(0, 0, 1), 3, 3, 3);
+	text->PrintTextForward(std::to_string(CollisionChecker::collide(one, two)), uMatrixMVS, 0, 15, 1);
 }
