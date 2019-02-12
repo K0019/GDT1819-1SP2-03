@@ -2,6 +2,7 @@
 #define MESHPLACEABLE_H
 #include <stdexcept>
 #include "Source/Mesh.h"
+#include "Triangle.h"
 
 /* File: MeshPlaceable.h
    Use: Mesh that handles rendering of meshes within a grid */
@@ -23,6 +24,8 @@ private:
 	void Render() const override; // Inherited render function, throws exception if called
 
 	unsigned short lengthX, lengthZ; // Length of mesh in x and z axis, in 2x2unit grid space
+
+	std::vector<Triangle> triangles;
 };
 
 #endif // !MESHPLACEABLE_H

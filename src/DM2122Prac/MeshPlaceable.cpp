@@ -6,7 +6,16 @@ MeshPlaceable::MeshPlaceable(const std::vector<Vector3>& vertexData, const std::
 	, lengthX(lengthX)
 	, lengthZ(lengthZ)
 {
-
+	unsigned int index = 0;
+	while (index != indexData.size())
+	{
+		unsigned int vIndex[3];
+		for (int i = 0; i < 3; ++i)
+		{
+			vIndex[i] = indexData[index++];
+		}
+		triangles.emplace_back(vertexData[vIndex[0]], vertexData[vIndex[1]], vertexData[vIndex[2]]);
+	}
 }
 
 // Destructor

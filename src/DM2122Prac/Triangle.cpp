@@ -18,6 +18,11 @@ const Vector3& Triangle::getV(int index) const
 	return v[index];
 }
 
+const Vector3& Triangle::getF(int index) const
+{
+	return v[((index == 2) ? (0) : (index + 1))] - v[index];
+}
+
 Vector3 Triangle::getNormal() const
 {
 	return Vector3(v[1] - v[0]).Cross(Vector3(v[2] - v[0]));
