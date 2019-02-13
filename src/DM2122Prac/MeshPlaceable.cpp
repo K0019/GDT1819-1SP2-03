@@ -72,3 +72,8 @@ unsigned short MeshPlaceable::getZ() const
 {
 	return lengthZ;
 }
+
+const std::vector<Triangle>& MeshPlaceable::getTriangles() const
+{
+	return triangles;
+}

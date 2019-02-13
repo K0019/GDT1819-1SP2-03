@@ -158,9 +158,13 @@
     <ClCompile Include="MeshPlaceable.cpp" />
     <ClCompile Include="MeshSprite.cpp" />
     <ClCompile Include="MeshText.cpp" />
+    <ClCompile Include="MovingPhysicsObject.cpp" />
+    <ClCompile Include="MovingPhysicsObjectInternal.cpp" />
     <ClCompile Include="OBB.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="ObjectList.cpp" />
+    <ClCompile Include="PhysicsEngine.cpp" />
+    <ClCompile Include="PhysicsObject.cpp" />
     <ClCompile Include="PlaceObjectHandler.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Source\Application.cpp" />
@@ -173,6 +177,8 @@
     <ClCompile Include="Source\Scene2.cpp" />
     <ClCompile Include="Source\shader.cpp" />
     <ClCompile Include="Source\ShaderPrograms.cpp" />
+    <ClCompile Include="StaticPhysicsObject.cpp" />
+    <ClCompile Include="StaticPhysicsObjectInternal.cpp" />
     <ClCompile Include="TreeWinter.cpp" />
     <ClCompile Include="Triangle.cpp" />
     <ClCompile Include="UsefulFunctions.cpp" />
@@ -192,9 +198,13 @@
     <ClInclude Include="MeshPlaceable.h" />
     <ClInclude Include="MeshSprite.h" />
     <ClInclude Include="MeshText.h" />
+    <ClInclude Include="MovingPhysicsObject.h" />
+    <ClInclude Include="MovingPhysicsObjectInternal.h" />
     <ClInclude Include="OBB.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="ObjectList.h" />
+    <ClInclude Include="PhysicsEngine.h" />
+    <ClInclude Include="PhysicsObject.h" />
     <ClInclude Include="PlaceObjectHandler.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PointLight.h" />
@@ -211,6 +221,8 @@
     <ClInclude Include="Source\ShaderPrograms.h" />
     <ClInclude Include="Source\TexCoord.h" />
     <ClInclude Include="SpotLight.h" />
+    <ClInclude Include="StaticPhysicsObject.h" />
+    <ClInclude Include="StaticPhysicsObjectInternal.h" />
     <ClInclude Include="TreeWinter.h" />
     <ClInclude Include="Triangle.h" />
     <ClInclude Include="UsefulFunctions.h" />

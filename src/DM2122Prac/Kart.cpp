@@ -4,8 +4,9 @@
 Kart::Kart(Mesh* body, Mesh* wheel, Mesh* steeringWheel,
 	const Vector3& wheelFrontLeftPos, const Vector3& wheelFrontRightPos,
 	const Vector3& wheelBackLeftPos, const Vector3& wheelBackRightPos,
-	const Vector3& steeringWheelPos, unsigned int uSpotLight)
-	: pos(Vector3())
+	const Vector3& steeringWheelPos, unsigned int uSpotLight, const OBB& obb)
+	: MovingPhysicsObject(obb)
+	, pos(Vector3())
 	, velocity(Vector3())
 	, yaw(0.0)
 	, pitch(0.0)
@@ -247,6 +248,9 @@ void Kart::update(GLFWwindow* window, double deltaTime, unsigned int uSpotLight)
 		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 92, 4, &spotLights[i].cosInner);
 		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 96, 4, &spotLights[i].cosOuter);
 	}
+
+	// Update OBB
+	setCollisionPosition(Vector3(pos.x, pos.y + 2.0f, pos.z));
 }
 
 // Render the kart

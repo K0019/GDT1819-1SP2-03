@@ -27,6 +27,16 @@ bool CollisionChecker::collide(const Collider& lhs, const Collider& rhs)
 			return collide(static_cast<const AABB*>(&rhs), static_cast<const OBB*>(&lhs));
 		case Collider::Type::OBB:
 			return collide(static_cast<const OBB*>(&lhs), static_cast<const OBB*>(&rhs));
+		case Collider::Type::TRIANGLE:
+			return collide(static_cast<const OBB*>(&lhs), static_cast<const Triangle*>(&rhs));
+		default:
+			throw std::exception("Unimplemented collider type");
+		}
+	case Collider::Type::TRIANGLE:
+		switch (rhs.getType())
+		{
+		case Collider::Type::TRIANGLE:
+			return collide(static_cast<const OBB*>(&rhs), static_cast<const Triangle*>(&lhs));
 		default:
 			throw std::exception("Unimplemented collider type");
 		}
@@ -73,8 +83,6 @@ bool CollisionChecker::collide(const OBB* lhs, const OBB* rhs)
 
 bool CollisionChecker::collide(const OBB* lhs, const Triangle* rhs)
 {
-	Vector3 n = rhs->getNormal();
-
 	// OBB normals
 	for (int i = 0; i < 3; ++i)
 	{
@@ -94,9 +102,9 @@ bool CollisionChecker::collide(const OBB* lhs, const Triangle* rhs)
 		}
 
 		float r = lhs->getHalf(i);
-		if (!(min > r || max < -r))
+		if (min > r || max < -r)
 		{
-			return true;
+			return false;
 		}
 	}
 
@@ -105,7 +113,7 @@ bool CollisionChecker::collide(const OBB* lhs, const Triangle* rhs)
 		Vector3 n = rhs->getNormal();
 		if (fabs((rhs->getV(0) - lhs->getPosition()).Dot(n)) > fabs(lhs->getHalf(0) * lhs->getAxis(0).Dot(n)) + fabs(lhs->getHalf(1) * lhs->getAxis(1).Dot(n) + fabs(lhs->getHalf(2) * lhs->getAxis(2).Dot(n))))
 		{
-			return true;
+			return false;
 		}
 	}
 
@@ -143,11 +151,12 @@ bool CollisionChecker::collide(const OBB* lhs, const Triangle* rhs)
 					r += fabs(lhs->getHalf(k) * lhs->getAxis(k).Dot(axis));
 				}
 
-				if (!(min > r || max < -r))
+				if (min > r || max < -r)
 				{
-					return true;
+					return false;
 				}
 			}
 		}
 	}
+	return true;
 }

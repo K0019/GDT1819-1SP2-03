@@ -8,6 +8,8 @@
 #include "SpotLight.h"
 #include "MatrixStack.h"
 #include "Source/Mesh.h"
+#include "CollisionChecker.h"
+#include "MovingPhysicsObject.h"
 #include "Definitions.h"
 #include "UsefulFunctions.h"
 
@@ -15,13 +17,13 @@
    Use: Class containing information about the kart
 		Handles kart rendering, and movement when this is attached to the player */
 
-class Kart
+class Kart : public MovingPhysicsObject
 {
 public:
 	Kart(Mesh* body, Mesh* wheel, Mesh* steeringWheel, 
 		const Vector3& wheelFrontLeftPos, const Vector3& wheelFrontRightPos, 
 		const Vector3& wheelBackLeftPos, const Vector3& wheelBackRightPos,
-		const Vector3& steeringWheelPos, unsigned int uSpotLight); // Constructor
+		const Vector3& steeringWheelPos, unsigned int uSpotLight, const OBB& obb); // Constructor
 	~Kart(); // Destructor
 
 	void update(GLFWwindow* window, double deltaTime, unsigned int uSpotLight); // Move the kart and handle input

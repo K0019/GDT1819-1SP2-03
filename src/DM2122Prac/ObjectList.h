@@ -21,13 +21,13 @@ public:
 
 	bool queryOccupiedArea(unsigned int ID, int gridX, int gridZ, Object::Rotation rotation) const; // Query if a meshPlaceable ID may be placed at a certain grid area and rotation
 	bool queryOccupiedArea(int lengthX, int lengthY, int lengthZ, int gridX, int gridY, int gridZ, Object::Rotation rotation) const; // Query if a custom area intersects with any placed object
-	std::vector<Object>::iterator queryOccupied(int lengthX, int lengthY, int lengthZ, int gridX, int gridY, int gridZ, Object::Rotation rotation); // Retrieve an object that is at a certain grid area
+	std::vector<Object*>::iterator queryOccupied(int lengthX, int lengthY, int lengthZ, int gridX, int gridY, int gridZ, Object::Rotation rotation); // Retrieve an object that is at a certain grid area
 protected:
 
 private:
 	void init(); // Load meshPlaceables
 
-	std::vector<Object> objects; // Container of all objects placed
+	std::vector<Object*> objects; // Container of all objects placed
 	std::vector<MeshPlaceable*> meshes; // Container of all meshPlaceables
 };
 

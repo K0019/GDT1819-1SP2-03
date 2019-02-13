@@ -9,6 +9,10 @@ ObjectList::ObjectList()
 // Destructor
 ObjectList::~ObjectList()
 {
+	for (Object* object : objects)
+	{
+		delete object;
+	}
 	for (MeshPlaceable*& mesh : meshes)
 	{
 		delete mesh;
@@ -40,7 +44,7 @@ bool ObjectList::addObject(unsigned int ID, int gridX, int gridZ, Object::Rotati
 		return false;
 
 	// Add object
-	objects.emplace_back(meshes[ID - 1], gridX, gridZ, rotation);
+	objects.push_back(new Object(meshes[ID - 1], gridX, gridZ, rotation));
 	return true;
 }
 
@@ -48,7 +52,7 @@ bool ObjectList::addObject(unsigned int ID, int gridX, int gridZ, Object::Rotati
 bool ObjectList::deleteObject(int gridX, int gridZ, Object::Rotation rotation)
 {
 	// Get any object that intersects with grid area
-	std::vector<Object>::iterator objectToDelete = queryOccupied(1, 1, 1, gridX, 1, gridZ, rotation);
+	std::vector<Object*>::iterator objectToDelete = queryOccupied(1, 1, 1, gridX, 1, gridZ, rotation);
 
 	// If no object intersects, return false
 	if (objectToDelete == objects.end())
@@ -56,6 +60,7 @@ bool ObjectList::deleteObject(int gridX, int gridZ, Object::Rotation rotation)
 	else // If an object is found
 	{
 		// Delete object and return true
+		delete *objectToDelete;
 		objects.erase(objectToDelete);
 		return true;
 	}
@@ -64,9 +69,9 @@ bool ObjectList::deleteObject(int gridX, int gridZ, Object::Rotation rotation)
 // Render all objects
 void ObjectList::renderObjects(unsigned int uMatrixMVS) const
 {
-	for (const Object& obj : objects)
+	for (const Object* obj : objects)
 	{
-		obj.render(uMatrixMVS);
+		obj->render(uMatrixMVS);
 	}
 }
 
@@ -82,13 +87,13 @@ void ObjectList::renderSingleObject(unsigned int ID, unsigned int uMatrixMVS, bo
 }
 
 // Retrieve an object that is at a certain grid area
-std::vector<Object>::iterator ObjectList::queryOccupied(int lengthX, int lengthY, int lengthZ, int gridX, int gridY, int gridZ, Object::Rotation rotation)
+std::vector<Object*>::iterator ObjectList::queryOccupied(int lengthX, int lengthY, int lengthZ, int gridX, int gridY, int gridZ, Object::Rotation rotation)
 {
 	AABB selection = Object::createAABB(lengthX, lengthY, lengthZ, gridX, gridY, gridZ, rotation);
 
-	for (std::vector<Object>::iterator obj = objects.begin(); obj != objects.end(); ++obj)
+	for (std::vector<Object*>::iterator obj = objects.begin(); obj != objects.end(); ++obj)
 	{
-		if (CollisionChecker::collide(selection, obj->getAABB()))
+		if (CollisionChecker::collide(selection, (*obj)->getAABB()))
 			return obj;
 	}
 	return objects.end();
@@ -108,9 +113,9 @@ bool ObjectList::queryOccupiedArea(int lengthX, int lengthY, int lengthZ, int gr
 	bool collides = false;
 	
 	// Check collision against each object
-	for (const Object& obj : objects)
+	for (const Object* obj : objects)
 	{
-		if (CollisionChecker::collide(selection, obj.getAABB()) || CollisionChecker::collide(obj.getAABB(), selection))
+		if (CollisionChecker::collide(selection, obj->getAABB()) || CollisionChecker::collide(obj->getAABB(), selection))
 		{
 			collides = true;
 			break;

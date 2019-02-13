@@ -208,7 +208,8 @@ void Scene2::Init()
 					Vector3(0.9f, -0.3f, -1.734f), // Back left
 					Vector3(-0.9f, -0.3f, -1.734f), // Back right
 					Vector3(0.0f, 0.368f, 0.774f),
-					uSpotLight); // Steering wheel
+					uSpotLight,
+					OBB(Vector3(0.0f, 2.0f, 0.0f), Vector3(1.0f, 0.0f, 0.0f), Vector3(0.0f, 1.0f, 0.0f), Vector3(0.0f, 0.0f, 1.0f), 2.0f, 2.0f, 2.0f)); // Steering wheel
 
 	text = MeshBuilder::GenerateText(16, 16, "Image//calibri.tga");
 	placeObjHandler = new PlaceObjectHandler(&objectList, player, hotbar);
@@ -364,7 +365,5 @@ void Scene2::drawCoordinates() const
 	convertZ << std::fixed << player->getCam().pos.z;
 	text->PrintTextForward("z:" + convertZ.str(), uMatrixMVS, 0.0f, 17.0f, 1.0f);
 
-	OBB one = OBB(Vector3(0, 0, 0), Vector3(1, 0, 0), Vector3(0, 1, 0), Vector3(0, 0, 1), 2, 2, 2),
-		two = OBB(Vector3(4, 4, 4), Vector3(1, 0, 0), Vector3(0, 1, 0), Vector3(0, 0, 1), 3, 3, 3);
-	text->PrintTextForward(std::to_string(CollisionChecker::collide(one, two)), uMatrixMVS, 0, 15, 1);
+	text->PrintTextForward(std::to_string(Physics::physicsEngine.testCollision()), uMatrixMVS, 0, 15, 1);
 }

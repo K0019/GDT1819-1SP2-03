@@ -18,6 +18,7 @@ public:
 
 	unsigned short getX() const; // Get length of mesh in x axis, in 2x2unit grid space
 	unsigned short getZ() const; // Get length of mesh in z axis, in 2x2unit grid space
+	const std::vector<Triangle>& getTriangles() const;
 protected:
 
 private:

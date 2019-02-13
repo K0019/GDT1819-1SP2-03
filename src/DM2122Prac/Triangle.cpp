@@ -13,6 +13,14 @@ Triangle::~Triangle()
 
 }
 
+void Triangle::transform(const Mtx44& transformationMatrix)
+{
+	for (int i = 0; i < 3; ++i)
+	{
+		v[i] = transformationMatrix * v[i];
+	}
+}
+
 const Vector3& Triangle::getV(int index) const
 {
 	return v[index];

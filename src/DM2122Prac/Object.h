@@ -3,11 +3,12 @@
 #include "MatrixStack.h"
 #include "MeshPlaceable.h"
 #include "AABB.h"
+#include "StaticPhysicsObject.h"
 
 /* File: Object.h
    Use: Class containing the data of an instance of a placed meshPlaceable */
 
-class Object
+class Object : public StaticPhysicsObject
 {
 public:
 	enum Rotation // Orientation of the object with respect to world space
@@ -23,8 +24,6 @@ public:
 
 	void render(unsigned int uMatrixMVS) const; // Render this object
 
-	const AABB& getAABB() const; // Retrieve AABB collider for this object
-
 	static AABB createAABB(const MeshPlaceable* mesh, int gridX, int gridZ, Object::Rotation rotation); // Generate an AABB of a meshPlaceable
 	static AABB createAABB(int lengthX, int lengthY, int lengthZ, int gridX, int gridY, int gridZ, Object::Rotation rotation); // Generate a custom AABB
 protected:
@@ -35,7 +34,7 @@ private:
 	int gridX, gridZ; // Coordinates in grid space
 	Rotation rotation; // Rotation of this object
 
-	AABB gridOccupation; // AABB collider of this object
+	//AABB gridOccupation; // AABB collider of this object
 };
 
 Object::Rotation& operator++(Object::Rotation& rotation); // Rotate a rotation clockwise

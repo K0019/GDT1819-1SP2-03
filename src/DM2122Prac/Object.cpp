@@ -6,8 +6,35 @@ Object::Object(MeshPlaceable* mesh, int gridX, int gridZ, Object::Rotation rotat
 	, gridX(gridX)
 	, gridZ(gridZ)
 	, rotation(rotation)
-	, gridOccupation(createAABB(mesh, gridX, gridZ, rotation))
+	, StaticPhysicsObject(createAABB(mesh, gridX, gridZ, rotation))
 {
+	std::vector<Triangle> triangles = mesh->getTriangles();
+	Mtx44 rotationMatrix;
+	switch (rotation)
+	{
+	case Object::Rotation::NORTH:
+		rotationMatrix.SetToRotation(0.0f, 0.0f, 1.0f, 0.0f);
+		break;
+	case Object::Rotation::EAST:
+		rotationMatrix.SetToRotation(90.0f, 0.0f, 1.0f, 0.0f);
+		break;
+	case Object::Rotation::SOUTH:
+		rotationMatrix.SetToRotation(180.0f, 0.0f, 1.0f, 0.0f);
+		break;
+	case Object::Rotation::WEST:
+		rotationMatrix.SetToRotation(270.0f, 0.0f, 1.0f, 0.0f);
+		break;
+	}
+	Mtx44 translationMatrix;
+	translationMatrix.SetToTranslation(static_cast<float>(gridX << 1), 0.0f, static_cast<float>(gridZ << 1));
+
+	Mtx44 transformationMatrix = translationMatrix * rotationMatrix;
+	for (auto& t : triangles)
+	{
+		t.transform(transformationMatrix);
+	}
+
+	initTriangles(triangles);
 }
 
 // Destructor
@@ -29,12 +56,6 @@ void Object::render(unsigned int uMatrixMVS) const
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), model.Top().a);
 	mesh->Render(true); // Render as placed
 	model.PopMatrix();
-}
-
-// Retrieve AABB collider for this object
-const AABB& Object::getAABB() const
-{
-	return gridOccupation;
 }
 
 // Rotate a rotation clockwise
