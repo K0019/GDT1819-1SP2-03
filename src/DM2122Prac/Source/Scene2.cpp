@@ -200,7 +200,7 @@ void Scene2::Init()
 		"Image//Skybox//right.tga"
 		));
 	player = new Player(uMatrixMVS, uColorData);
-	kart = new Kart(MeshBuilder::GenerateOBJ("OBJ//Kart5.obj", "Image//UV.tga", type::SHADER_3),
+	kart = new Kart(MeshBuilder::GenerateOBJ("OBJ//pikachu_kart.obj", "Image//UV.tga", type::SHADER_3),
 					MeshBuilder::GenerateOBJ("OBJ//Wheel.obj", "Image//UV.tga", type::SHADER_3),
 					MeshBuilder::GenerateOBJ("OBJ//SteeringWheel.obj", "Image//UV.tga", type::SHADER_3),
 					Vector3(0.9f, -0.3f, 1.98f), // Front left

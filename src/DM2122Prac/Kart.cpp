@@ -6,14 +6,18 @@ Kart::Kart(Mesh* body, Mesh* wheel, Mesh* steeringWheel,
 	const Vector3& wheelBackLeftPos, const Vector3& wheelBackRightPos,
 	const Vector3& steeringWheelPos, unsigned int uSpotLight)
 	: pos(Vector3())
-	, velocity(Vector3())
-	, yaw(0.0)
-	, pitch(0.0)
-	, roll(0.0)
+	, velocity(FRONT)
+	, FRONT(Vector3(0,0,1))
+	, UP(Vector3(0,1,0))
+	, velocitydir(FRONT)
+	, yaw(0.0)// this is the yaw angle
+	, pitch(0.0)// this is pitch angle
+	, roll(0.0)// this is row angle
 	, speed(0.0)
 	, turnForce(0.0)
 	, wheelRotation(0.0)
 	, isDriveGear(true)
+	, drifton(false)
 	, gearShiftDelay(0.0)
 	, body(body)
 	, wheel(wheel)
@@ -104,11 +108,11 @@ void Kart::update(GLFWwindow* window, double deltaTime, unsigned int uSpotLight)
 	{
 		if (isDriveGear) // Driving
 		{
-			speed += 50.0 * deltaTime;
+			speed += 15.0 * deltaTime;
 		}
 		else // Reverse
 		{
-			speed += 50.0 * deltaTime;
+			speed += 15.0 * deltaTime;
 			if (speed > 0.0) // Check gear change
 			{
 				isDriveGear = true;
@@ -121,11 +125,11 @@ void Kart::update(GLFWwindow* window, double deltaTime, unsigned int uSpotLight)
 	{
 		if (!isDriveGear) // Reverse
 		{
-			speed -= 21.0 * deltaTime;
+			speed -= 15.0 * deltaTime;
 		}
 		else // Driving
 		{
-			speed -= 50.0 * deltaTime;
+			speed -= 15.0 * deltaTime;
 			if (speed < 0.0) // Check gear change
 			{
 				isDriveGear = false;
@@ -137,14 +141,20 @@ void Kart::update(GLFWwindow* window, double deltaTime, unsigned int uSpotLight)
 	// Turn input
 	if (isPressed(window, GLFW_KEY_A))
 	{
-		turnForce += 6.0 * deltaTime;
+		turnForce += 10.0 * deltaTime;
+
 
 	}
+	
 	if (isPressed(window, GLFW_KEY_D))
 	{
-		turnForce -= 6.0 * deltaTime;
+		turnForce -= 10.0 * deltaTime;
 	}
-
+	if (isPressed(window, GLFW_KEY_LEFT_SHIFT)) {
+		drifton = true;
+	}
+	else
+		drifton = false;
 	// Friction / Air resistance
 	if (speed > 0.0)
 	{
@@ -179,18 +189,41 @@ void Kart::update(GLFWwindow* window, double deltaTime, unsigned int uSpotLight)
 	{
 		double turnDegreeLinear = fabs(turnForce * (speed / 60.0) * 3.5);
 		double turnDegreeQuadratic = fabs(turnForce / (speed / 60.0) * 0.7);
-		double turnDegree = ((turnDegreeLinear < turnDegreeQuadratic) ? (turnDegreeLinear) : (turnDegreeQuadratic));
+		turnDegree = ((turnDegreeLinear < turnDegreeQuadratic) ? (turnDegreeLinear) : (turnDegreeQuadratic));
 		if (turnForce < 0.0) // Rotate left
 			turnDegree = -turnDegree;
 		if (speed < 0.0) // Reverse
 			turnDegree = -turnDegree;
-
-		yaw += turnDegree;
+		/*yaw += turnDegree;*/
+		Mtx44 rotatematricx;
+		rotatematricx.SetToRotation(turnDegree, 0, 1, 0);// for yaw 
+		FRONT = rotatematricx.operator*(FRONT);
 	}
 
-	// Calculate velocity
-	velocity = Vector3(sinf(Math::DegreeToRadian(static_cast<float>(yaw))), 0.0f, cosf(Math::DegreeToRadian(static_cast<float>(yaw)))) * static_cast<float>(speed);
+	//calculating the yaw pitch row
+	GetYawPitchRoll(FRONT, UP, yaw, pitch, roll);
 
+	// Calculate velocity
+	if (velocitydir != FRONT && drifton) {
+		Mtx44 rotatematricx;
+		// this is to calculate the angle  between the  velocity direction and the front vector
+		float theata = acosf((velocitydir.Dot(FRONT)) / velocitydir.Length() * FRONT.Length());
+		// this will rotate the velocity direction
+		rotatematricx.SetToRotation(theata / 5, 0, 1, 0);// for yaw 
+		velocitydir = rotatematricx.operator*(velocitydir);
+		velocity = velocitydir.operator+(FRONT) * static_cast<float>(speed);
+
+	}
+
+	// this is to set the velocity back to the front vector after drifting 
+	else if (velocitydir != FRONT && !drifton) {
+		velocitydir = FRONT;
+		velocity = Vector3(sinf(Math::DegreeToRadian(static_cast<float>(yaw))), 0.0f, cosf(Math::DegreeToRadian(static_cast<float>(yaw)))) * static_cast<float>(speed);
+	}
+
+	else 
+	velocity = Vector3(sinf(Math::DegreeToRadian(static_cast<float>(yaw))), 0.0f, cosf(Math::DegreeToRadian(static_cast<float>(yaw)))) * static_cast<float>(speed);
+	
 	// Wheel rotation
 	if (speed >= 0.0)
 		wheelRotation += velocity.Length() * 40.0f * deltaTime;
@@ -205,6 +238,10 @@ void Kart::update(GLFWwindow* window, double deltaTime, unsigned int uSpotLight)
 	// Move
 	pos += velocity * static_cast<float>(deltaTime);
 
+	// calculate camdir
+	Vector3 velodummydir = velocitydir.Normalized();
+	camdir = velocitydir.operator+(FRONT.Normalized());
+	
 	// Spotlight
 	MS model;
 	model.LoadIdentity();
@@ -334,12 +371,24 @@ const Vector3& Kart::getPos() const
 // Get kart velocity
 const Vector3& Kart::getVel() const
 {
+	
 	return velocity;
 }
 // Get kart rotation
 double Kart::getYaw() const
 {
+	std::cout << "The Yaw is " << yaw << std::endl;
+	std::cout << "The vector  is " << FRONT.x << " "<< FRONT.y << " " <<FRONT.z<< std::endl;
+	std::cout << "The  velocity vector  is " << velocity.x << " " << velocity.y << " " << velocity.z << std::endl;
+	std::cout << "The  direction velocity vector  is " << velocitydir.x << " " << velocitydir.y << " " << velocitydir.z << std::endl;
+	std::cout << "The Yaw  pitch row is " << yaw << "  " << pitch << "  " << roll << std ::endl;
 	return yaw;
+}
+
+Vector3 Kart::getCamDir() const
+{
+
+	return camdir;
 }
 
 // Generate HUD text for speed
@@ -368,4 +417,60 @@ std::string Kart::getGear() const
 void Kart::stop()
 {
 	speed = 0.0;
+} 
+void Kart::GetYawPitchRoll(Vector3 forward,Vector3 up, double& yaw, double& pitch, double& roll)
+{
+	pitch = Math::RadianToDegree(asin(-forward.y));
+	double cosPitch = sqrt(1 - forward.y*forward.y);
+
+	//Check if we are looking straight up or down
+	if (cosPitch == 0 || fabs(forward.y) >= 1)
+	{
+		if (pitch > 0)
+		{
+			yaw = 0;
+			roll = Math::RadianToDegree(atan2(-up.x, -up.z)) + 180 ;
+		}
+		else
+		{
+			yaw = 0;
+			roll = Math::RadianToDegree(-atan2(up.x, up.z)) + 180;
+		}
+	}
+	else
+	{
+
+		double cosYaw = forward.z / cosPitch;
+		double sinYaw = forward.x / cosPitch;
+		yaw = Math::RadianToDegree(atan2(sinYaw, cosYaw));
+
+		double cosRoll = up.y / cosPitch;
+		double sinRoll;
+		if (fabs(cosYaw) < fabs(sinYaw))
+		{
+			sinRoll = -(up.z + forward.y*cosRoll*cosYaw) / sinYaw;
+		}
+		else
+		{
+			sinRoll = (up.x + forward.y*cosRoll*sinYaw) / cosYaw;
+		}
+		roll = Math::RadianToDegree(atan2(sinRoll, cosRoll));
+	}
+
+
+	//Keep all angles in [0, 360]
+	if (yaw < 0)
+		yaw += 360;
+	else if (yaw >= 360)
+		yaw -= 360;
+
+	if (pitch < 0)
+		pitch += 360;
+	else if (pitch >= 360)
+		pitch -= 360;
+
+	if (roll < 0)
+		roll += 360;
+	else if (roll >= 360)
+		roll -= 360;
 }

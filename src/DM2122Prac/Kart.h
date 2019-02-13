@@ -32,7 +32,7 @@ public:
 	const Vector3& getPos() const; // Get kart position in world space
 	const Vector3& getVel() const; // Get kart velocity
 	double getYaw() const; // Get kart rotation
-
+	Vector3 getCamDir() const;
 	std::string getSpeedText() const; // Generate HUD text for speed
 	std::string getGear() const; // Generate HUD text for drive gear
 
@@ -42,12 +42,18 @@ protected:
 private:
 
 	Vector3 pos, velocity; // Position and velocity of kart
+	Vector3 UP, FRONT; // front and  up vector 
+	Vector3 velocitydir, camdir; // Direction of the velocity
+	// Front vector is always  rotated by up vector for yaw  
+	// Up vecotr is always rotated by  Front vector for row 
+	// For pitch  front and up vector is rotated  by front X Up;
 	double yaw, pitch, roll, speed, turnForce, wheelRotation; // Misc. variables (UNUSED - pitch & roll)
+	double turnDegree;
 	Mesh* body, * wheel, * steeringWheel; // Meshes loaded for kart
 	Vector3 frontLeftPos, frontRightPos, backLeftPos, backRightPos, steeringPos; // Position of the wheel and steering wheel relative to kart position
-
+	bool drifton;
 	SpotLight spotLights[2]; // Spotlight structures to render headlight effect
-
+	void GetYawPitchRoll(Vector3, Vector3,  double&, double&, double&);
 	bool isDriveGear; // Drive/Reverse gear
 	double gearShiftDelay; // Bounce time for changing between drive and reverse gear
 };
