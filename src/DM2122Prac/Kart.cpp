@@ -108,11 +108,11 @@ void Kart::update(GLFWwindow* window, double deltaTime, unsigned int uSpotLight)
 	{
 		if (isDriveGear) // Driving
 		{
-			speed += 15.0 * deltaTime;
+			speed += 50.0 * deltaTime;
 		}
 		else // Reverse
 		{
-			speed += 15.0 * deltaTime;
+			speed += 50.0 * deltaTime;
 			if (speed > 0.0) // Check gear change
 			{
 				isDriveGear = true;
@@ -125,11 +125,11 @@ void Kart::update(GLFWwindow* window, double deltaTime, unsigned int uSpotLight)
 	{
 		if (!isDriveGear) // Reverse
 		{
-			speed -= 15.0 * deltaTime;
+			speed -= 50.0 * deltaTime;
 		}
 		else // Driving
 		{
-			speed -= 15.0 * deltaTime;
+			speed -= 50.0 * deltaTime;
 			if (speed < 0.0) // Check gear change
 			{
 				isDriveGear = false;
@@ -294,21 +294,23 @@ void Kart::render(unsigned int uMatrixMVS) const
 
 	// Body
 	model.PushMatrix(); // 1
-	model.Translate(pos.x, pos.y + 1.75f, pos.z);
+	model.Translate(pos.x, pos.y+0.4f, pos.z);
 	//model.Rotate(roll, static_cast<float>(sin(yaw)), static_cast<float>(sin(pitch)), static_cast<float>(cos(yaw)));
 	model.Rotate(static_cast<float>(yaw), 0.0f, 1.0f, 0.0f);
 	model.Rotate(static_cast<float>(pitch), 1.0f, 0.0f, 0.0f);
 	model.Rotate(static_cast<float>(roll), 0.0f, 0.0f, 1.0f);
-	model.Scale(2.0f, 2.0f, 2.0f);
+	model.Scale(0.5f, 0.5f, 0.5f);
 	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixMVS);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), model.Top().a);
 	body->Render();
 
 	// Front left wheel
 	model.PushMatrix(); // 2
-	model.Translate(frontLeftPos.x, frontLeftPos.y, frontLeftPos.z);
+	model.Translate(frontLeftPos.x - 0.5f, frontLeftPos.y, frontLeftPos.z);	
 	model.Rotate(static_cast<float>(turnForce) * 25.0f, 0.0f, 1.0f, 0.0f);
+	model.Translate(0.5f, 0, 0);
 	model.Rotate(static_cast<float>(wheelRotation), 1.0f, 0.0f, 0.0f);
+
 	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixMVS);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), model.Top().a);
 	wheel->Render();
@@ -316,9 +318,13 @@ void Kart::render(unsigned int uMatrixMVS) const
 
 	// Front right wheel
 	model.PushMatrix(); // 2
-	model.Translate(frontRightPos.x, frontRightPos.y, frontRightPos.z);
+	model.Translate(frontRightPos.x+0.5, frontRightPos.y, frontRightPos.z);
 	model.Rotate(180.0f + static_cast<float>(turnForce) * 25.0f, 0.0f, 1.0f, 0.0f);
+	model.Translate(0.5f, 0, 0);
 	model.Rotate(static_cast<float>(-wheelRotation), 1.0f, 0.0f, 0.0f);
+	
+	
+
 	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixMVS);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), model.Top().a);
 	wheel->Render();

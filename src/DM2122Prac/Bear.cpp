@@ -89,13 +89,17 @@ void Bear::draw(const Vector3& offset, float yaw) const
 
 	// Body main (Spliced sphere)
 	matrixStack.PushMatrix(); // 1
+	matrixStack.Translate(0.f, 1.f, 0.f);
+	matrixStack.Scale(0.3f, 0.3f, 0.3f);
 	matrixStack.Scale(1.3f, 2.4f, 1.3f);
 	matrixStack.Translate(0.0f, 0.15f, 0.0f);
 	renderMesh(&matrixStack, mesh[meshType::SPLICEDSPHERE6]);
 	matrixStack.PopMatrix(); // 1
 	// Body bottom (Hemisphere)
 	matrixStack.PushMatrix(); // 1
-	matrixStack.Translate(0.0f, -1.1f, 0.0f);
+	matrixStack.Translate(0.f, 1.0f, 0.0f);
+	matrixStack.Scale(0.3f, 0.3f, 0.3f);
+	
 	matrixStack.PushMatrix(); // 2
 	matrixStack.Translate(0.0f, -0.05f, 0.0f);
 	matrixStack.Rotate(180, 1.0f, 0.0f, 0.0f);
@@ -171,10 +175,12 @@ void Bear::drawLeg(MS& matrixStack, bool left, const Mtx44& legRotation) const
 	matrixStack.PushMatrix(); // 1
 	if (left) // Translate to proper position
 	{
+		
 		matrixStack.Translate(-0.7f, -0.4f, 0.0f);
 	}
 	else
 	{
+	
 		matrixStack.Translate(0.7f, -0.4f, 0.0f);
 	}
 	if (state == WALKING) // If walking, rotate legs progressively
@@ -194,6 +200,7 @@ void Bear::drawLeg(MS& matrixStack, bool left, const Mtx44& legRotation) const
 	// Leg cylinder (Cylinder)
 	matrixStack.PushMatrix(); // 2
 	matrixStack.MultMatrix(legRotation);
+	matrixStack.Translate(0.f, 1.f, 0.f);
 	matrixStack.Scale(1.0f, 1.45f, 1.0f);
 	matrixStack.Rotate(((left) ? (-10.0f) : (10.0f)), 0.0f, 0.0f, 1.0f);
 	matrixStack.Translate(0.0f, -1.0f, 0.0f);
@@ -201,6 +208,7 @@ void Bear::drawLeg(MS& matrixStack, bool left, const Mtx44& legRotation) const
 
 	// Foot (Sphere)
 	matrixStack.PushMatrix(); // 3
+
 	matrixStack.Scale(1.1f, 0.7f, 1.5f);
 	matrixStack.Translate(0.0f, -1.7f, -0.2f);
 	renderMesh(&matrixStack, mesh[meshType::SPHERE]);

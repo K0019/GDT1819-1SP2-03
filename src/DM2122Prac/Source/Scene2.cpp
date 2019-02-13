@@ -200,13 +200,13 @@ void Scene2::Init()
 		"Image//Skybox//right.tga"
 		));
 	player = new Player(uMatrixMVS, uColorData);
-	kart = new Kart(MeshBuilder::GenerateOBJ("OBJ//pikachu_kart.obj", "Image//UV.tga", type::SHADER_3),
-					MeshBuilder::GenerateOBJ("OBJ//Wheel.obj", "Image//UV.tga", type::SHADER_3),
+	kart = new Kart(MeshBuilder::GenerateOBJ("OBJ//pikachu_kart.obj", "Image//pikachu_texture.tga", type::SHADER_3),
+					MeshBuilder::GenerateOBJ("OBJ//basic_wheel.obj", "Image//pikachu_wheel_texture.tga", type::SHADER_3),
 					MeshBuilder::GenerateOBJ("OBJ//SteeringWheel.obj", "Image//UV.tga", type::SHADER_3),
-					Vector3(0.9f, -0.3f, 1.98f), // Front left
-					Vector3(-0.9f, -0.3f, 1.98f), // Front right
-					Vector3(0.9f, -0.3f, -1.734f), // Back left
-					Vector3(-0.9f, -0.3f, -1.734f), // Back right
+					Vector3(2.68f, 1.24f, 1.59f), // Front left
+					Vector3(-2.68f, 1.24f, 1.59f), // Front right
+					Vector3(3.28f, 1.24f, -1.43f), // Back left
+					Vector3(-3.28f, 1.24f, -1.43f), // Back right
 					Vector3(0.0f, 0.368f, 0.774f),
 					uSpotLight); // Steering wheel
 

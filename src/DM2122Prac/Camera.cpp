@@ -16,7 +16,7 @@ void Camera::init()
 {
 	pos = { 0.0f, 5.0f, -5.0f };
 	front = { 0.0f, 0.0f, 1.0f };
-	up = { 0.0f, 1.0f, 0.0f };
+	up = { 0.0f, 0.1f, 0.0f };
 	yaw = 90.0f;
 	pitch = 0.0f;
 }
