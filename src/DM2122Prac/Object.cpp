@@ -1,7 +1,7 @@
 #include "Object.h"
 
 // Constructor
-Object::Object(MeshPlaceable* mesh, int gridX, int gridZ, Object::Rotation rotation)
+Object::Object(MeshPlaceable* mesh/*unsigned int ID*/, int gridX, int gridZ, Object::Rotation rotation)
 	: mesh(mesh)
 	, gridX(gridX)
 	, gridZ(gridZ)
@@ -71,3 +71,34 @@ AABB Object::createAABB(int lengthX, int lengthY, int lengthZ, int gridX, int gr
 		throw std::exception("Control should never reach here");
 	}
 }
+
+void Object::setID(unsigned int id)
+{
+	ID = id;
+}
+
+int Object::getGridX() const
+{
+	return gridX;
+}
+
+int Object::getGridY() const
+{
+	return gridY;
+}
+
+int Object::getGridZ() const
+{
+	return gridZ;
+}
+
+int Object::getrotation() const
+{
+	return rotation;
+}
+
+int Object::getID() const
+{
+	return ID;
+}
+

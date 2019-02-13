@@ -213,6 +213,7 @@ void Scene2::Init()
 	text = MeshBuilder::GenerateText(16, 16, "Image//calibri.tga");
 	placeObjHandler = new PlaceObjectHandler(&objectList, player, hotbar);
 
+
 	// Enable culling and depth test
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
@@ -230,6 +231,8 @@ void Scene2::Update(double dt, GLFWwindow* programID)
 	processInput(programID);
 	hotbar->update();
 	placeObjHandler->update(programID, dt);
+
+
 	// Update shaders with new view matrix
 	Mtx44 view;
 	view.SetToLookAt(player->getCam().pos.x, player->getCam().pos.y, player->getCam().pos.z,

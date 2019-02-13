@@ -1,5 +1,6 @@
 #ifndef SCENE_2_H
 #define SCENE_2_H
+#include <fstream>
 #include <sstream>
 #include "Scene.h"
 #include "ShaderPrograms.h"
@@ -17,6 +18,7 @@
 
 #include "PlaceObjectHandler.h"
 
+using namespace std;
 /* File: Scene2.h
    Use: Holds the entire scene process together
 		Framework file, heavily modified */

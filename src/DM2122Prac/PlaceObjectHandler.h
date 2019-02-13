@@ -30,6 +30,8 @@ private:
 
 	double rotateBounceTime; // Bounce time for rotation input
 	Object::Rotation rotation; // Current selection rotation
+	int gridx,gridy, gridz, rotate;
+	unsigned int id;
 };
 
 #endif // !PLACEOBJECTHANDLER_H
