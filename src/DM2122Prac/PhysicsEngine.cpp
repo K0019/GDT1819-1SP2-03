@@ -59,8 +59,8 @@ bool PhysicsEngine::testCollision() const
 	{
 		for (auto& s : staticObjects)
 		{
-			/*if (CollisionChecker::collide(m->getCollisionBox(), s->getAABB()))
-			{*/
+			if (CollisionChecker::collide(m->getCollisionBox(), s->getAABB()))
+			{
 				for (std::vector<Triangle>::const_iterator iter = s->getTriangles().begin(); iter != s->getTriangles().end(); ++iter)
 				{
 					if (CollisionChecker::collide(m->getCollisionBox(), *iter))
@@ -68,7 +68,7 @@ bool PhysicsEngine::testCollision() const
 						return true;
 					}
 				}
-			//}
+			}
 		}
 	}
 

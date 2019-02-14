@@ -82,12 +82,12 @@ AABB Object::createAABB(int lengthX, int lengthY, int lengthZ, int gridX, int gr
 	{
 	case Object::Rotation::NORTH:
 	case Object::Rotation::SOUTH:
-		return AABB(Vector3(static_cast<float>(gridX - (lengthX >> 1) - (rotation == Object::Rotation::NORTH) * (lengthX % 2)) + 0.1f, 0.0f, static_cast<float>(gridZ - (lengthZ >> 1) - (rotation == Object::Rotation::SOUTH) * (lengthZ % 2)) + 0.1f),
-			Vector3(static_cast<float>(gridX + (lengthZ >> 1) - (rotation == Object::Rotation::SOUTH) * (lengthZ % 2)) - 0.1f, 20.0f, static_cast<float>(gridZ + (lengthZ >> 1) - (rotation == Object::Rotation::NORTH) * (lengthZ % 2)) - 0.1f));
+		return AABB(Vector3(static_cast<float>(gridX - (lengthX >> 1) - (rotation == Object::Rotation::NORTH) * (lengthX % 2)) + 0.01f, 0.0f, static_cast<float>(gridZ - (lengthZ >> 1) - (rotation == Object::Rotation::SOUTH) * (lengthZ % 2)) + 0.01f),
+			Vector3(static_cast<float>(gridX + (lengthZ >> 1) - (rotation == Object::Rotation::SOUTH) * (lengthZ % 2)) - 0.01f, 10.0f, static_cast<float>(gridZ + (lengthZ >> 1) - (rotation == Object::Rotation::NORTH) * (lengthZ % 2)) - 0.01f));
 	case Object::Rotation::EAST:
 	case Object::Rotation::WEST:
-		return AABB(Vector3(static_cast<float>(gridX - (lengthZ >> 1) + (rotation == Object::Rotation::EAST) * (lengthZ % 2)) + 0.1f, 0.0f, static_cast<float>(gridZ - (lengthX >> 1) + (rotation == Object::Rotation::EAST) * (lengthX % 2)) + 0.1f),
-			Vector3(static_cast<float>(gridX + (lengthZ >> 1) + (rotation == Object::Rotation::WEST) * (lengthZ % 2)) - 0.1f, 20.0f, static_cast<float>(gridZ + (lengthX >> 1) + (rotation == Object::Rotation::WEST) * (lengthX % 2)) - 0.1f));
+		return AABB(Vector3(static_cast<float>(gridX - (lengthZ >> 1) + (rotation == Object::Rotation::EAST) * (lengthZ % 2)) + 0.1f, 0.0f, static_cast<float>(gridZ - (lengthX >> 1) + (rotation == Object::Rotation::EAST) * (lengthX % 2)) + 0.01f),
+			Vector3(static_cast<float>(gridX + (lengthZ >> 1) + (rotation == Object::Rotation::WEST) * (lengthZ % 2)) - 0.01f, 10.0f, static_cast<float>(gridZ + (lengthX >> 1) + (rotation == Object::Rotation::WEST) * (lengthX % 2)) - 0.01f));
 	default:
 		throw std::exception("Control should never reach here");
 	}

@@ -54,7 +54,7 @@ bool CollisionChecker::collide(const AABB* lhs, const AABB* rhs)
 
 bool CollisionChecker::collide(const AABB* lhs, const OBB* rhs)
 {
-	OBB newAABB = OBB(lhs->getCorner1() + lhs->getCorner2() * 0.5, Vector3(1.0f, 0.0f, 0.0f), Vector3(0.0f, 1.0f, 0.0f), Vector3(0.0f, 0.0f, 1.0f), fabs(lhs->getCorner2().x - lhs->getCorner1().x) * 0.5f, fabs(lhs->getCorner2().y - lhs->getCorner1().y) * 0.5f, fabs(lhs->getCorner2().z - lhs->getCorner1().z) * 0.5f);
+	OBB newAABB = OBB(lhs->getCorner1() + lhs->getCorner2(), Vector3(1.0f, 0.0f, 0.0f), Vector3(0.0f, 1.0f, 0.0f), Vector3(0.0f, 0.0f, 1.0f), fabs(lhs->getCorner2().x - lhs->getCorner1().x), fabs(lhs->getCorner2().y - lhs->getCorner1().y), fabs(lhs->getCorner2().z - lhs->getCorner1().z));
 
 	return collide(&newAABB, rhs);
 }
@@ -83,15 +83,20 @@ bool CollisionChecker::collide(const OBB* lhs, const OBB* rhs)
 
 bool CollisionChecker::collide(const OBB* lhs, const Triangle* rhs)
 {
+	Vector3 v[3] = {
+		rhs->getV(0) - lhs->getPosition(),
+		rhs->getV(1) - lhs->getPosition(),
+		rhs->getV(2) - lhs->getPosition()
+	};
 	// OBB normals
 	for (int i = 0; i < 3; ++i)
 	{
 		float min, max;
-		min = max = (rhs->getV(0) - lhs->getPosition()).Dot(lhs->getAxis(i));
+		min = max = v[0].Dot(lhs->getAxis(i));
 		for (int j = 1; j < 3; ++j)
 		{
-			float proj = (rhs->getV(j) - lhs->getPosition()).Dot(lhs->getAxis(i));
-			if (proj < min)
+			float proj = v[j].Dot(lhs->getAxis(i));
+			if (proj <= min)
 			{
 				min = proj;
 			}
@@ -119,11 +124,6 @@ bool CollisionChecker::collide(const OBB* lhs, const Triangle* rhs)
 
 	// For each edge pair
 	{
-		Vector3 v[3] = {
-			rhs->getV(0) - lhs->getPosition(),
-			rhs->getV(1) - lhs->getPosition(),
-			rhs->getV(2) - lhs->getPosition()
-		};
 		for (int i = 0; i < 3; ++i)
 		{
 			for (int j = 0; j < 3; ++j)
@@ -139,7 +139,7 @@ bool CollisionChecker::collide(const OBB* lhs, const Triangle* rhs)
 				for (int k = 1; k < 3; ++k)
 				{
 					float proj = axis.Dot(v[k]);
-					if (proj < min)
+					if (proj <= min)
 					{
 						min = proj;
 					}
