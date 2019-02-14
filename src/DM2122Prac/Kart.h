@@ -41,8 +41,8 @@ protected:
 
 private:
 
-	Vector3 pos, velocity; // Position and velocity of kart
 	Vector3 UP, FRONT; // front and  up vector 
+	Vector3 pos, velocity; // Position and velocity of kart
 	Vector3 velocitydir, camdir; // Direction of the velocity
 	// Front vector is always  rotated by up vector for yaw  
 	// Up vecotr is always rotated by  Front vector for row 

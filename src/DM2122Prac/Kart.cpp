@@ -197,7 +197,7 @@ void Kart::update(GLFWwindow* window, double deltaTime, unsigned int uSpotLight)
 		/*yaw += turnDegree;*/
 		Mtx44 rotatematricx;
 		rotatematricx.SetToRotation(turnDegree, 0, 1, 0);// for yaw 
-		FRONT = rotatematricx.operator*(FRONT);
+		FRONT = rotatematricx * FRONT;
 	}
 
 	//calculating the yaw pitch row
@@ -210,17 +210,15 @@ void Kart::update(GLFWwindow* window, double deltaTime, unsigned int uSpotLight)
 		float theata = acosf((velocitydir.Dot(FRONT)) / velocitydir.Length() * FRONT.Length());
 		// this will rotate the velocity direction
 		rotatematricx.SetToRotation(theata / 5, 0, 1, 0);// for yaw 
-		velocitydir = rotatematricx.operator*(velocitydir);
-		velocity = velocitydir.operator+(FRONT) * static_cast<float>(speed);
+		velocitydir = rotatematricx * velocitydir;
+		velocity = (velocitydir + FRONT) * static_cast<float>(speed);
 
 	}
-
 	// this is to set the velocity back to the front vector after drifting 
 	else if (velocitydir != FRONT && !drifton) {
 		velocitydir = FRONT;
 		velocity = Vector3(sinf(Math::DegreeToRadian(static_cast<float>(yaw))), 0.0f, cosf(Math::DegreeToRadian(static_cast<float>(yaw)))) * static_cast<float>(speed);
 	}
-
 	else 
 	velocity = Vector3(sinf(Math::DegreeToRadian(static_cast<float>(yaw))), 0.0f, cosf(Math::DegreeToRadian(static_cast<float>(yaw)))) * static_cast<float>(speed);
 	
@@ -240,7 +238,7 @@ void Kart::update(GLFWwindow* window, double deltaTime, unsigned int uSpotLight)
 
 	// calculate camdir
 	Vector3 velodummydir = velocitydir.Normalized();
-	camdir = velocitydir.operator+(FRONT.Normalized());
+	camdir = velocitydir.Normalized() + FRONT.Normalized();
 	
 	// Spotlight
 	MS model;
