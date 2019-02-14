@@ -9,7 +9,6 @@ PlaceObjectHandler::PlaceObjectHandler(ObjectList* objectList, const Player* pla
 	, player(player)
 	, hotbar(hotbar)
 {
-
 }
 
 // Destructor
@@ -21,6 +20,51 @@ PlaceObjectHandler::~PlaceObjectHandler()
 // Handle object placing/deleting input
 void PlaceObjectHandler::update(GLFWwindow* window, double dt)
 {
+	// clear world function
+	if (isPressed(window, GLFW_KEY_B))
+	{
+		objectList->deleteAll();
+		ifstream del;
+		del.open("delete.txt");
+		while (del >> id >> gridx >> gridy >> gridz >> rotate)
+		{
+			objectList->deleteObject(gridx, gridz, static_cast<Object::Rotation>(rotate));
+		}
+		del.close();
+	}
+	// Save function
+	if (isPressed(window, GLFW_KEY_N))
+	{
+		objectList->saveObject();
+	}
+	// Load save file
+	if (isPressed(window, GLFW_KEY_M))
+	{
+		objectList->deleteAll();
+		ifstream del;
+		del.open("delete.txt");
+		while (del >> id >> gridx >> gridy >> gridz >> rotate)
+		{
+			objectList->deleteObject(gridx, gridz, static_cast<Object::Rotation>(rotate));
+		}
+		del.close();
+		ifstream read;
+		read.open("save.txt");
+		//for (int i = 0; i < 100; i++)
+		while(read >> id >> gridx >> gridy >> gridz >> rotate)
+		{
+			//read >> id >> gridx >> gridy >> gridz >> rotate;
+			if (id == 0 && gridx == 0 && gridz == 0 && rotate == 0)
+			{
+			}
+			else
+			{
+				objectList->loadObject(id, gridx, gridz, static_cast<Object::Rotation>(rotate));
+			}
+			
+		}
+		read.close();
+	}
 	// Rotate selection
 	if (isPressed(window, GLFW_KEY_R))
 	{

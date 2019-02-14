@@ -34,6 +34,7 @@ void ObjectList::init()
 	meshes.push_back(MeshBuilder::GenerateMeshPlaceable("OBJ//PlaceableObjects//trashCan.obj", "Image//PlaceableObjects//trashCan.tga", type::SHADER_3, 2, 2));
 	// Source: https://www.turbosquid.com/3d-models/free-bucket-3d-model/629635
 	meshes.push_back(MeshBuilder::GenerateMeshPlaceable("OBJ//PlaceableObjects//fireBucket.obj", "Image//PlaceableObjects//fireBucket.tga", type::SHADER_3, 2, 2));
+	
 }
 
 // Attempt to add an object of meshPlaceable ID at a certain grid area and rotation
@@ -42,10 +43,51 @@ bool ObjectList::addObject(unsigned int ID, int gridX, int gridZ, Object::Rotati
 	// Check if area is occupied
 	if (queryOccupiedArea(ID, gridX, gridZ, rotation))
 		return false;
-
+	
 	// Add object
 	objects.push_back(new Object(meshes[ID - 1], gridX, gridZ, rotation));
+	(*(objects.end() - 1))->setID(ID);
 	return true;
+}
+
+void ObjectList::saveObject()
+{ 
+	ofstream file;
+	file.open("save.txt");
+	for (const auto& obj : objects)
+	{
+		file << obj->getID() << " ";
+		file << obj->getGridX() << " ";
+		file << obj->getGridY() << " ";
+		file << obj->getGridZ() << " ";
+		file << obj->getrotation() << endl;
+	}
+	file.close();
+}
+
+bool ObjectList::loadObject(unsigned int ID, int gridX, int gridZ, Object::Rotation rotation)
+{
+	if (queryOccupiedArea(ID, gridX, gridZ, rotation))
+		return false;
+
+	objects.push_back(new Object(meshes[ID - 1], gridX, gridZ, rotation));
+	(*(objects.end() - 1))->setID(ID);
+	return true;
+}
+
+void ObjectList::deleteAll()
+{
+	ofstream file;
+	file.open("delete.txt");
+	for (const auto& obj : objects)
+	{
+		file << obj->getID() << " ";
+		file << obj->getGridX() << " ";
+		file << obj->getGridY() << " ";
+		file << obj->getGridZ() << " ";
+		file << obj->getrotation() << endl;
+	}
+	file.close();
 }
 
 // Attempt to delete any object that intersects a certain grid area and rotation

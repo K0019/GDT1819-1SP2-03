@@ -130,6 +130,10 @@ bool CollisionChecker::collide(const OBB* lhs, const Triangle* rhs)
 			{
 				float min, max;
 				Vector3 axis = lhs->getAxis(i).Cross(rhs->getF(j));
+				if (axis.Length() < 0.00001f)
+				{
+					continue;
+				}
 				min = max = axis.Dot(v[0]);
 
 				for (int k = 1; k < 3; ++k)

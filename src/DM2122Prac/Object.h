@@ -18,20 +18,26 @@ public:
 		SOUTH,
 		WEST
 	};
-
-	Object(MeshPlaceable* mesh, int gridX, int gridZ, Rotation rotation); // Constructor
+	Object(MeshPlaceable* /*meshunsigned int ID*/, int gridX, int gridZ, Rotation rotation); // Constructor
 	~Object(); // Destructor
 
 	void render(unsigned int uMatrixMVS) const; // Render this object
 
 	static AABB createAABB(const MeshPlaceable* mesh, int gridX, int gridZ, Object::Rotation rotation); // Generate an AABB of a meshPlaceable
 	static AABB createAABB(int lengthX, int lengthY, int lengthZ, int gridX, int gridY, int gridZ, Object::Rotation rotation); // Generate a custom AABB
+	void setID(unsigned int);
+	int getGridX() const;
+	int getGridY() const;
+	int getGridZ() const;
+	int getrotation() const;
+	int getID() const;
 protected:
 
 private:
 	MeshPlaceable* mesh; // Mesh that this object is of
 
-	int gridX, gridZ; // Coordinates in grid space
+	int gridX, gridZ, gridY; // Coordinates in grid space
+	unsigned ID;
 	Rotation rotation; // Rotation of this object
 
 	//AABB gridOccupation; // AABB collider of this object
