@@ -50,7 +50,29 @@ void PhysicsEngine::removeStaticObject(StaticPhysicsObjectInternal* object)
 
 void PhysicsEngine::update()
 {
+	for (auto& m : movingObjects)
+	{
+		for (auto& s : staticObjects)
+		{
+			if (CollisionChecker::collide(m->getCollisionBox(), s->getAABB()))
+			{
+				for (std::vector<Triangle>::const_iterator iter = s->getTriangles().begin(); iter != s->getTriangles().end(); ++iter)
+				{
+					if (CollisionChecker::collide(m->getCollisionBox(), *iter))
+					{
+						if (s->getPhysicsEnabled())
+						{
 
+						}
+						else
+						{
+
+						}
+					}
+				}
+			}
+		}
+	}
 }
 
 bool PhysicsEngine::testCollision() const

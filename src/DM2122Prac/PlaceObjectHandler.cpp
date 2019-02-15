@@ -160,7 +160,14 @@ void PlaceObjectHandler::drawSelection(unsigned int uMatrixMVS) const
 		model.Translate(gridX * 2.0f, 0.0f, gridZ * 2.0f);
 
 		// Render the object
-		objectList->renderSingleObject(hotbar->querySelection(), uMatrixMVS, !objectList->queryOccupiedArea(hotbar->querySelection(), gridX, gridZ, getRotation()), getRotation(), model);
+		if (hotbar->querySelection() == 4)
+		{
+			objectList->renderSingleObject(hotbar->querySelection(), uMatrixMVS, objectList->queryModificationGatePlacing(gridX, 0, gridZ, getRotation()), getRotation(), model);
+		}
+		else
+		{
+			objectList->renderSingleObject(hotbar->querySelection(), uMatrixMVS, !objectList->queryOccupiedArea(hotbar->querySelection(), gridX, gridZ, getRotation()), getRotation(), model);
+		}
 		model.PopMatrix();
 	}
 }

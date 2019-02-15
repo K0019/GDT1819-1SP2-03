@@ -26,11 +26,11 @@ void ObjectList::init()
 	meshes.push_back(MeshBuilder::GenerateMeshPlaceable("OBJ//PlaceableObjects//trackTurnAngled.obj", "Image//PlaceableObjects//trackTestUV.tga", type::SHADER_3, 10, 10, true));
 	meshes.push_back(MeshBuilder::GenerateMeshPlaceable("OBJ//PlaceableObjects//trackTurnCurved.obj", "Image//PlaceableObjects//trackTestUV.tga", type::SHADER_3, 10, 10, true));
 	/*
-		ADD MODIFICATION GATE HERE
+		REPLACE LINE BELOW WITH MODIFICATION GATE
 	*/
-	meshes.push_back(MeshBuilder::GenerateMeshPlaceable("OBJ//PlaceableObjects//trackTurnCurved.obj", "Image//PlaceableObjects//stone.tga", type::SHADER_3, 10, 2, false));
+	meshes.push_back(MeshBuilder::GenerateMeshPlaceable("OBJ//PlaceableObjects//trackTurnCurved.obj", "Image//PlaceableObjects//stone.tga", type::SHADER_3, 2, 10, false));
 	// Source: https://www.turbosquid.com/3d-models/free-3ds-model-tree-arbaro-cheetah/669717
-	meshes.push_back(MeshBuilder::GenerateMeshPlaceable("OBJ//PlaceableObjects//deadTree.obj", "Image//PlaceableObjects//deadTree.tga", type::SHADER_3, 2, 2, true));
+	meshes.push_back(MeshBuilder::GenerateMeshPlaceable("OBJ//PlaceableObjects//deadTree.obj", "Image//PlaceableObjects//deadTree.tga", type::SHADER_3, 1, 1, true));
 	// Source: https://www.turbosquid.com/3d-models/free-obj-model-mapped/723445
 	meshes.push_back(MeshBuilder::GenerateMeshPlaceable("OBJ//PlaceableObjects//stone.obj", "Image//PlaceableObjects//stone.tga", type::SHADER_3, 2, 2, true));
 	meshes.push_back(MeshBuilder::GenerateMeshPlaceable("OBJ//PlaceableObjects//woodenBox.obj", "Image//PlaceableObjects//woodenBox.tga", type::SHADER_3, 2, 2, true));
@@ -44,9 +44,17 @@ void ObjectList::init()
 // Attempt to add an object of meshPlaceable ID at a certain grid area and rotation
 bool ObjectList::addObject(unsigned int ID, int gridX, int gridZ, Object::Rotation rotation)
 {
-	// Check if area is occupied
-	if (queryOccupiedArea(ID, gridX, gridZ, rotation))
-		return false;
+	if (ID == 4) // Modification gate
+	{
+		if (!queryModificationGatePlacing(gridX, 0, gridZ, rotation))
+			return false;
+	}
+	else
+	{
+		// Check if area is occupied
+		if (queryOccupiedArea(ID, gridX, gridZ, rotation))
+			return false;
+	}
 	
 	// Add object
 	objects.push_back(new Object(meshes[ID - 1], gridX, gridZ, rotation));
@@ -129,7 +137,7 @@ std::vector<Object*>::iterator ObjectList::queryOccupied(int lengthX, int length
 
 	for (std::vector<Object*>::iterator obj = objects.begin(); obj != objects.end(); ++obj)
 	{
-		if (CollisionChecker::collide(selection, (*obj)->getAABB()))
+		if (CollisionChecker::collide(selection, (*obj)->getAABB()) || CollisionChecker::collide((*obj)->getAABB(), selection))
 			return obj;
 	}
 	return objects.end();
@@ -145,18 +153,59 @@ bool ObjectList::queryOccupiedArea(int lengthX, int lengthY, int lengthZ, int gr
 {
 	// Create AABB collider
 	AABB selection = Object::createAABB(lengthX, lengthY, lengthZ, gridX, gridY, gridZ, rotation);
-
-	bool collides = false;
 	
 	// Check collision against each object
-	for (const Object* obj : objects)
+	for (std::vector<Object*>::const_iterator iter = objects.begin(); iter != objects.end(); ++iter)
 	{
-		if (CollisionChecker::collide(selection, obj->getAABB()) || CollisionChecker::collide(obj->getAABB(), selection))
+		if (CollisionChecker::collide(selection, (*iter)->getAABB()) || CollisionChecker::collide((*iter)->getAABB(), selection))
 		{
-			collides = true;
-			break;
+			return true;
 		}
 	}
+
 	// Return result
-	return collides;
+	return false;
+}
+
+bool ObjectList::queryModificationGatePlacing(int gridX, int gridY, int gridZ, Object::Rotation rotation) const
+{
+	// Create AABB collider
+	AABB selection = Object::createAABB(2, 10, 10, gridX, gridY, gridZ, rotation);
+
+	// Check collision against each object
+	bool possible = false;
+
+	for (const Object* obj : objects)
+	{
+		switch (obj->getID())
+		{
+		case 1:
+			switch (rotation)
+			{
+			case Object::Rotation::NORTH:
+			case Object::Rotation::SOUTH:
+				if (obj->getrotation() == Object::Rotation::NORTH || obj->getrotation() == Object::Rotation::SOUTH)
+				{
+					if (obj->getGridX() >= gridX - 5 && obj->getGridX() < gridX + 5 && obj->getGridZ() == gridZ)
+						possible = true;
+					break;
+				}
+			case Object::Rotation::EAST:
+			case Object::Rotation::WEST:
+				if (obj->getrotation() == Object::Rotation::EAST || obj->getrotation() == Object::Rotation::WEST)
+				{
+					//if (obj->getGridX() == gridZ && obj->getGridZ() >= gridX - 5 && obj->getGridZ() < gridX + 5)
+					if (obj->getGridX() == gridX && obj->getGridZ() >= gridZ - 5 && obj->getGridZ() < gridZ + 5)
+						possible = true;
+					break;
+				}
+			}
+			break;
+		case 4:
+			if (CollisionChecker::collide(selection, obj->getAABB()) || CollisionChecker::collide(obj->getAABB(), selection))
+				return false;
+		}
+	}
+
+	return possible;
 }
