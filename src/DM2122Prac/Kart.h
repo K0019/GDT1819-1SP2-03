@@ -53,7 +53,7 @@ private:
 	Vector3 frontLeftPos, frontRightPos, backLeftPos, backRightPos, steeringPos; // Position of the wheel and steering wheel relative to kart position
 	bool drifton;
 	SpotLight spotLights[2]; // Spotlight structures to render headlight effect
-	void GetYawPitchRoll(Vector3, Vector3,  double&, double&, double&);
+	void GetYawPitchRoll(Vector3 forward, Vector3 up, double& yaw, double& pitch, double& roll);
 	bool isDriveGear; // Drive/Reverse gear
 	double gearShiftDelay; // Bounce time for changing between drive and reverse gear
 };

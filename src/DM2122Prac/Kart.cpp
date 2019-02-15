@@ -429,59 +429,107 @@ void Kart::stop()
 {
 	speed = 0.0;
 } 
-void Kart::GetYawPitchRoll(Vector3 forward,Vector3 up, double& yaw, double& pitch, double& roll)
+void Kart::GetYawPitchRoll(Vector3 forward, Vector3 up, double& yaw, double& pitch, double& roll)
 {
-	pitch = Math::RadianToDegree(asin(-forward.y));
-	double cosPitch = sqrt(1 - forward.y*forward.y);
+	Mtx44 forwardLeftHanded, upLeftHanded, inversion;
+	forwardLeftHanded.SetToScale(forward.x, forward.y, forward.z);
+	upLeftHanded.SetToScale(up.x, up.y, up.z);
+	inversion.SetToScale(-1.0f, 1.0f, 1.0f);
 
-	//Check if we are looking straight up or down
-	if (cosPitch == 0 || fabs(forward.y) >= 1)
+	forwardLeftHanded = inversion * forwardLeftHanded * inversion;
+	upLeftHanded = inversion * upLeftHanded * inversion;
+
+	forward = Vector3(forwardLeftHanded.a[0], forwardLeftHanded.a[5], forwardLeftHanded.a[10]).Normalize();
+	up = Vector3(upLeftHanded.a[0], upLeftHanded.a[5], upLeftHanded.a[10]).Normalize();
+
+	yaw = Math::RadianToDegree(atan2f(forward.x, forward.z));
+	pitch = Math::RadianToDegree(asinf(-forward.y));
+
+	Vector3 orthoX = Vector3(0.0f, 1.0f, 0.0f).Cross(forward).Normalize();
+	Vector3 orthoY = forward.Cross(orthoX).Normalize();
+
+	float cosRoll = orthoY.Dot(up);
+
+	int largest = (orthoX.x > orthoX.y ? 0 : 1);
+	if (orthoX.z > (largest == 0 ? orthoX.x : orthoX.y))
+		largest = 2;
+
+	float sinRoll;
+	switch (largest)
 	{
-		if (pitch > 0)
-		{
-			yaw = 0;
-			roll = Math::RadianToDegree(atan2(-up.x, -up.z)) + 180 ;
-		}
-		else
-		{
-			yaw = 0;
-			roll = Math::RadianToDegree(-atan2(up.x, up.z)) + 180;
-		}
+	case 0: // x is largest
+		sinRoll = (orthoY.x * cosRoll - up.x) / orthoX.x;
+		break;
+	case 1:
+		sinRoll = (orthoY.y * cosRoll - up.y) / orthoX.y;
+		break;
+	case 2:
+		sinRoll = (orthoY.z * cosRoll - up.z) / orthoX.z;
+		break;
+	}
+
+	if (sinRoll >= 0)
+	{
+		roll = Math::RadianToDegree(acosf(cosRoll));
 	}
 	else
 	{
-
-		double cosYaw = forward.z / cosPitch;
-		double sinYaw = forward.x / cosPitch;
-		yaw = Math::RadianToDegree(atan2(sinYaw, cosYaw));
-
-		double cosRoll = up.y / cosPitch;
-		double sinRoll;
-		if (fabs(cosYaw) < fabs(sinYaw))
-		{
-			sinRoll = -(up.z + forward.y*cosRoll*cosYaw) / sinYaw;
-		}
-		else
-		{
-			sinRoll = (up.x + forward.y*cosRoll*sinYaw) / cosYaw;
-		}
-		roll = Math::RadianToDegree(atan2(sinRoll, cosRoll));
+		roll = 360.0f - Math::RadianToDegree(acosf(cosRoll));
 	}
 
+	/* Original Code by: Jonathan */
+	
+	//pitch = Math::RadianToDegree(asin(-forward.y));
+	//double cosPitch = sqrt(1 - forward.y*forward.y);
 
-	//Keep all angles in [0, 360]
-	if (yaw < 0)
-		yaw += 360;
-	else if (yaw >= 360)
-		yaw -= 360;
+	////Check if we are looking straight up or down
+	//if (cosPitch == 0 || fabs(forward.y) >= 1)
+	//{
+	//	if (pitch > 0)
+	//	{
+	//		yaw = 0;
+	//		roll = Math::RadianToDegree(atan2(-up.x, -up.z)) + 180 ;
+	//	}
+	//	else
+	//	{
+	//		yaw = 0;
+	//		roll = Math::RadianToDegree(-atan2(up.x, up.z)) + 180;
+	//	}
+	//}
+	//else
+	//{
 
-	if (pitch < 0)
-		pitch += 360;
-	else if (pitch >= 360)
-		pitch -= 360;
+	//	double cosYaw = forward.z / cosPitch;
+	//	double sinYaw = forward.x / cosPitch;
+	//	yaw = Math::RadianToDegree(atan2(sinYaw, cosYaw));
 
-	if (roll < 0)
-		roll += 360;
-	else if (roll >= 360)
-		roll -= 360;
+	//	double cosRoll = up.y / cosPitch;
+	//	double sinRoll;
+	//	if (fabs(cosYaw) < fabs(sinYaw))
+	//	{
+	//		sinRoll = -(up.z + forward.y*cosRoll*cosYaw) / sinYaw;
+	//	}
+	//	else
+	//	{
+	//		sinRoll = (up.x + forward.y*cosRoll*sinYaw) / cosYaw;
+	//	}
+	//	roll = Math::RadianToDegree(atan2(sinRoll, cosRoll));
+	//}
+
+
+	////Keep all angles in [0, 360]
+	//if (yaw < 0)
+	//	yaw += 360;
+	//else if (yaw >= 360)
+	//	yaw -= 360;
+
+	//if (pitch < 0)
+	//	pitch += 360;
+	//else if (pitch >= 360)
+	//	pitch -= 360;
+
+	//if (roll < 0)
+	//	roll += 360;
+	//else if (roll >= 360)
+	//	roll -= 360;
 }
