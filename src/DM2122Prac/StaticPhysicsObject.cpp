@@ -1,7 +1,7 @@
 #include "StaticPhysicsObject.h"
 
-StaticPhysicsObject::StaticPhysicsObject(const AABB& box)
-	: StaticPhysicsObjectInternal(box)
+StaticPhysicsObject::StaticPhysicsObject(const AABB& box, bool physicsEnabled)
+	: StaticPhysicsObjectInternal(box, physicsEnabled)
 {
 	Physics::physicsEngine.registerStaticObject(this);
 }

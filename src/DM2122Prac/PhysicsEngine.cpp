@@ -65,7 +65,14 @@ bool PhysicsEngine::testCollision() const
 				{
 					if (CollisionChecker::collide(m->getCollisionBox(), *iter))
 					{
-						return true;
+						if (s->getPhysicsEnabled())
+						{
+							return true;
+						}
+						else
+						{
+							return true;
+						}
 					}
 				}
 			}

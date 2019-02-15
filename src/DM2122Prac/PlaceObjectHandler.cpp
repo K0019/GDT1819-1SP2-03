@@ -59,7 +59,7 @@ void PlaceObjectHandler::update(GLFWwindow* window, double dt)
 			}
 			else
 			{
-				objectList->loadObject(id, gridx, gridz, static_cast<Object::Rotation>(rotate));
+				objectList->addObject(id, gridx, gridz, static_cast<Object::Rotation>(rotate));
 			}
 			
 		}

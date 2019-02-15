@@ -22,18 +22,22 @@ ObjectList::~ObjectList()
 // Load meshPlaceables
 void ObjectList::init()
 {
-	meshes.push_back(MeshBuilder::GenerateMeshPlaceable("OBJ//PlaceableObjects//trackTest.obj", "Image//PlaceableObjects//trackTestUV.tga", type::SHADER_3, 10, 10));
-	meshes.push_back(MeshBuilder::GenerateMeshPlaceable("OBJ//PlaceableObjects//trackTurnAngled.obj", "Image//PlaceableObjects//trackTestUV.tga", type::SHADER_3, 10, 10));
-	meshes.push_back(MeshBuilder::GenerateMeshPlaceable("OBJ//PlaceableObjects//trackTurnCurved.obj", "Image//PlaceableObjects//trackTestUV.tga", type::SHADER_3, 10, 10));
+	meshes.push_back(MeshBuilder::GenerateMeshPlaceable("OBJ//PlaceableObjects//trackTest.obj", "Image//PlaceableObjects//trackTestUV.tga", type::SHADER_3, 10, 10, true));
+	meshes.push_back(MeshBuilder::GenerateMeshPlaceable("OBJ//PlaceableObjects//trackTurnAngled.obj", "Image//PlaceableObjects//trackTestUV.tga", type::SHADER_3, 10, 10, true));
+	meshes.push_back(MeshBuilder::GenerateMeshPlaceable("OBJ//PlaceableObjects//trackTurnCurved.obj", "Image//PlaceableObjects//trackTestUV.tga", type::SHADER_3, 10, 10, true));
+	/*
+		ADD MODIFICATION GATE HERE
+	*/
+	meshes.push_back(MeshBuilder::GenerateMeshPlaceable("OBJ//PlaceableObjects//trackTurnCurved.obj", "Image//PlaceableObjects//stone.tga", type::SHADER_3, 10, 2, false));
 	// Source: https://www.turbosquid.com/3d-models/free-3ds-model-tree-arbaro-cheetah/669717
-	meshes.push_back(MeshBuilder::GenerateMeshPlaceable("OBJ//PlaceableObjects//deadTree.obj", "Image//PlaceableObjects//deadTree.tga", type::SHADER_3, 2, 2));
+	meshes.push_back(MeshBuilder::GenerateMeshPlaceable("OBJ//PlaceableObjects//deadTree.obj", "Image//PlaceableObjects//deadTree.tga", type::SHADER_3, 2, 2, true));
 	// Source: https://www.turbosquid.com/3d-models/free-obj-model-mapped/723445
-	meshes.push_back(MeshBuilder::GenerateMeshPlaceable("OBJ//PlaceableObjects//stone.obj", "Image//PlaceableObjects//stone.tga", type::SHADER_3, 2, 2));
-	meshes.push_back(MeshBuilder::GenerateMeshPlaceable("OBJ//PlaceableObjects//woodenBox.obj", "Image//PlaceableObjects//woodenBox.tga", type::SHADER_3, 2, 2));
+	meshes.push_back(MeshBuilder::GenerateMeshPlaceable("OBJ//PlaceableObjects//stone.obj", "Image//PlaceableObjects//stone.tga", type::SHADER_3, 2, 2, true));
+	meshes.push_back(MeshBuilder::GenerateMeshPlaceable("OBJ//PlaceableObjects//woodenBox.obj", "Image//PlaceableObjects//woodenBox.tga", type::SHADER_3, 2, 2, true));
 	// Source: https://www.virtual-lands-3d.com/trash-bin.html
-	meshes.push_back(MeshBuilder::GenerateMeshPlaceable("OBJ//PlaceableObjects//trashCan.obj", "Image//PlaceableObjects//trashCan.tga", type::SHADER_3, 2, 2));
+	meshes.push_back(MeshBuilder::GenerateMeshPlaceable("OBJ//PlaceableObjects//trashCan.obj", "Image//PlaceableObjects//trashCan.tga", type::SHADER_3, 1, 1, true));
 	// Source: https://www.turbosquid.com/3d-models/free-bucket-3d-model/629635
-	meshes.push_back(MeshBuilder::GenerateMeshPlaceable("OBJ//PlaceableObjects//fireBucket.obj", "Image//PlaceableObjects//fireBucket.tga", type::SHADER_3, 2, 2));
+	meshes.push_back(MeshBuilder::GenerateMeshPlaceable("OBJ//PlaceableObjects//fireBucket.obj", "Image//PlaceableObjects//fireBucket.tga", type::SHADER_3, 2, 2, true));
 	
 }
 
@@ -63,16 +67,6 @@ void ObjectList::saveObject()
 		file << obj->getrotation() << endl;
 	}
 	file.close();
-}
-
-bool ObjectList::loadObject(unsigned int ID, int gridX, int gridZ, Object::Rotation rotation)
-{
-	if (queryOccupiedArea(ID, gridX, gridZ, rotation))
-		return false;
-
-	objects.push_back(new Object(meshes[ID - 1], gridX, gridZ, rotation));
-	(*(objects.end() - 1))->setID(ID);
-	return true;
 }
 
 void ObjectList::deleteAll()

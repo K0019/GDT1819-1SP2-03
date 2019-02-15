@@ -6,7 +6,7 @@
 class StaticPhysicsObject : public StaticPhysicsObjectInternal
 {
 public:
-	StaticPhysicsObject(const AABB& box);
+	StaticPhysicsObject(const AABB& box, bool physicsEnabled);
 	~StaticPhysicsObject();
 
 protected:

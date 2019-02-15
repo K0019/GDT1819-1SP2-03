@@ -29,7 +29,7 @@ class MeshBuilder
 {
 public:
 	static Mesh* GenerateOBJ(const std::string& obj_file_path, const std::string& tex_file_path, type shader); // Create a mesh from an obj and tga file
-	static MeshPlaceable* GenerateMeshPlaceable(const std::string& obj_file_path, const std::string& tex_file_path, type shader, unsigned short lengthX, unsigned short lengthZ); // Create a meshPlaceable from an obj and tga file
+	static MeshPlaceable* GenerateMeshPlaceable(const std::string& obj_file_path, const std::string& tex_file_path, type shader, unsigned short lengthX, unsigned short lengthZ, bool physicsEnabled); // Create a meshPlaceable from an obj and tga file
 	static Mesh* GenerateSkybox(const char* right, const char* left, const char* top, const char* bottom, const char* front, const char* back); // Create a meshSkybox from 6 tga files
 	static MeshText* GenerateText(unsigned int numRow, unsigned int numCol, const char* imageLocation); // Create a meshText from a tga file
 	static MeshSprite* GenerateSprite(unsigned int numRow, unsigned int numCol, const char* imageLocation); // Create a meshSprite from a tga file

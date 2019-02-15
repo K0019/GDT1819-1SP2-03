@@ -39,8 +39,6 @@ private:
 	int gridX, gridZ, gridY; // Coordinates in grid space
 	unsigned ID;
 	Rotation rotation; // Rotation of this object
-
-	//AABB gridOccupation; // AABB collider of this object
 };
 
 Object::Rotation& operator++(Object::Rotation& rotation); // Rotate a rotation clockwise

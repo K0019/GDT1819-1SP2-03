@@ -26,7 +26,7 @@ Mesh* MeshBuilder::GenerateOBJ(const std::string& obj_file_path, const std::stri
 }
 
 // Create a meshPlaceable from an obj and tga file
-MeshPlaceable* MeshBuilder::GenerateMeshPlaceable(const std::string& obj_file_path, const std::string& tex_file_path, type shader, unsigned short lengthX, unsigned short lengthZ)
+MeshPlaceable* MeshBuilder::GenerateMeshPlaceable(const std::string& obj_file_path, const std::string& tex_file_path, type shader, unsigned short lengthX, unsigned short lengthZ, bool physicsEnabled)
 {
 	// Temporary .obj data storage
 	std::vector<Vector3> vertices;
@@ -46,7 +46,7 @@ MeshPlaceable* MeshBuilder::GenerateMeshPlaceable(const std::string& obj_file_pa
 	IndexVBO(vertices, uvs, index_buffer_data, vertex_buffer_data, texture_buffer_data);
 
 	// Return created mesh
-	return new MeshPlaceable(vertex_buffer_data, texture_buffer_data, index_buffer_data, shader, GL_TRIANGLES, tex_file_path.c_str(), lengthX, lengthZ);
+	return new MeshPlaceable(vertex_buffer_data, texture_buffer_data, index_buffer_data, shader, GL_TRIANGLES, tex_file_path.c_str(), lengthX, lengthZ, physicsEnabled);
 }
 
 // Create a meshText from a tga file

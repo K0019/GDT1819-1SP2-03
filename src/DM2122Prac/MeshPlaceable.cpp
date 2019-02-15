@@ -1,10 +1,11 @@
 #include "MeshPlaceable.h"
 
 // Constructor
-MeshPlaceable::MeshPlaceable(const std::vector<Vector3>& vertexData, const std::vector<TexCoord>& textureData, const std::vector<GLuint>& indexData, const type shaderType, const GLenum mode, const char* imageLocation, unsigned short lengthX, unsigned short lengthZ)
+MeshPlaceable::MeshPlaceable(const std::vector<Vector3>& vertexData, const std::vector<TexCoord>& textureData, const std::vector<GLuint>& indexData, const type shaderType, const GLenum mode, const char* imageLocation, unsigned short lengthX, unsigned short lengthZ, bool physicsEnabled)
 	: Mesh(vertexData, textureData, indexData, shaderType, mode, imageLocation)
 	, lengthX(lengthX)
 	, lengthZ(lengthZ)
+	, physicsEnabled(physicsEnabled)
 {
 	unsigned int index = 0;
 	while (index != indexData.size())
@@ -71,6 +72,11 @@ unsigned short MeshPlaceable::getX() const
 unsigned short MeshPlaceable::getZ() const
 {
 	return lengthZ;
+}
+
+bool MeshPlaceable::getPhysicsEnabled() const
+{
+	return physicsEnabled;
 }
 
 const std::vector<Triangle>& MeshPlaceable::getTriangles() const

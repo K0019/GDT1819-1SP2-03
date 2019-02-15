@@ -18,7 +18,6 @@ public:
 	
 	bool addObject(unsigned int ID, int gridX, int gridZ, Object::Rotation rotation); // Attempt to add an object of meshPlaceable ID at a certain grid area and rotation
 	void saveObject();
-	bool loadObject(unsigned int ID, int gridX, int gridZ, Object::Rotation rotation);
 	void deleteAll();
 	bool deleteObject(int gridX, int gridZ, Object::Rotation rotation); // Attempt to delete any object that intersects a certain grid area and rotation
 	void renderObjects(unsigned int uMatrixMVS) const; // Render all objects
