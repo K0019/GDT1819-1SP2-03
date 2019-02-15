@@ -207,11 +207,16 @@ void Kart::update(GLFWwindow* window, double deltaTime, unsigned int uSpotLight)
 	if (velocitydir != FRONT && drifton) {
 		Mtx44 rotatematricx;
 		// this is to calculate the angle  between the  velocity direction and the front vector
-		float theata = acosf((velocitydir.Dot(FRONT)) / velocitydir.Length() * FRONT.Length());
-		// this will rotate the velocity direction
-		rotatematricx.SetToRotation(theata / 5, 0, 1, 0);// for yaw 
-		velocitydir = rotatematricx * velocitydir;
-		velocity = (velocitydir + FRONT) * static_cast<float>(speed);
+		float division = (velocitydir.Dot(FRONT)) / (velocitydir.Length() * FRONT.Length());
+
+		if (division > 0.00001f) // Fix -nan(ind)
+		{
+			// this will rotate the velocity direction
+			float theata = acosf(division);
+			rotatematricx.SetToRotation(theata / 5, 0, 1, 0);// for yaw 
+			velocitydir = rotatematricx * velocitydir;
+			velocity = (velocitydir + FRONT) * static_cast<float>(speed);
+		}
 
 	}
 	// this is to set the velocity back to the front vector after drifting 
@@ -219,8 +224,10 @@ void Kart::update(GLFWwindow* window, double deltaTime, unsigned int uSpotLight)
 		velocitydir = FRONT;
 		velocity = Vector3(sinf(Math::DegreeToRadian(static_cast<float>(yaw))), 0.0f, cosf(Math::DegreeToRadian(static_cast<float>(yaw)))) * static_cast<float>(speed);
 	}
-	else 
-	velocity = Vector3(sinf(Math::DegreeToRadian(static_cast<float>(yaw))), 0.0f, cosf(Math::DegreeToRadian(static_cast<float>(yaw)))) * static_cast<float>(speed);
+	else
+	{
+		velocity = Vector3(sinf(Math::DegreeToRadian(static_cast<float>(yaw))), 0.0f, cosf(Math::DegreeToRadian(static_cast<float>(yaw)))) * static_cast<float>(speed);
+	}
 	
 	// Wheel rotation
 	if (speed >= 0.0)
@@ -238,7 +245,7 @@ void Kart::update(GLFWwindow* window, double deltaTime, unsigned int uSpotLight)
 
 	// calculate camdir
 	Vector3 velodummydir = velocitydir.Normalized();
-	camdir = velocitydir.Normalized() + FRONT.Normalized();
+	camdir = velocitydir.Normalize() + FRONT.Normalize();
 	
 	// Spotlight
 	MS model;
@@ -381,11 +388,11 @@ const Vector3& Kart::getVel() const
 // Get kart rotation
 double Kart::getYaw() const
 {
-	std::cout << "The Yaw is " << yaw << std::endl;
+	/*std::cout << "The Yaw is " << yaw << std::endl;
 	std::cout << "The vector  is " << FRONT.x << " "<< FRONT.y << " " <<FRONT.z<< std::endl;
 	std::cout << "The  velocity vector  is " << velocity.x << " " << velocity.y << " " << velocity.z << std::endl;
 	std::cout << "The  direction velocity vector  is " << velocitydir.x << " " << velocitydir.y << " " << velocitydir.z << std::endl;
-	std::cout << "The Yaw  pitch row is " << yaw << "  " << pitch << "  " << roll << std ::endl;
+	std::cout << "The Yaw  pitch row is " << yaw << "  " << pitch << "  " << roll << std ::endl;*/
 	return yaw;
 }
 
