@@ -151,6 +151,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="CollisionChecker.cpp" />
+    <ClCompile Include="c_m_Player.cpp" />
     <ClCompile Include="Hotbar.cpp" />
     <ClCompile Include="Kart.cpp" />
     <ClCompile Include="Lamp.cpp" />
@@ -190,6 +191,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="CollisionChecker.h" />
+    <ClInclude Include="c_m_Player.h" />
     <ClInclude Include="Definitions.h" />
     <ClInclude Include="Hotbar.h" />
     <ClInclude Include="Kart.h" />
