@@ -15,6 +15,7 @@
 #include "Hotbar.h"
 #include "CollisionChecker.h"
 #include "UsefulFunctions.h"
+#include "c_m_Player.h"
 
 #include "PlaceObjectHandler.h"
 

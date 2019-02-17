@@ -2,12 +2,17 @@
 
 
 
-void c_m_Player::mouse_callback(GLFWwindow * window, double xpos, double ypos)
-{
-}
 
 c_m_Player::c_m_Player()
 {
+	if (Player_ID == NULL) {
+		Player_ID = 1;
+	}
+	else
+		Player_ID++;
+
+	myPlayer_ID = Player_ID;
+
 }
 
 
@@ -17,15 +22,25 @@ c_m_Player::~c_m_Player()
 
 void c_m_Player::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight)
 {
-}
+	// Update the kart
+	car->update(window, deltaTime, uSpotLight);
 
-void c_m_Player::render() const
-{
-}
+	// Update camera
+	Cam.pos = car->getPos();
+	double effectiveYaw = car->getYaw();
+	// Camera position rotation
+	if (isPressed(window, GLFW_KEY_DOWN))
+		effectiveYaw += 180.0;
+	else if (isPressed(window, GLFW_KEY_LEFT))
+		effectiveYaw += 90.0;
+	else if (isPressed(window, GLFW_KEY_RIGHT))
+		effectiveYaw += 270.0;
 
-bool c_m_Player::hasKart() const
-{
-	return false;
+	Cam.pos.x -= sinf(Math::DegreeToRadian(static_cast<float>(effectiveYaw))) * 12.0f;
+	Cam.pos.y += 8.0f;
+	Cam.pos.z -= cosf(Math::DegreeToRadian(static_cast<float>(effectiveYaw))) * 12.0f;
+
+	Cam.front = (Vector3(car->getPos().x, car->getPos().y + 5.0f, car->getPos().z) - Cam.pos).Normalize();
 }
 
 void c_m_Player::reset()
@@ -35,4 +50,5 @@ void c_m_Player::reset()
 const Camera & c_m_Player::getCam() const
 {
 	// TODO: insert return statement here
+	return Cam;
 }
