@@ -68,19 +68,19 @@ void Scene2::processInput(GLFWwindow* window)
 	}
 
 	// Misc.
-	if (isPressed(window, GLFW_KEY_1)) // Enable cull face
+	if (isPressed(window, GLFW_KEY_F1)) // Enable cull face
 	{
 		glEnable(GL_CULL_FACE);
 		isCullFace = true;
 	}
-	else if (isPressed(window, GLFW_KEY_2)) // Disable cull face
+	else if (isPressed(window, GLFW_KEY_F2)) // Disable cull face
 	{
 		glDisable(GL_CULL_FACE);
 		isCullFace = false;
 	}
-	if (isPressed(window, GLFW_KEY_3)) // Disable wireframe
+	if (isPressed(window, GLFW_KEY_F3)) // Disable wireframe
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	else if (isPressed(window, GLFW_KEY_4)) // Enable wireframe
+	else if (isPressed(window, GLFW_KEY_F4)) // Enable wireframe
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
 
@@ -188,7 +188,7 @@ void Scene2::Init()
 	hotbar = new Hotbar(MeshBuilder::GenerateXYPlane("Image//slotBox.tga", 2.0f, 1, type::SHADER_TEXT),
 						MeshBuilder::GenerateXYPlane("Image//selectionBox.tga", 2.125f, 1, type::SHADER_TEXT),
 						MeshBuilder::GenerateSprite(8, 8, "Image//PlaceableObjects//spritesheet.tga"),
-						9);
+						5);
 	// Source: http://www.custommapmakers.org/skyboxes.php
 	// Row 5, Column 1
 	skybox = new Base3DPoly(MeshBuilder::GenerateSkybox(
@@ -230,7 +230,7 @@ void Scene2::Update(double dt, GLFWwindow* programID)
 	deltaTime = dt;
 	// Process keyboard input
 	processInput(programID);
-	hotbar->update();
+	hotbar->update(programID);
 	placeObjHandler->update(programID, dt);
 
 	Physics::physicsEngine.update();

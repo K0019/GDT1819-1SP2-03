@@ -37,8 +37,16 @@ Hotbar::~Hotbar()
 }
 
 // Update hotbar according to number of scroll inputs since last frame
-void Hotbar::update()
+void Hotbar::update(GLFWwindow* window)
 {
+	for (int i = 0; i < size; ++i)
+	{
+		if (isPressed(window, GLFW_KEY_1 + i))
+		{
+			selection = i;
+		}
+	}
+
 	while (scrollTimes < 0) // Scroll left
 	{
 		scrollLeft();

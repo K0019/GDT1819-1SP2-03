@@ -6,6 +6,7 @@
 #include "MatrixStack.h"
 #include "Source/Mesh.h"
 #include "MeshSprite.h"
+#include "UsefulFunctions.h"
 
 /* File: Hotbar.h
    Use: Class containing information about the hotbar
@@ -17,7 +18,7 @@ public:
 	Hotbar(Mesh* slotBox, Mesh* selectionBox, MeshSprite* icons, unsigned short size); // Constructor
 	~Hotbar(); // Destructor
 
-	void update(); // Update hotbar according to number of scroll inputs since last frame
+	void update(GLFWwindow* window); // Update hotbar according to number of scroll inputs since last frame
 
 	unsigned int querySelection() const; // Get meshPlaceable ID of current hotbar selection
 	void print(unsigned int uMatrixMVS, unsigned int uMatrixP, unsigned int screenWidth, unsigned int screenHeight) const; // Render the hotbar
