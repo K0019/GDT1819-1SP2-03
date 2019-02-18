@@ -141,14 +141,14 @@ void Kart::update(GLFWwindow* window, double deltaTime, unsigned int uSpotLight)
 	// Turn input
 	if (isPressed(window, GLFW_KEY_A))
 	{
-		turnForce += 10.0 * deltaTime;
+		turnForce += 30.0 * deltaTime;
 
 
 	}
 	
 	if (isPressed(window, GLFW_KEY_D))
 	{
-		turnForce -= 10.0 * deltaTime;
+		turnForce -= 30.0 * deltaTime;
 	}
 	if (isPressed(window, GLFW_KEY_LEFT_SHIFT)) {
 		drifton = true;
@@ -179,10 +179,10 @@ void Kart::update(GLFWwindow* window, double deltaTime, unsigned int uSpotLight)
 		turnForce = 0.0;
 	
 	// Turnforce clamp
-	if (turnForce < -6.0)
-		turnForce = -6.0;
-	else if (turnForce > 6.0)
-		turnForce = 6.0;
+	if (turnForce < -10.0)
+		turnForce = -10.0;
+	else if (turnForce > 10.0)
+		turnForce = 10.0;
 
 	// Calculate Rotation
 	if (speed != 0.0)
@@ -198,6 +198,11 @@ void Kart::update(GLFWwindow* window, double deltaTime, unsigned int uSpotLight)
 		Mtx44 rotatematricx;
 		rotatematricx.SetToRotation(turnDegree, 0, 1, 0);// for yaw 
 		FRONT = rotatematricx * FRONT;
+		// when drifting turndegree become 180 degree
+		// then the velocity will slow down
+		// try to catch up
+		/// when drifting stop the kart rotate back 45 degree
+		///then the car and velocity dir will rotate 22.5 degree
 	}
 
 	//calculating the yaw pitch row
@@ -213,9 +218,9 @@ void Kart::update(GLFWwindow* window, double deltaTime, unsigned int uSpotLight)
 		{
 			// this will rotate the velocity direction
 			float theata = acosf(division);
-			rotatematricx.SetToRotation(theata / 5, 0, 1, 0);// for yaw 
+			rotatematricx.SetToRotation(theata / 2, 0, 1, 0);// for yaw 
 			velocitydir = rotatematricx * velocitydir;
-			velocity = (velocitydir + FRONT) * static_cast<float>(speed);
+			velocity = (velocitydir + FRONT) * static_cast<float>(speed) * 0.8;
 		}
 
 	}
@@ -245,7 +250,7 @@ void Kart::update(GLFWwindow* window, double deltaTime, unsigned int uSpotLight)
 
 	// calculate camdir
 	Vector3 velodummydir = velocitydir.Normalized();
-	camdir = velocitydir.Normalize() + FRONT.Normalize();
+	camdir = (velocitydir.Normalize() + FRONT.Normalize()) * 10 ;
 	
 	// Spotlight
 	MS model;
@@ -408,7 +413,7 @@ std::string Kart::getSpeedText() const
 	std::stringstream convert;
 	convert.precision(1);
 
-	convert << std::fixed << speed;
+	convert << std::fixed << velocity.Dot(Vector3(1,1,1));
 	return convert.str() + "mph";
 }
 // Generate HUD text for drive gear
