@@ -31,6 +31,12 @@ public:
 	virtual void Render() override; // Render the scene
 	virtual void Exit() override; // Cleanup
 
+	//this is for rendering 
+	void renderView(c_m_Player* player);
+	
+	// this is for updating 
+	void UpdateView(c_m_Player* player);
+
 	void processInput(GLFWwindow* window); // Function called every update cycle, checks for keyboard input
 	static void framebuffer_resize_callback(GLFWwindow* window, int width, int height); // Function called when window resizes to adapt render viewport
 
@@ -44,11 +50,7 @@ private :
 
 	Base3DPoly* axes, *skybox; // Axes and skybox mesh
 	MeshFloor* floor; // Floor mesh
-	Hotbar* hotbar; // Hotbar object
-	ObjectList objectList; // List of objects (meshPlaceable)
 	c_m_Player* player[2]; // Player object
-
-	PlaceObjectHandler* placeObjHandler; // Handler of placing of objects
 
 	Kart* kart; // Kart object
 
