@@ -37,6 +37,7 @@ public:
 	static void framebuffer_resize_callback(GLFWwindow* window, int width, int height); // Function called when window resizes to adapt render viewport
 
 private:
+	void RenderStuff();
 	static unsigned int uMatrixMVS, uMatrixP, uColorData, uSpotLight; // UBO handles for model, view, projection matrices, lighting and color, material data
 
 	static unsigned m_programID; // Store OpenGL program ID, used for input

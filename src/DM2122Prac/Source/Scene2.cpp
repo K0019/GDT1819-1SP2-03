@@ -94,6 +94,42 @@ void Scene2::framebuffer_resize_callback(GLFWwindow* window, int width, int heig
 	Scene2::height = height;
 }
 
+void Scene2::RenderStuff()
+{
+	Mtx44 offset;
+	offset.SetToIdentity();
+	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixMVS);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), offset.a);
+
+	// Clear buffer
+
+	skybox->draw(); // Draw skybox first
+
+	axes->draw(); // Draw the axes
+	floor->render(player->getCam().pos, uMatrixMVS); // Draw the floor
+	kart->render(uMatrixMVS); // Draw the kart
+	player->render(); // Draw player (if applicable)
+
+	// Draw the lamps
+	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixMVS);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), offset.a);
+	for (int i = 0; i < NO_OF_POINTLIGHTS; ++i)
+	{
+		offset.SetToTranslation(lamp[i]->light.position.x, lamp[i]->light.position.y, lamp[i]->light.position.z);
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), offset.a);
+		lamp[i]->draw();
+	}
+
+	// Draw each object in the world
+	objectList.renderObjects(uMatrixMVS);
+
+	// Draw selection if kart is not attached to player
+	if (!player->hasKart())
+		placeObjHandler->drawSelection(uMatrixMVS);
+
+	
+}
+
 // Constructor
 Scene2::Scene2()
 {
@@ -249,44 +285,17 @@ void Scene2::Update(double dt, GLFWwindow* programID)
 // Render the scene
 void Scene2::Render()
 {
-	Mtx44 offset;
-	offset.SetToIdentity();
-	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixMVS);
-	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), offset.a);
-
-	// Clear buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	skybox->draw(); // Draw skybox first
-
-	axes->draw(); // Draw the axes
-	floor->render(player->getCam().pos, uMatrixMVS); // Draw the floor
-	kart->render(uMatrixMVS); // Draw the kart
-	player->render(); // Draw player (if applicable)
-
-	// Draw the lamps
-	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixMVS);
-	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), offset.a);
-	for (int i = 0; i < NO_OF_POINTLIGHTS; ++i)
-	{
-		offset.SetToTranslation(lamp[i]->light.position.x, lamp[i]->light.position.y, lamp[i]->light.position.z);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), offset.a);
-		lamp[i]->draw();
-	}
-
-	// Draw each object in the world
-	objectList.renderObjects(uMatrixMVS);
-
-	// Draw selection if kart is not attached to player
-	if (!player->hasKart())
-		placeObjHandler->drawSelection(uMatrixMVS);
-
+	glViewport(0, 0, width, height*0.5);
+	RenderStuff();
 	// Prepare projection matrix for HUD rendering
+	glViewport(0, height*0.5, width, height*0.5);
+	RenderStuff();
+	glViewport(0, 0, width, height);
 	Mtx44 projection;
 	projection.SetToOrtho(0, 20, 0, 20, 0, 0.01);
 	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixP);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), projection.a);
-
 	// Render text
 	text->PrintTextForward("FPS:" + calculateFPS(), uMatrixMVS, 0.0f, 1.2f, 2.0f);
 	text->PrintTextBackward(kart->getSpeedText(), uMatrixMVS, 19.0f, 2.5f, 1.0f);
