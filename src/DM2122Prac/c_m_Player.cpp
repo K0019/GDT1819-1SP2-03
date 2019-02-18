@@ -23,7 +23,7 @@ c_m_Player::~c_m_Player()
 void c_m_Player::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight)
 {
 	// Update the kart
-	car->update(window, deltaTime, uSpotLight);
+	car->update(window, deltaTime, uSpotLight,myPlayer_ID);
 
 	// Update camera
 	Cam.pos = car->getPos();

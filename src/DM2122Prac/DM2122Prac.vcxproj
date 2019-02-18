@@ -168,6 +168,7 @@
     <ClCompile Include="PhysicsObject.cpp" />
     <ClCompile Include="PlaceObjectHandler.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="SceneGame.cpp" />
     <ClCompile Include="Source\Application.cpp" />
     <ClCompile Include="Source\LoadOBJ.cpp" />
     <ClCompile Include="Source\LoadTGA.cpp" />
@@ -210,6 +211,7 @@
     <ClInclude Include="PlaceObjectHandler.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PointLight.h" />
+    <ClInclude Include="SceneGame.h" />
     <ClInclude Include="Source\Application.h" />
     <ClInclude Include="Source\LoadOBJ.h" />
     <ClInclude Include="Source\LoadTGA.h" />
