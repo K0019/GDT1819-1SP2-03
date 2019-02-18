@@ -11,11 +11,12 @@ class c_m_Player
 {
 public:
 
-	c_m_Player();
+	c_m_Player(unsigned int uSpotLight);
 	~c_m_Player();
 	
 	void update(GLFWwindow* window, double deltaTime, unsigned int uSpotLight); // Handle input
 
+	void render(unsigned int uMatrixMVS) const;
 
 	void reset(); // Reset player position and orientation
 

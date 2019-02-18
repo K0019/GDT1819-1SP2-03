@@ -32,7 +32,10 @@ public:
 	virtual void Exit() override; // Cleanup
 
 	//this is for rendering 
-	void renderView(c_m_Player* player);
+	void renderView(unsigned int view);
+	
+	//this is for rendering 
+	void StartView(c_m_Player* player);
 	
 	// this is for updating 
 	void UpdateView(c_m_Player* player);
@@ -51,8 +54,6 @@ private :
 	Base3DPoly* axes, *skybox; // Axes and skybox mesh
 	MeshFloor* floor; // Floor mesh
 	c_m_Player* player[2]; // Player object
-
-	Kart* kart; // Kart object
 
 	Lamp* lamp[1]; // Pointer to lamp
 

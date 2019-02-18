@@ -1,10 +1,11 @@
 #include "c_m_Player.h"
 
+int c_m_Player::Player_ID = 0;
 
 
-
-c_m_Player::c_m_Player()
+c_m_Player::c_m_Player(unsigned int uSpotLight)
 {
+	
 	if (Player_ID == NULL) {
 		Player_ID = 1;
 	}
@@ -13,6 +14,17 @@ c_m_Player::c_m_Player()
 
 	myPlayer_ID = Player_ID;
 
+	Cam = Camera();
+	car = new Kart(MeshBuilder::GenerateOBJ("OBJ//Kart5.obj", "Image//UV.tga", type::SHADER_3),
+		MeshBuilder::GenerateOBJ("OBJ//Wheel.obj", "Image//UV.tga", type::SHADER_3),
+		MeshBuilder::GenerateOBJ("OBJ//SteeringWheel.obj", "Image//UV.tga", type::SHADER_3),
+		Vector3(0.9f, -0.3f, 1.98f), // Front left
+		Vector3(-0.9f, -0.3f, 1.98f), // Front right
+		Vector3(0.9f, -0.3f, -1.734f), // Back left
+		Vector3(-0.9f, -0.3f, -1.734f), // Back right
+		Vector3(0.0f, 0.368f, 0.774f),
+		uSpotLight,
+		OBB(Vector3(0.0f, 2.0f, 0.0f), Vector3(1.0f, 0.0f, 0.0f), Vector3(0.0f, 1.0f, 0.0f), Vector3(0.0f, 0.0f, 1.0f), 2.0f, 2.0f, 2.0f));
 }
 
 
@@ -41,6 +53,11 @@ void c_m_Player::update(GLFWwindow * window, double deltaTime, unsigned int uSpo
 	Cam.pos.z -= cosf(Math::DegreeToRadian(static_cast<float>(effectiveYaw))) * 12.0f;
 
 	Cam.front = (Vector3(car->getPos().x, car->getPos().y + 5.0f, car->getPos().z) - Cam.pos).Normalize();
+}
+
+void c_m_Player::render(unsigned int uMatrixMVS) const
+{
+	car->render(uMatrixMVS);
 }
 
 void c_m_Player::reset()

@@ -2,7 +2,7 @@
 #define APPLICATION_H
 #include "timer.h"
 #include "Scene2.h"
-
+#include "SceneGame.h"
 /* File: Application.h
    Use: Initializes and contains the OpenGL program 
 		Framework file, lightly modified */
