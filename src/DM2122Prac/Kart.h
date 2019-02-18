@@ -27,6 +27,7 @@ public:
 	~Kart(); // Destructor
 
 	void update(GLFWwindow* window, double deltaTime, unsigned int uSpotLight); // Move the kart and handle input
+	void update(GLFWwindow* window, double deltaTime, unsigned int uSpotLight,int PlayerID); // Move the kart and handle input
 	void render(unsigned int uMatrixMVS) const; // Render the kart
 
 	void reset(); // Reset kart position, rotation, velocity and gear

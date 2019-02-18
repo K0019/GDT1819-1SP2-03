@@ -28,13 +28,13 @@ void c_m_Player::update(GLFWwindow * window, double deltaTime, unsigned int uSpo
 	// Update camera
 	Cam.pos = car->getPos();
 	double effectiveYaw = car->getYaw();
-	// Camera position rotation
-	if (isPressed(window, GLFW_KEY_DOWN))
-		effectiveYaw += 180.0;
-	else if (isPressed(window, GLFW_KEY_LEFT))
-		effectiveYaw += 90.0;
-	else if (isPressed(window, GLFW_KEY_RIGHT))
-		effectiveYaw += 270.0;
+	//// Camera position rotation
+	//if (isPressed(window, GLFW_KEY_DOWN))
+	//	effectiveYaw += 180.0;
+	//else if (isPressed(window, GLFW_KEY_LEFT))
+	//	effectiveYaw += 90.0;
+	//else if (isPressed(window, GLFW_KEY_RIGHT))
+	//	effectiveYaw += 270.0;
 
 	Cam.pos.x -= sinf(Math::DegreeToRadian(static_cast<float>(effectiveYaw))) * 12.0f;
 	Cam.pos.y += 8.0f;

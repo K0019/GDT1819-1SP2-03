@@ -253,6 +253,323 @@ void Kart::update(GLFWwindow* window, double deltaTime, unsigned int uSpotLight)
 	setCollisionPosition(Vector3(pos.x, pos.y + 2.0f, pos.z));
 }
 
+void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight, int PlayerID)
+{
+	if (PlayerID == 1) {
+		// Gear shift bounce time
+		gearShiftDelay -= deltaTime;
+
+		// Speed up/down
+		if (gearShiftDelay <= 0.0 && isPressed(window, GLFW_KEY_W))
+		{
+			if (isDriveGear) // Driving
+			{
+				speed += 50.0 * deltaTime;
+			}
+			else // Reverse
+			{
+				speed += 50.0 * deltaTime;
+				if (speed > 0.0) // Check gear change
+				{
+					isDriveGear = true;
+					gearShiftDelay = 0.15;
+					speed = 0.0;
+				}
+			}
+		}
+		if (gearShiftDelay <= 0.0 && isPressed(window, GLFW_KEY_S))
+		{
+			if (!isDriveGear) // Reverse
+			{
+				speed -= 21.0 * deltaTime;
+			}
+			else // Driving
+			{
+				speed -= 50.0 * deltaTime;
+				if (speed < 0.0) // Check gear change
+				{
+					isDriveGear = false;
+					gearShiftDelay = 0.15;
+					speed = 0.0;
+				}
+			}
+		}
+		// Turn input
+		if (isPressed(window, GLFW_KEY_A))
+		{
+			turnForce += 6.0 * deltaTime;
+
+		}
+		if (isPressed(window, GLFW_KEY_D))
+		{
+			turnForce -= 6.0 * deltaTime;
+		}
+
+		// Friction / Air resistance
+		if (speed > 0.0)
+		{
+			speed -= 3.0 * deltaTime + speed * 0.4 * deltaTime;
+			if (speed < 0.0)
+				speed = 0.0;
+		}
+		else if (speed < 0.0)
+		{
+			speed += 3.0 * deltaTime - speed * 0.4 * deltaTime;
+			if (speed > 0.0)
+				speed = 0.0;
+		}
+		else
+		{
+			speed = 0.0;
+		}
+
+		// Turnforce decay
+		turnForce *= 0.9;
+		if (turnForce < 0.05 && turnForce > -0.05)
+			turnForce = 0.0;
+
+		// Turnforce clamp
+		if (turnForce < -6.0)
+			turnForce = -6.0;
+		else if (turnForce > 6.0)
+			turnForce = 6.0;
+
+		// Calculate Rotation
+		if (speed != 0.0)
+		{
+			double turnDegreeLinear = fabs(turnForce * (speed / 60.0) * 3.5);
+			double turnDegreeQuadratic = fabs(turnForce / (speed / 60.0) * 0.7);
+			double turnDegree = ((turnDegreeLinear < turnDegreeQuadratic) ? (turnDegreeLinear) : (turnDegreeQuadratic));
+			if (turnForce < 0.0) // Rotate left
+				turnDegree = -turnDegree;
+			if (speed < 0.0) // Reverse
+				turnDegree = -turnDegree;
+
+			yaw += turnDegree;
+		}
+
+		// Calculate velocity
+		velocity = Vector3(sinf(Math::DegreeToRadian(static_cast<float>(yaw))), 0.0f, cosf(Math::DegreeToRadian(static_cast<float>(yaw)))) * static_cast<float>(speed);
+
+		// Wheel rotation
+		if (speed >= 0.0)
+			wheelRotation += velocity.Length() * 40.0f * deltaTime;
+		else
+			wheelRotation -= velocity.Length() * 40.0f * deltaTime;
+		// Keep rotation within 0 - 360
+		if (wheelRotation > 360.0f)
+			wheelRotation -= 360.0f;
+		else if (wheelRotation < 0.0f)
+			wheelRotation += 360.0f;
+
+		// Move
+		pos += velocity * static_cast<float>(deltaTime);
+
+		// Spotlight
+		MS model;
+		model.LoadIdentity();
+
+		// Translation
+		model.PushMatrix(); // 1
+		model.Translate(pos.x, pos.y, pos.z);
+		model.Rotate(static_cast<float>(yaw), 0.0f, 1.0f, 0.0f);
+		model.Translate(0.0f, 2.5f, 4.5f);
+		// Right headlight
+		model.PushMatrix(); // 2
+		model.Translate(1.8f, 0.0f, 0.0f);
+		spotLights[0].position = model.Top() * Vector3();
+		model.PopMatrix(); // 2
+		// Left headlight
+		model.PushMatrix(); // 2
+		model.Translate(-1.8f, 0.0f, 0.0f);
+		spotLights[1].position = model.Top() * Vector3();
+		model.PopMatrix(); // 2
+
+		model.PopMatrix(); // 1
+
+		// Set spotlight direction
+		spotLights[0].direction = spotLights[1].direction = Vector3(cosf(Math::DegreeToRadian(static_cast<float>(pitch))) * cosf(Math::DegreeToRadian(static_cast<float>(-yaw + 90.0f))),
+			sinf(Math::DegreeToRadian(static_cast<float>(pitch))),
+			cosf(Math::DegreeToRadian(static_cast<float>(pitch))) * sinf(Math::DegreeToRadian(static_cast<float>(-yaw + 90.0f))));
+
+		// Update opengl spotlights
+		glBindBuffer(GL_UNIFORM_BUFFER, uSpotLight);
+		for (int i = 0; i < 2; ++i)
+		{
+			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i, 12, &spotLights[i].position.x);
+			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 12, 4, &spotLights[i].constant);
+			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 16, 4, &spotLights[i].linear);
+			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 20, 4, &spotLights[i].quadratic);
+			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 32, 12, &spotLights[i].ambient.x);
+			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 48, 12, &spotLights[i].diffuse.x);
+			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 64, 12, &spotLights[i].specular.x);
+			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 80, 12, &spotLights[i].direction.x);
+			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 92, 4, &spotLights[i].cosInner);
+			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 96, 4, &spotLights[i].cosOuter);
+		}
+
+		// Update OBB
+		setCollisionPosition(Vector3(pos.x, pos.y + 2.0f, pos.z));
+	}
+	else // player 2 
+	{
+	// Gear shift bounce time
+	gearShiftDelay -= deltaTime;
+
+	// Speed up/down
+	if (gearShiftDelay <= 0.0 && isPressed(window,GLFW_KEY_U))
+	{
+		if (isDriveGear) // Driving
+		{
+			speed += 50.0 * deltaTime;
+		}
+		else // Reverse
+		{
+			speed += 50.0 * deltaTime;
+			if (speed > 0.0) // Check gear change
+			{
+				isDriveGear = true;
+				gearShiftDelay = 0.15;
+				speed = 0.0;
+			}
+		}
+	}
+	if (gearShiftDelay <= 0.0 && isPressed(window, GLFW_KEY_J))
+	{
+		if (!isDriveGear) // Reverse
+		{
+			speed -= 21.0 * deltaTime;
+		}
+		else // Driving
+		{
+			speed -= 50.0 * deltaTime;
+			if (speed < 0.0) // Check gear change
+			{
+				isDriveGear = false;
+				gearShiftDelay = 0.15;
+				speed = 0.0;
+			}
+		}
+	}
+	// Turn input
+	if (isPressed(window, GLFW_KEY_H))
+	{
+		turnForce += 6.0 * deltaTime;
+
+	}
+	if (isPressed(window, GLFW_KEY_K))
+	{
+		turnForce -= 6.0 * deltaTime;
+	}
+
+	// Friction / Air resistance
+	if (speed > 0.0)
+	{
+		speed -= 3.0 * deltaTime + speed * 0.4 * deltaTime;
+		if (speed < 0.0)
+			speed = 0.0;
+	}
+	else if (speed < 0.0)
+	{
+		speed += 3.0 * deltaTime - speed * 0.4 * deltaTime;
+		if (speed > 0.0)
+			speed = 0.0;
+	}
+	else
+	{
+		speed = 0.0;
+	}
+
+	// Turnforce decay
+	turnForce *= 0.9;
+	if (turnForce < 0.05 && turnForce > -0.05)
+		turnForce = 0.0;
+
+	// Turnforce clamp
+	if (turnForce < -6.0)
+		turnForce = -6.0;
+	else if (turnForce > 6.0)
+		turnForce = 6.0;
+
+	// Calculate Rotation
+	if (speed != 0.0)
+	{
+		double turnDegreeLinear = fabs(turnForce * (speed / 60.0) * 3.5);
+		double turnDegreeQuadratic = fabs(turnForce / (speed / 60.0) * 0.7);
+		double turnDegree = ((turnDegreeLinear < turnDegreeQuadratic) ? (turnDegreeLinear) : (turnDegreeQuadratic));
+		if (turnForce < 0.0) // Rotate left
+			turnDegree = -turnDegree;
+		if (speed < 0.0) // Reverse
+			turnDegree = -turnDegree;
+
+		yaw += turnDegree;
+	}
+
+	// Calculate velocity
+	velocity = Vector3(sinf(Math::DegreeToRadian(static_cast<float>(yaw))), 0.0f, cosf(Math::DegreeToRadian(static_cast<float>(yaw)))) * static_cast<float>(speed);
+
+	// Wheel rotation
+	if (speed >= 0.0)
+		wheelRotation += velocity.Length() * 40.0f * deltaTime;
+	else
+		wheelRotation -= velocity.Length() * 40.0f * deltaTime;
+	// Keep rotation within 0 - 360
+	if (wheelRotation > 360.0f)
+		wheelRotation -= 360.0f;
+	else if (wheelRotation < 0.0f)
+		wheelRotation += 360.0f;
+
+	// Move
+	pos += velocity * static_cast<float>(deltaTime);
+
+	// Spotlight
+	MS model;
+	model.LoadIdentity();
+
+	// Translation
+	model.PushMatrix(); // 1
+	model.Translate(pos.x, pos.y, pos.z);
+	model.Rotate(static_cast<float>(yaw), 0.0f, 1.0f, 0.0f);
+	model.Translate(0.0f, 2.5f, 4.5f);
+	// Right headlight
+	model.PushMatrix(); // 2
+	model.Translate(1.8f, 0.0f, 0.0f);
+	spotLights[0].position = model.Top() * Vector3();
+	model.PopMatrix(); // 2
+	// Left headlight
+	model.PushMatrix(); // 2
+	model.Translate(-1.8f, 0.0f, 0.0f);
+	spotLights[1].position = model.Top() * Vector3();
+	model.PopMatrix(); // 2
+
+	model.PopMatrix(); // 1
+
+	// Set spotlight direction
+	spotLights[0].direction = spotLights[1].direction = Vector3(cosf(Math::DegreeToRadian(static_cast<float>(pitch))) * cosf(Math::DegreeToRadian(static_cast<float>(-yaw + 90.0f))),
+		sinf(Math::DegreeToRadian(static_cast<float>(pitch))),
+		cosf(Math::DegreeToRadian(static_cast<float>(pitch))) * sinf(Math::DegreeToRadian(static_cast<float>(-yaw + 90.0f))));
+
+	// Update opengl spotlights
+	/*glBindBuffer(GL_UNIFORM_BUFFER, uSpotLight);
+	for (int i = 0; i < 2; ++i)
+	{
+		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i, 12, &spotLights[i].position.x);
+		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 12, 4, &spotLights[i].constant);
+		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 16, 4, &spotLights[i].linear);
+		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 20, 4, &spotLights[i].quadratic);
+		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 32, 12, &spotLights[i].ambient.x);
+		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 48, 12, &spotLights[i].diffuse.x);
+		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 64, 12, &spotLights[i].specular.x);
+		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 80, 12, &spotLights[i].direction.x);
+		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 92, 4, &spotLights[i].cosInner);
+		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 96, 4, &spotLights[i].cosOuter);
+	}*/
+
+	// Update OBB
+	setCollisionPosition(Vector3(pos.x, pos.y + 2.0f, pos.z));
+    }
+}
+
 // Render the kart
 void Kart::render(unsigned int uMatrixMVS) const
 {
