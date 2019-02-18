@@ -6,6 +6,7 @@ Triangle::Triangle(const Vector3& v0, const Vector3& v1, const Vector3& v2)
 	v[0] = v0;
 	v[1] = v1;
 	v[2] = v2;
+	normal = Vector3(v[1] - v[0]).Cross(Vector3(v[2] - v[0])).Normalize();
 }
 
 Triangle::~Triangle()
@@ -19,6 +20,8 @@ void Triangle::transform(const Mtx44& transformationMatrix)
 	{
 		v[i] = transformationMatrix * v[i];
 	}
+	//normal = transformationMatrix * normal;
+	normal = Vector3(v[1] - v[0]).Cross(Vector3(v[2] - v[0])).Normalize();
 }
 
 const Vector3& Triangle::getV(int index) const
@@ -26,12 +29,12 @@ const Vector3& Triangle::getV(int index) const
 	return v[index];
 }
 
-const Vector3& Triangle::getF(int index) const
+const Vector3 Triangle::getF(int index) const
 {
 	return v[((index == 2) ? (0) : (index + 1))] - v[index];
 }
 
 Vector3 Triangle::getNormal() const
 {
-	return Vector3(v[1] - v[0]).Cross(Vector3(v[2] - v[0]));
+	return normal;
 }

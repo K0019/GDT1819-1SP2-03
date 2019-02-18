@@ -55,7 +55,7 @@ Player::~Player()
 }
 
 // Handle input
-void Player::update(GLFWwindow* window, double deltaTime, unsigned int uSpotLight)
+void Player::update(GLFWwindow* window, double deltaTime)
 {
 	// TODO: Collision
 
@@ -127,8 +127,17 @@ void Player::update(GLFWwindow* window, double deltaTime, unsigned int uSpotLigh
 	else // If kart is attached
 	{
 		// Update the kart
-		kart->update(window, deltaTime, uSpotLight);
-		
+		kart->update(window, deltaTime);
+	}
+
+	/*if (isPressed(window, GLFW_KEY_LEFT_SHIFT))
+		camera.pos -= cameraSpeed * camera.up;*/
+}
+
+void Player::updateCamera(GLFWwindow* window)
+{
+	if (hasKart())
+	{
 		// Update camera
 		camera.pos = kart->getPos();
 		double effectiveYaw = kart->getYaw();
@@ -146,9 +155,6 @@ void Player::update(GLFWwindow* window, double deltaTime, unsigned int uSpotLigh
 
 		camera.front = (Vector3(kart->getPos().x, kart->getPos().y + 5.0f, kart->getPos().z) - camera.pos).Normalize();
 	}
-
-	/*if (isPressed(window, GLFW_KEY_LEFT_SHIFT))
-		camera.pos -= cameraSpeed * camera.up;*/
 }
 
 // Render bear if player is driving the kart

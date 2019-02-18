@@ -159,6 +159,12 @@
     <ClCompile Include="PhysicsEngine.cpp">
       <Filter>Source Files\Physics</Filter>
     </ClCompile>
+    <ClCompile Include="CollisionInfo.cpp">
+      <Filter>Source Files\Physics\Colliders</Filter>
+    </ClCompile>
+    <ClCompile Include="PackedCollision.cpp">
+      <Filter>Source Files\Physics\Colliders</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\shader.hpp">
@@ -286,6 +292,12 @@
     </ClInclude>
     <ClInclude Include="PhysicsEngine.h">
       <Filter>Header Files\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionInfo.h">
+      <Filter>Header Files\Physics\Colliders</Filter>
+    </ClInclude>
+    <ClInclude Include="PackedCollision.h">
+      <Filter>Header Files\Physics\Colliders</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

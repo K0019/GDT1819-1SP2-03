@@ -16,7 +16,7 @@ void Scene2::processInput(GLFWwindow* window)
 		glfwSetWindowShouldClose(window, GL_TRUE);
 
 	// Update the player and kart(if any)
-	player->update(window, deltaTime, uSpotLight);
+	player->update(window, deltaTime);
 
 	// Attach/Detach kart to/from player
 	if (isPressed(window, GLFW_KEY_E))
@@ -233,6 +233,9 @@ void Scene2::Update(double dt, GLFWwindow* programID)
 	hotbar->update();
 	placeObjHandler->update(programID, dt);
 
+	Physics::physicsEngine.update();
+	kart->updateOpenGL(uSpotLight);
+	player->updateCamera(programID);
 
 	// Update shaders with new view matrix
 	Mtx44 view;

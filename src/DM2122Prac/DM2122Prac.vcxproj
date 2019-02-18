@@ -151,6 +151,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="CollisionChecker.cpp" />
+    <ClCompile Include="CollisionInfo.cpp" />
     <ClCompile Include="Hotbar.cpp" />
     <ClCompile Include="Kart.cpp" />
     <ClCompile Include="Lamp.cpp" />
@@ -163,6 +164,7 @@
     <ClCompile Include="OBB.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="ObjectList.cpp" />
+    <ClCompile Include="PackedCollision.cpp" />
     <ClCompile Include="PhysicsEngine.cpp" />
     <ClCompile Include="PhysicsObject.cpp" />
     <ClCompile Include="PlaceObjectHandler.cpp" />
@@ -190,6 +192,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="CollisionChecker.h" />
+    <ClInclude Include="CollisionInfo.h" />
     <ClInclude Include="Definitions.h" />
     <ClInclude Include="Hotbar.h" />
     <ClInclude Include="Kart.h" />
@@ -203,6 +206,7 @@
     <ClInclude Include="OBB.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="ObjectList.h" />
+    <ClInclude Include="PackedCollision.h" />
     <ClInclude Include="PhysicsEngine.h" />
     <ClInclude Include="PhysicsObject.h" />
     <ClInclude Include="PlaceObjectHandler.h" />

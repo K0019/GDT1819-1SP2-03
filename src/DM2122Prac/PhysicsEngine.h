@@ -1,8 +1,10 @@
 #ifndef PHYSICSENGINE_H
 #define PHYSICSENGINE_H
 #include <vector>
+#include <algorithm>
 #include "StaticPhysicsObjectInternal.h"
 #include "MovingPhysicsObjectInternal.h"
+#include "PackedCollision.h"
 
 class PhysicsEngine
 {
@@ -19,8 +21,13 @@ public:
 
 	bool testCollision() const;
 protected:
+	static bool compareLowerDistance(const PackedCollision& info1, const PackedCollision& info2);
+	static bool compareLowerDistanceWithY(const PackedCollision& info1, const PackedCollision& info2);
 
 private:
+	void updateHorizontal();
+	void updateVertical();
+
 	static int instances;
 
 	std::vector<MovingPhysicsObjectInternal*> movingObjects;

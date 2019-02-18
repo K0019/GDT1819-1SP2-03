@@ -8,7 +8,6 @@ class MovingPhysicsObject : public MovingPhysicsObjectInternal
 public:
 	MovingPhysicsObject(const OBB& box);
 	~MovingPhysicsObject();
-
 protected:
 
 private:

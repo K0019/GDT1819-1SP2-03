@@ -95,7 +95,7 @@ Kart::~Kart()
 }
 
 // Move the kart and handle input
-void Kart::update(GLFWwindow* window, double deltaTime, unsigned int uSpotLight)
+void Kart::update(GLFWwindow* window, double deltaTime)
 {
 	// Gear shift bounce time
 	gearShiftDelay -= deltaTime;
@@ -205,7 +205,15 @@ void Kart::update(GLFWwindow* window, double deltaTime, unsigned int uSpotLight)
 
 	// Move
 	pos += velocity * static_cast<float>(deltaTime);
+	//pos.y -= 0.5f;
+	if (pos.y < 0.0f)
+		pos.y = 0.0f;
+	// Update OBB
+	setCollisionPosition(Vector3(pos.x, pos.y + 2.0f, pos.z));
+}
 
+void Kart::updateOpenGL(unsigned int uSpotLight)
+{
 	// Spotlight
 	MS model;
 	model.LoadIdentity();
@@ -230,8 +238,8 @@ void Kart::update(GLFWwindow* window, double deltaTime, unsigned int uSpotLight)
 
 	// Set spotlight direction
 	spotLights[0].direction = spotLights[1].direction = Vector3(cosf(Math::DegreeToRadian(static_cast<float>(pitch))) * cosf(Math::DegreeToRadian(static_cast<float>(-yaw + 90.0f))),
-																sinf(Math::DegreeToRadian(static_cast<float>(pitch))),
-																cosf(Math::DegreeToRadian(static_cast<float>(pitch))) * sinf(Math::DegreeToRadian(static_cast<float>(-yaw + 90.0f))));
+		sinf(Math::DegreeToRadian(static_cast<float>(pitch))),
+		cosf(Math::DegreeToRadian(static_cast<float>(pitch))) * sinf(Math::DegreeToRadian(static_cast<float>(-yaw + 90.0f))));
 
 	// Update opengl spotlights
 	glBindBuffer(GL_UNIFORM_BUFFER, uSpotLight);
@@ -248,9 +256,6 @@ void Kart::update(GLFWwindow* window, double deltaTime, unsigned int uSpotLight)
 		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 92, 4, &spotLights[i].cosInner);
 		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 96, 4, &spotLights[i].cosOuter);
 	}
-
-	// Update OBB
-	setCollisionPosition(Vector3(pos.x, pos.y + 2.0f, pos.z));
 }
 
 // Render the kart
@@ -372,4 +377,10 @@ std::string Kart::getGear() const
 void Kart::stop()
 {
 	speed = 0.0;
+}
+
+void Kart::moveObject(const Vector3& displacement)
+{
+	pos += displacement;
+	setCollisionPosition(Vector3(pos.x, pos.y + 2.0f, pos.z));
 }

@@ -5,7 +5,7 @@ CollisionChecker::CollisionChecker()
 
 }
 
-bool CollisionChecker::collide(const Collider& lhs, const Collider& rhs)
+CollisionInfo CollisionChecker::collide(const Collider& lhs, const Collider& rhs)
 {
 	switch (lhs.getType())
 	{
@@ -45,24 +45,24 @@ bool CollisionChecker::collide(const Collider& lhs, const Collider& rhs)
 	}
 }
 
-bool CollisionChecker::collide(const AABB* lhs, const AABB* rhs)
+CollisionInfo CollisionChecker::collide(const AABB* lhs, const AABB* rhs)
 {
-	return (((lhs->getCorner1().x >= rhs->getCorner1().x && lhs->getCorner1().x <= rhs->getCorner2().x) || (lhs->getCorner2().x >= rhs->getCorner1().x && lhs->getCorner2().x <= rhs->getCorner2().x)) &&
+	return CollisionInfo(((lhs->getCorner1().x >= rhs->getCorner1().x && lhs->getCorner1().x <= rhs->getCorner2().x) || (lhs->getCorner2().x >= rhs->getCorner1().x && lhs->getCorner2().x <= rhs->getCorner2().x)) &&
 			((lhs->getCorner1().y >= rhs->getCorner1().y && lhs->getCorner1().y <= rhs->getCorner2().y) || (lhs->getCorner2().y >= rhs->getCorner1().y && lhs->getCorner2().y <= rhs->getCorner2().y)) &&
 			((lhs->getCorner1().z >= rhs->getCorner1().z && lhs->getCorner1().z <= rhs->getCorner2().z) || (lhs->getCorner2().z >= rhs->getCorner1().z && lhs->getCorner2().z <= rhs->getCorner2().z)));
 }
 
-bool CollisionChecker::collide(const AABB* lhs, const OBB* rhs)
+CollisionInfo CollisionChecker::collide(const AABB* lhs, const OBB* rhs)
 {
 	OBB newAABB = OBB(lhs->getCorner1() + lhs->getCorner2(), Vector3(1.0f, 0.0f, 0.0f), Vector3(0.0f, 1.0f, 0.0f), Vector3(0.0f, 0.0f, 1.0f), fabs(lhs->getCorner2().x - lhs->getCorner1().x), fabs(lhs->getCorner2().y - lhs->getCorner1().y), fabs(lhs->getCorner2().z - lhs->getCorner1().z));
 
 	return collide(&newAABB, rhs);
 }
 
-bool CollisionChecker::collide(const OBB* lhs, const OBB* rhs)
+CollisionInfo CollisionChecker::collide(const OBB* lhs, const OBB* rhs)
 {
 	Vector3 distance = rhs->getPosition() - lhs->getPosition();
-	return !( // 
+	return CollisionInfo(!( // 
 		fabs(distance.Dot(lhs->getAxis(0))) > lhs->getHalf(0) + fabs(rhs->getHalf(0) * rhs->getAxis(0).Dot(lhs->getAxis(0))) + fabs(rhs->getHalf(1) * rhs->getAxis(1).Dot(lhs->getAxis(0))) + fabs(rhs->getHalf(2) * rhs->getAxis(2).Dot(lhs->getAxis(0))) // SA = AaxisX
 		|| fabs(distance.Dot(lhs->getAxis(1))) > lhs->getHalf(1) + fabs(rhs->getHalf(0) * rhs->getAxis(0).Dot(lhs->getAxis(1))) + fabs(rhs->getHalf(1) * rhs->getAxis(1).Dot(lhs->getAxis(1))) + fabs(rhs->getHalf(2) * rhs->getAxis(2).Dot(lhs->getAxis(1))) // SA = AaxisY
 		|| fabs(distance.Dot(lhs->getAxis(2))) > lhs->getHalf(2) + fabs(rhs->getHalf(0) * rhs->getAxis(0).Dot(lhs->getAxis(2))) + fabs(rhs->getHalf(1) * rhs->getAxis(1).Dot(lhs->getAxis(2))) + fabs(rhs->getHalf(2) * rhs->getAxis(2).Dot(lhs->getAxis(2))) // SA = AaxisZ
@@ -78,11 +78,14 @@ bool CollisionChecker::collide(const OBB* lhs, const OBB* rhs)
 		|| fabs(distance.Dot(lhs->getAxis(2).Cross(rhs->getAxis(0)))) > fabs(lhs->getHalf(0) * lhs->getAxis(1).Dot(rhs->getAxis(0))) + fabs(lhs->getHalf(1) * lhs->getAxis(0).Dot(rhs->getAxis(0))) + fabs(rhs->getHalf(1) * lhs->getAxis(2).Dot(rhs->getAxis(2))) + fabs(rhs->getHalf(2) * lhs->getAxis(2).Dot(rhs->getAxis(1))) // SP = AaxisZ x BaxisX
 		|| fabs(distance.Dot(lhs->getAxis(2).Cross(rhs->getAxis(1)))) > fabs(lhs->getHalf(0) * lhs->getAxis(1).Dot(rhs->getAxis(1))) + fabs(lhs->getHalf(1) * lhs->getAxis(0).Dot(rhs->getAxis(1))) + fabs(rhs->getHalf(0) * lhs->getAxis(2).Dot(rhs->getAxis(2))) + fabs(rhs->getHalf(2) * lhs->getAxis(2).Dot(rhs->getAxis(0))) // SP = AaxisZ x BaxisY
 		|| fabs(distance.Dot(lhs->getAxis(2).Cross(rhs->getAxis(2)))) > fabs(lhs->getHalf(0) * lhs->getAxis(1).Dot(rhs->getAxis(2))) + fabs(lhs->getHalf(1) * lhs->getAxis(0).Dot(rhs->getAxis(2))) + fabs(rhs->getHalf(0) * lhs->getAxis(2).Dot(rhs->getAxis(1))) + fabs(rhs->getHalf(1) * lhs->getAxis(2).Dot(rhs->getAxis(0))) // SP = AaxisZ x BaxisZ
-		);
+		));
 }
 
-bool CollisionChecker::collide(const OBB* lhs, const Triangle* rhs)
+CollisionInfo CollisionChecker::collide(const OBB* lhs, const Triangle* rhs)
 {
+	Vector3 collisionNormal = rhs->getNormal();
+	float distance = 10000000.0f;
+
 	Vector3 v[3] = {
 		rhs->getV(0) - lhs->getPosition(),
 		rhs->getV(1) - lhs->getPosition(),
@@ -107,18 +110,47 @@ bool CollisionChecker::collide(const OBB* lhs, const Triangle* rhs)
 		}
 
 		float r = lhs->getHalf(i);
-		if (min > r || max < -r)
+		if (min >= r - 0.0f || max <= -r + 0.0f) // Not penetrating
 		{
-			return false;
+			return CollisionInfo(false);
 		}
+		//else // Penetrating
+		//{
+		//	if (r - min < r + max)
+		//	{
+		//		if (distance > r - min)
+		//		{
+		//			//collisionNormal = -lhs->getAxis(i);
+		//			distance = r - min;
+		//		}
+		//	}
+		//	else
+		//	{
+		//		if (distance > r + max)
+		//		{
+		//			//collisionNormal = lhs->getAxis(i);
+		//			distance = r + max;
+		//		}
+		//	}
+		//}
 	}
 
 	// Triangle normal
 	{
 		Vector3 n = rhs->getNormal();
-		if (fabs((rhs->getV(0) - lhs->getPosition()).Dot(n)) > fabs(lhs->getHalf(0) * lhs->getAxis(0).Dot(n)) + fabs(lhs->getHalf(1) * lhs->getAxis(1).Dot(n) + fabs(lhs->getHalf(2) * lhs->getAxis(2).Dot(n))))
+		float thisDistance = fabs(lhs->getHalf(0) * lhs->getAxis(0).Dot(n) + lhs->getHalf(1) * lhs->getAxis(1).Dot(n) + lhs->getHalf(2) * lhs->getAxis(2).Dot(n)) - fabs(v[0].Dot(n));
+		//if (fabs((rhs->getV(0) - lhs->getPosition()).Dot(n)) > fabs(lhs->getHalf(0) * lhs->getAxis(0).Dot(n)) + fabs(lhs->getHalf(1) * lhs->getAxis(1).Dot(n) + fabs(lhs->getHalf(2) * lhs->getAxis(2).Dot(n))))
+		if (thisDistance <= 0.0f)
 		{
-			return false;
+			return CollisionInfo(false);
+		}
+		else
+		{
+			if (thisDistance < distance)
+			{
+				//collisionNormal = rhs->getNormal();
+				distance = thisDistance;
+			}
 		}
 	}
 
@@ -155,12 +187,31 @@ bool CollisionChecker::collide(const OBB* lhs, const Triangle* rhs)
 					r += fabs(lhs->getHalf(k) * lhs->getAxis(k).Dot(axis));
 				}
 
-				if (min > r || max < -r)
+				if (min >= r - 0.0f || max <= -r + 0.0f)
 				{
-					return false;
+					return CollisionInfo(false);
 				}
+				//else
+				//{
+				//	if (r - min < r + max)
+				//	{
+				//		if (distance > r - min)
+				//		{
+				//			//collisionNormal = -axis;
+				//			distance = r - min;
+				//		}
+				//	}
+				//	else
+				//	{
+				//		if (distance > r + max)
+				//		{
+				//			//collisionNormal = axis;
+				//			distance = r + max;
+				//		}
+				//	}
+				//}
 			}
 		}
 	}
-	return true;
+	return CollisionInfo(true, collisionNormal, distance);
 }

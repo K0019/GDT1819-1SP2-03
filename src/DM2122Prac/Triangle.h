@@ -13,12 +13,13 @@ public:
 	void transform(const Mtx44& transformationMatrix);
 
 	const Vector3& getV(int index) const;
-	const Vector3& getF(int index) const;
+	const Vector3 getF(int index) const;
 	Vector3 getNormal() const;
 protected:
 
 private:
 	Vector3 v[3];
+	Vector3 normal;
 };
 
 #endif // !TRIANGLE_H

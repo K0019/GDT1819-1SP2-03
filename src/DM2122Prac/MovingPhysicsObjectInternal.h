@@ -10,6 +10,8 @@ public:
 
 	const OBB& getCollisionBox() const;
 	void setCollisionPosition(const Vector3& position);
+
+	virtual void moveObject(const Vector3& displacement) = 0;
 protected:
 
 private:

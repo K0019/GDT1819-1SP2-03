@@ -18,7 +18,8 @@ public:
 	Player(unsigned int uMatrixMVS, unsigned int uColorData); // Constructor
 	~Player(); // Destructor
 
-	void update(GLFWwindow* window, double deltaTime, unsigned int uSpotLight); // Handle input
+	void update(GLFWwindow* window, double deltaTime); // Handle input
+	void updateCamera(GLFWwindow* window);
 
 	void render() const; // Render bear if player is driving the kart
 

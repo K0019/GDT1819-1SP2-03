@@ -26,7 +26,8 @@ public:
 		const Vector3& steeringWheelPos, unsigned int uSpotLight, const OBB& obb); // Constructor
 	~Kart(); // Destructor
 
-	void update(GLFWwindow* window, double deltaTime, unsigned int uSpotLight); // Move the kart and handle input
+	void update(GLFWwindow* window, double deltaTime); // Move the kart and handle input
+	void updateOpenGL(unsigned int uSpotLight);
 	void render(unsigned int uMatrixMVS) const; // Render the kart
 
 	void reset(); // Reset kart position, rotation, velocity and gear
@@ -40,6 +41,7 @@ public:
 
 	void stop(); // Set kart velocity to 0
 protected:
+	virtual void moveObject(const Vector3& displacement);
 
 private:
 
