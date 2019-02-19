@@ -7,8 +7,8 @@ Kart::Kart(Mesh* body, Mesh* wheel, Mesh* steeringWheel,
 	const Vector3& steeringWheelPos, unsigned int uSpotLight)
 	: pos(Vector3())
 	, velocity(FRONT)
-	, FRONT(Vector3(0,0,1))
-	, UP(Vector3(0,1,0))
+	, FRONT(Vector3(0, 0, 1))
+	, UP(Vector3(0, 1, 0))
 	, velocitydir(FRONT)
 	, yaw(0.0)// this is the yaw angle
 	, pitch(0.0)// this is pitch angle
@@ -26,6 +26,7 @@ Kart::Kart(Mesh* body, Mesh* wheel, Mesh* steeringWheel,
 	, frontRightPos(wheelFrontRightPos)
 	, backLeftPos(wheelBackLeftPos)
 	, backRightPos(wheelBackRightPos)
+	, jumpdist(0.0f)
 	, steeringPos(steeringWheelPos)
 {
 	// Initialize spotlights
@@ -141,14 +142,14 @@ void Kart::update(GLFWwindow* window, double deltaTime, unsigned int uSpotLight)
 	// Turn input
 	if (isPressed(window, GLFW_KEY_A))
 	{
-		turnForce += 30.0 * deltaTime;
+		turnForce += 10.0 * deltaTime;
 
 
 	}
 	
 	if (isPressed(window, GLFW_KEY_D))
 	{
-		turnForce -= 30.0 * deltaTime;
+		turnForce -= 10.0 * deltaTime;
 	}
 	if (isPressed(window, GLFW_KEY_LEFT_SHIFT)) {
 		drifton = true;
@@ -185,25 +186,52 @@ void Kart::update(GLFWwindow* window, double deltaTime, unsigned int uSpotLight)
 		turnForce = 10.0;
 
 	// Calculate Rotation
-	if (speed != 0.0)
-	{
-		double turnDegreeLinear = fabs(turnForce * (speed / 60.0) * 3.5);
-		double turnDegreeQuadratic = fabs(turnForce / (speed / 60.0) * 0.7);
-		turnDegree = ((turnDegreeLinear < turnDegreeQuadratic) ? (turnDegreeLinear) : (turnDegreeQuadratic));
-		if (turnForce < 0.0) // Rotate left
-			turnDegree = -turnDegree;
-		if (speed < 0.0) // Reverse
-			turnDegree = -turnDegree;
-		/*yaw += turnDegree;*/
-		Mtx44 rotatematricx;
-		rotatematricx.SetToRotation(turnDegree, 0, 1, 0);// for yaw 
-		FRONT = rotatematricx * FRONT;
-		// when drifting turndegree become 180 degree
-		// then the velocity will slow down
-		// try to catch up
-		/// when drifting stop the kart rotate back 45 degree
-		///then the car and velocity dir will rotate 22.5 degree
+	if (!drifton) {
+		if (speed != 0.0)
+		{
+			double turnDegreeLinear = fabs(turnForce * (speed / 60.0) * 3.5);
+			double turnDegreeQuadratic = fabs(turnForce / (speed / 60.0) * 0.7);
+			turnDegree = ((turnDegreeLinear < turnDegreeQuadratic) ? (turnDegreeLinear) : (turnDegreeQuadratic));
+			if (turnForce < 0.0) // Rotate left
+				turnDegree = -turnDegree;
+			if (speed < 0.0) // Reverse
+				turnDegree = -turnDegree;
+			/*yaw += turnDegree;*/
+			Mtx44 rotatematricx;
+			rotatematricx.SetToRotation(turnDegree, 0, 1, 0);// for yaw 
+			FRONT = rotatematricx * FRONT;
+			// when drifting turndegree become 90 degree
+			// then the velocity will slow down
+			// try to catch up
+			/// when drifting stop the kart rotate back 45 degree
+			///then the car and velocity dir will rotate 22.5 degree
+		}
 	}
+	else
+	{
+
+		if (speed != 0.0)
+		{
+			
+			turnDegree = 90.0f * deltaTime;
+			if (turnForce < 0.0) // Rotate left
+				turnDegree = -turnDegree;
+			if (speed < 0.0) // Reverse
+				turnDegree = -turnDegree;
+			/*yaw += turnDegree;*/
+			Mtx44 rotatematricx;
+			rotatematricx.SetToRotation(turnDegree, 0, 1, 0);// for yaw 
+			FRONT = rotatematricx * FRONT;
+		}
+
+	}
+	//else if (speed != 0.0 && drifton)
+	//{
+	//	turnDegree += 0.05f;
+	//	Mtx44 rotatematricx;
+	//	rotatematricx.SetToRotation(turnDegree, 0, 1, 0);// for yaw 
+	//	FRONT = rotatematricx * FRONT;
+	//}
 
 	//calculating the yaw pitch row
 	GetYawPitchRoll(FRONT, UP, yaw, pitch, roll);
@@ -218,7 +246,7 @@ void Kart::update(GLFWwindow* window, double deltaTime, unsigned int uSpotLight)
 		{
 			// this will rotate the velocity direction
 			float theata = acosf(division);
-			rotatematricx.SetToRotation(theata / 2, 0, 1, 0);// for yaw 
+			rotatematricx.SetToRotation(theata / 10, 0, 1, 0);// for yaw 
 			velocitydir = rotatematricx * velocitydir;
 			velocity = (velocitydir + FRONT) * static_cast<float>(speed) * 0.8;
 		}

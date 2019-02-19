@@ -56,6 +56,7 @@ private:
 	void GetYawPitchRoll(Vector3 forward, Vector3 up, double& yaw, double& pitch, double& roll);
 	bool isDriveGear; // Drive/Reverse gear
 	double gearShiftDelay; // Bounce time for changing between drive and reverse gear
+	float jumpdist;
 };
 
 #endif // !KART_H
