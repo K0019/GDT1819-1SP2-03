@@ -21,12 +21,12 @@ public:
 	void reset(); // Reset player position and orientation
 
 	const Camera& getCam() const; // Return reference to camera object
-
+	Kart* car;
 private:
 	static int Player_ID;
 	int myPlayer_ID;
 
 	Camera Cam;
-	Kart* car;
+	
 };
 #endif  

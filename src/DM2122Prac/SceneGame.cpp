@@ -49,7 +49,13 @@ void SceneGame::Init()
 	glBindBufferBase(GL_UNIFORM_BUFFER, 3, uSpotLight);
 
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixMVS);
 	
+	// Initialize directional light
+	Vector3 sunDir = Vector3(0.4f, -0.35f, 0.85f).Normalize();
+	glBufferSubData(GL_UNIFORM_BUFFER, 2 * sizeof(Mtx44), 12, &sunDir.x);
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	
 	// Allocate memory for each object required in SceneGame
 	axes = new Base3DPoly(MeshBuilder::GenerateAxes());
@@ -94,10 +100,7 @@ void SceneGame::Update(double dt, GLFWwindow * programID)
 	deltaTime = dt;
 	// Process keyboard input
 	processInput(programID);
-	// Initialize directional light
-	Vector3 sunDir = Vector3(0.4f, -0.35f, 0.85f).Normalize();
-	glBufferSubData(GL_UNIFORM_BUFFER, 2 * sizeof(Mtx44), 12, &sunDir.x);
-	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+	
 
 }
 
@@ -168,6 +171,8 @@ void SceneGame::renderView(unsigned int view)
 	projection.SetToOrtho(0, 20, 0, 20, 0, 0.01);
 	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixP);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), projection.a);
+	text->PrintTextBackward(player[view]->car->getSpeedText(), uMatrixMVS, 19.0f, 2.5f, 1.0f);
+	text->PrintTextBackward("Gear:" + player[view]->car->getGear(), uMatrixMVS, 19.0f, 3.5f, 1.0f);
 	MS model;
 	model.LoadIdentity();
 	model.PushMatrix();
@@ -175,6 +180,7 @@ void SceneGame::renderView(unsigned int view)
 	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixMVS);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), model.Top().a);
 	GUI[0]->Render();
+	
 	model.Translate(15.0f, 0.0f, 0.0f);
 	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixMVS);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), model.Top().a);
