@@ -162,7 +162,7 @@ CollisionInfo CollisionChecker::collide(const OBB* lhs, const Triangle* rhs)
 			{
 				float min, max;
 				Vector3 axis = lhs->getAxis(i).Cross(rhs->getF(j));
-				if (axis.Length() < 0.00001f)
+				if (axis.Length() < 0.0001f)
 				{
 					continue;
 				}
@@ -213,5 +213,5 @@ CollisionInfo CollisionChecker::collide(const OBB* lhs, const Triangle* rhs)
 			}
 		}
 	}
-	return CollisionInfo(true, collisionNormal, distance);
+	return CollisionInfo(true, collisionNormal, distance + 0.05f);
 }
