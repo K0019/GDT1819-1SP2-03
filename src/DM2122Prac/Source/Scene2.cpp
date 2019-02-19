@@ -220,6 +220,7 @@ void Scene2::Init()
 					Vector3(0.0f, 0.368f, 1.974f),
 					uSpotLight,
 					OBB(Vector3(0.0f, 2.0f, 0.0f), Vector3(1.0f, 0.0f, 0.0f), Vector3(0.0f, 1.0f, 0.0f), Vector3(0.0f, 0.0f, 1.0f), 2.0f, 2.0f, 2.0f)); // Steering wheel
+	ModGate::detector.registerKart(kart);
 
 	text = MeshBuilder::GenerateText(16, 16, "Image//calibri.tga");
 	placeObjHandler = new PlaceObjectHandler(&objectList, player, hotbar);
@@ -242,7 +243,7 @@ void Scene2::Update(double dt, GLFWwindow* programID)
 	processInput(programID);
 	hotbar->update();
 	placeObjHandler->update(programID, dt);
-
+	ModGate::detector.update();
 
 	// Update shaders with new view matrix
 	Mtx44 view;
@@ -342,6 +343,7 @@ void Scene2::Exit()
 	delete hotbar;
 	delete skybox;
 	delete player;
+	ModGate::detector.removeKart(kart);
 	delete kart;
 	delete text;
 	delete placeObjHandler;

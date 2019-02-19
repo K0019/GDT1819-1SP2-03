@@ -47,7 +47,7 @@ public:
 		e_mew,
 		e_squirtle
 	};
-
+	void changeStatus();
 
 	void stop(); // Set kart velocity to 0
 protected:

@@ -18,7 +18,7 @@ public:
 		SOUTH,
 		WEST
 	};
-	Object(MeshPlaceable* /*meshunsigned int ID*/, int gridX, int gridZ, Rotation rotation); // Constructor
+	Object(MeshPlaceable* mesh/*meshunsigned int ID*/, int gridX, int gridZ, Rotation rotation); // Constructor
 	~Object(); // Destructor
 
 	void render(unsigned int uMatrixMVS) const; // Render this object

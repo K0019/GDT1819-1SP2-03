@@ -158,6 +158,8 @@
     <ClCompile Include="MeshPlaceable.cpp" />
     <ClCompile Include="MeshSprite.cpp" />
     <ClCompile Include="MeshText.cpp" />
+    <ClCompile Include="ModificationGate.cpp" />
+    <ClCompile Include="ModificationGateDetector.cpp" />
     <ClCompile Include="MovingPhysicsObject.cpp" />
     <ClCompile Include="MovingPhysicsObjectInternal.cpp" />
     <ClCompile Include="OBB.cpp" />
@@ -198,6 +200,8 @@
     <ClInclude Include="MeshPlaceable.h" />
     <ClInclude Include="MeshSprite.h" />
     <ClInclude Include="MeshText.h" />
+    <ClInclude Include="ModificationGate.h" />
+    <ClInclude Include="ModificationGateDetector.h" />
     <ClInclude Include="MovingPhysicsObject.h" />
     <ClInclude Include="MovingPhysicsObjectInternal.h" />
     <ClInclude Include="OBB.h" />

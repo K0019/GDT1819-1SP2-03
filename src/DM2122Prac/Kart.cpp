@@ -517,6 +517,12 @@ std::string Kart::getGear() const
 	else // Neutral
 		return "N";
 }
+
+void Kart::changeStatus()
+{
+	std::cout << "Change" << std::endl;
+}
+
 // Set kart velocity to 0
 void Kart::stop()
 {
