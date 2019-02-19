@@ -43,20 +43,19 @@ private:
 
 	Vector3 UP, FRONT; // front and  up vector 
 	Vector3 pos, velocity; // Position and velocity of kart
-	Vector3 velocitydir, camdir; // Direction of the velocity
+	float verticalVelocity, upOffset;
 	// Front vector is always  rotated by up vector for yaw  
 	// Up vecotr is always rotated by  Front vector for row 
 	// For pitch  front and up vector is rotated  by front X Up;
 	double yaw, pitch, roll, speed, turnForce, wheelRotation; // Misc. variables (UNUSED - pitch & roll)
-	double turnDegree;
+	double turnDegree, driftOffsetDegree;
 	Mesh* body, * wheel, * steeringWheel; // Meshes loaded for kart
 	Vector3 frontLeftPos, frontRightPos, backLeftPos, backRightPos, steeringPos; // Position of the wheel and steering wheel relative to kart position
-	bool drifton;
 	SpotLight spotLights[2]; // Spotlight structures to render headlight effect
 	void GetYawPitchRoll(Vector3 forward, Vector3 up, double& yaw, double& pitch, double& roll);
 	bool isDriveGear; // Drive/Reverse gear
 	double gearShiftDelay; // Bounce time for changing between drive and reverse gear
-	float jumpdist;
+	bool jumping;
 };
 
 #endif // !KART_H

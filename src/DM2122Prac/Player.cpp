@@ -141,9 +141,9 @@ void Player::update(GLFWwindow* window, double deltaTime, unsigned int uSpotLigh
 		else if (isPressed(window, GLFW_KEY_RIGHT))
 			effectiveYaw += 270.0;
 
-		camera.pos.x -= sinf(Math::DegreeToRadian(static_cast<float>(effectiveYaw))) * 10.0f - kart->getCamDir().x;
-		camera.pos.y += 6.f - kart ->getCamDir().y;
-		camera.pos.z -= cosf(Math::DegreeToRadian(static_cast<float>(effectiveYaw))) * 10.0f - kart->getCamDir().z;
+		camera.pos.x -= sinf(Math::DegreeToRadian(static_cast<float>(effectiveYaw))) * 10.0f;
+		camera.pos.y += 6.f;
+		camera.pos.z -= cosf(Math::DegreeToRadian(static_cast<float>(effectiveYaw))) * 10.0f;
 		/*camera.pos.x = kart->getPos().x;
 		camera.pos.y = 10.0f;
 		camera.pos.z = kart->getPos().z + 0.1f;**/

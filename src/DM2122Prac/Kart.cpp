@@ -9,7 +9,6 @@ Kart::Kart(Mesh* body, Mesh* wheel, Mesh* steeringWheel,
 	, velocity(FRONT)
 	, FRONT(Vector3(0, 0, 1))
 	, UP(Vector3(0, 1, 0))
-	, velocitydir(FRONT)
 	, yaw(0.0)// this is the yaw angle
 	, pitch(0.0)// this is pitch angle
 	, roll(0.0)// this is row angle
@@ -17,7 +16,10 @@ Kart::Kart(Mesh* body, Mesh* wheel, Mesh* steeringWheel,
 	, turnForce(0.0)
 	, wheelRotation(0.0)
 	, isDriveGear(true)
-	, drifton(false)
+	, jumping(false)
+	, verticalVelocity(0.0f)
+	, upOffset(0.0f)
+	, driftOffsetDegree(0.0)
 	, gearShiftDelay(0.0)
 	, body(body)
 	, wheel(wheel)
@@ -26,7 +28,6 @@ Kart::Kart(Mesh* body, Mesh* wheel, Mesh* steeringWheel,
 	, frontRightPos(wheelFrontRightPos)
 	, backLeftPos(wheelBackLeftPos)
 	, backRightPos(wheelBackRightPos)
-	, jumpdist(0.0f)
 	, steeringPos(steeringWheelPos)
 {
 	// Initialize spotlights
@@ -126,7 +127,7 @@ void Kart::update(GLFWwindow* window, double deltaTime, unsigned int uSpotLight)
 	{
 		if (!isDriveGear) // Reverse
 		{
-			speed -= 50.0 * deltaTime;
+			speed -= 21.0 * deltaTime;
 		}
 		else // Driving
 		{
@@ -142,20 +143,22 @@ void Kart::update(GLFWwindow* window, double deltaTime, unsigned int uSpotLight)
 	// Turn input
 	if (isPressed(window, GLFW_KEY_A))
 	{
-		turnForce += 10.0 * deltaTime;
-
+		turnForce += 6.0 * deltaTime;
 
 	}
-	
 	if (isPressed(window, GLFW_KEY_D))
 	{
-		turnForce -= 10.0 * deltaTime;
+		turnForce -= 6.0 * deltaTime;
 	}
-	if (isPressed(window, GLFW_KEY_LEFT_SHIFT)) {
-		drifton = true;
+	if (isPressed(window, GLFW_KEY_LEFT_SHIFT))
+	{
+		if (!jumping)
+		{
+			jumping = true;
+			verticalVelocity = 8.0f;
+		}
 	}
-	else
-		drifton = false;
+
 	// Friction / Air resistance
 	if (speed > 0.0)
 	{
@@ -174,94 +177,39 @@ void Kart::update(GLFWwindow* window, double deltaTime, unsigned int uSpotLight)
 		speed = 0.0;
 	}
 
+	if (jumping)
+	{
+		verticalVelocity -= 40.0f * static_cast<float>(deltaTime);
+	}
+
 	// Turnforce decay
 	turnForce *= 0.9;
 	if (turnForce < 0.05 && turnForce > -0.05)
 		turnForce = 0.0;
-	
+
 	// Turnforce clamp
-	if (turnForce < -10.0)
-		turnForce = -10.0;
-	else if (turnForce > 10.0)
-		turnForce = 10.0;
+	if (turnForce < -6.0)
+		turnForce = -6.0;
+	else if (turnForce > 6.0)
+		turnForce = 6.0;
 
 	// Calculate Rotation
-	if (!drifton) {
-		if (speed != 0.0)
-		{
-			double turnDegreeLinear = fabs(turnForce * (speed / 60.0) * 3.5);
-			double turnDegreeQuadratic = fabs(turnForce / (speed / 60.0) * 0.7);
-			turnDegree = ((turnDegreeLinear < turnDegreeQuadratic) ? (turnDegreeLinear) : (turnDegreeQuadratic));
-			if (turnForce < 0.0) // Rotate left
-				turnDegree = -turnDegree;
-			if (speed < 0.0) // Reverse
-				turnDegree = -turnDegree;
-			/*yaw += turnDegree;*/
-			Mtx44 rotatematricx;
-			rotatematricx.SetToRotation(turnDegree, 0, 1, 0);// for yaw 
-			FRONT = rotatematricx * FRONT;
-			// when drifting turndegree become 90 degree
-			// then the velocity will slow down
-			// try to catch up
-			/// when drifting stop the kart rotate back 45 degree
-			///then the car and velocity dir will rotate 22.5 degree
-		}
-	}
-	else
+	if (speed != 0.0)
 	{
+		double turnDegreeLinear = fabs(turnForce * (speed / 60.0) * 3.5);
+		double turnDegreeQuadratic = fabs(turnForce / (speed / 60.0) * 0.7);
+		double turnDegree = ((turnDegreeLinear < turnDegreeQuadratic) ? (turnDegreeLinear) : (turnDegreeQuadratic));
+		if (turnForce < 0.0) // Rotate left
+			turnDegree = -turnDegree;
+		if (speed < 0.0) // Reverse
+			turnDegree = -turnDegree;
 
-		if (speed != 0.0)
-		{
-			
-			turnDegree = 90.0f * deltaTime;
-			if (turnForce < 0.0) // Rotate left
-				turnDegree = -turnDegree;
-			if (speed < 0.0) // Reverse
-				turnDegree = -turnDegree;
-			/*yaw += turnDegree;*/
-			Mtx44 rotatematricx;
-			rotatematricx.SetToRotation(turnDegree, 0, 1, 0);// for yaw 
-			FRONT = rotatematricx * FRONT;
-		}
-
+		yaw += turnDegree;
 	}
-	//else if (speed != 0.0 && drifton)
-	//{
-	//	turnDegree += 0.05f;
-	//	Mtx44 rotatematricx;
-	//	rotatematricx.SetToRotation(turnDegree, 0, 1, 0);// for yaw 
-	//	FRONT = rotatematricx * FRONT;
-	//}
-
-	//calculating the yaw pitch row
-	GetYawPitchRoll(FRONT, UP, yaw, pitch, roll);
 
 	// Calculate velocity
-	if (velocitydir != FRONT && drifton) {
-		Mtx44 rotatematricx;
-		// this is to calculate the angle  between the  velocity direction and the front vector
-		float division = (velocitydir.Dot(FRONT)) / (velocitydir.Length() * FRONT.Length());
+	velocity = Vector3(sinf(Math::DegreeToRadian(static_cast<float>(yaw))), 0.0f, cosf(Math::DegreeToRadian(static_cast<float>(yaw)))) * static_cast<float>(speed);
 
-		if (division > 0.00001f) // Fix -nan(ind)
-		{
-			// this will rotate the velocity direction
-			float theata = acosf(division);
-			rotatematricx.SetToRotation(theata / 10, 0, 1, 0);// for yaw 
-			velocitydir = rotatematricx * velocitydir;
-			velocity = (velocitydir + FRONT) * static_cast<float>(speed) * 0.8;
-		}
-
-	}
-	// this is to set the velocity back to the front vector after drifting 
-	else if (velocitydir != FRONT && !drifton) {
-		velocitydir = FRONT;
-		velocity = Vector3(sinf(Math::DegreeToRadian(static_cast<float>(yaw))), 0.0f, cosf(Math::DegreeToRadian(static_cast<float>(yaw)))) * static_cast<float>(speed);
-	}
-	else
-	{
-		velocity = Vector3(sinf(Math::DegreeToRadian(static_cast<float>(yaw))), 0.0f, cosf(Math::DegreeToRadian(static_cast<float>(yaw)))) * static_cast<float>(speed);
-	}
-	
 	// Wheel rotation
 	if (speed >= 0.0)
 		wheelRotation += velocity.Length() * 40.0f * deltaTime;
@@ -275,10 +223,12 @@ void Kart::update(GLFWwindow* window, double deltaTime, unsigned int uSpotLight)
 
 	// Move
 	pos += velocity * static_cast<float>(deltaTime);
-
-	// calculate camdir
-	Vector3 velodummydir = velocitydir.Normalized();
-	camdir = (velocitydir.Normalize() + FRONT.Normalize()) * 10 ;
+	upOffset += verticalVelocity * static_cast<float>(deltaTime);
+	if (upOffset < 0.0f)
+	{
+		upOffset = 0.0f;
+		jumping = false;
+	}
 	
 	// Spotlight
 	MS model;
@@ -286,7 +236,7 @@ void Kart::update(GLFWwindow* window, double deltaTime, unsigned int uSpotLight)
 
 	// Translation
 	model.PushMatrix(); // 1
-	model.Translate(pos.x, pos.y, pos.z);
+	model.Translate(pos.x, pos.y + upOffset, pos.z);
 	model.Rotate(static_cast<float>(yaw), 0.0f, 1.0f, 0.0f);
 	model.Translate(0.0f, 2.5f, 4.5f);
 	// Right headlight
@@ -332,7 +282,7 @@ void Kart::render(unsigned int uMatrixMVS) const
 
 	// Body
 	model.PushMatrix(); // 1
-	model.Translate(pos.x, pos.y+0.4f, pos.z);
+	model.Translate(pos.x, pos.y + 0.4f + upOffset, pos.z);
 	//model.Rotate(roll, static_cast<float>(sin(yaw)), static_cast<float>(sin(pitch)), static_cast<float>(cos(yaw)));
 	model.Rotate(static_cast<float>(yaw), 0.0f, 1.0f, 0.0f);
 	model.Rotate(static_cast<float>(pitch), 1.0f, 0.0f, 0.0f);
@@ -348,7 +298,6 @@ void Kart::render(unsigned int uMatrixMVS) const
 	model.Rotate(static_cast<float>(turnForce) * 25.0f, 0.0f, 1.0f, 0.0f);
 	model.Translate(0.5f, 0, 0);
 	model.Rotate(static_cast<float>(wheelRotation), 1.0f, 0.0f, 0.0f);
-
 	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixMVS);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), model.Top().a);
 	wheel->Render();
@@ -360,9 +309,6 @@ void Kart::render(unsigned int uMatrixMVS) const
 	model.Rotate(180.0f + static_cast<float>(turnForce) * 25.0f, 0.0f, 1.0f, 0.0f);
 	model.Translate(0.5f, 0, 0);
 	model.Rotate(static_cast<float>(-wheelRotation), 1.0f, 0.0f, 0.0f);
-	
-	
-
 	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixMVS);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), model.Top().a);
 	wheel->Render();
@@ -415,7 +361,6 @@ const Vector3& Kart::getPos() const
 // Get kart velocity
 const Vector3& Kart::getVel() const
 {
-	
 	return velocity;
 }
 // Get kart rotation
@@ -431,8 +376,7 @@ double Kart::getYaw() const
 
 Vector3 Kart::getCamDir() const
 {
-
-	return camdir;
+	return velocity;
 }
 
 // Generate HUD text for speed
@@ -441,7 +385,7 @@ std::string Kart::getSpeedText() const
 	std::stringstream convert;
 	convert.precision(1);
 
-	convert << std::fixed << velocity.Dot(Vector3(1,1,1));
+	convert << std::fixed << speed;
 	return convert.str() + "mph";
 }
 // Generate HUD text for drive gear
@@ -462,6 +406,7 @@ void Kart::stop()
 {
 	speed = 0.0;
 } 
+
 void Kart::GetYawPitchRoll(Vector3 forward, Vector3 up, double& yaw, double& pitch, double& roll)
 {
 	Mtx44 forwardLeftHanded, upLeftHanded, inversion;
