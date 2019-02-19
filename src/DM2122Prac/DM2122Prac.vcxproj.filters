@@ -40,18 +40,15 @@
     <Filter Include="Header Files\Physics\Colliders">
       <UniqueIdentifier>{ee339087-173a-4d98-b9c3-fb8ae49f0d46}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Physics">
+    <Filter Include="Source Files\Objects\Physics">
       <UniqueIdentifier>{6352a673-58ff-4efc-864e-27cff038b85d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Physics\Colliders">
+    <Filter Include="Source Files\Objects\Physics\Colliders">
       <UniqueIdentifier>{0a993ab1-056b-4422-aeb7-b0c4daae90e1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\shader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\main.cpp">
@@ -127,43 +124,46 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="AABB.cpp">
-      <Filter>Source Files\Physics\Colliders</Filter>
+      <Filter>Source Files\Objects\Physics\Colliders</Filter>
     </ClCompile>
     <ClCompile Include="Collider.cpp">
-      <Filter>Source Files\Physics\Colliders</Filter>
+      <Filter>Source Files\Objects\Physics\Colliders</Filter>
     </ClCompile>
     <ClCompile Include="OBB.cpp">
-      <Filter>Source Files\Physics\Colliders</Filter>
+      <Filter>Source Files\Objects\Physics\Colliders</Filter>
     </ClCompile>
     <ClCompile Include="CollisionChecker.cpp">
-      <Filter>Source Files\Physics\Colliders</Filter>
+      <Filter>Source Files\Objects\Physics\Colliders</Filter>
     </ClCompile>
     <ClCompile Include="Triangle.cpp">
-      <Filter>Source Files\Physics\Colliders</Filter>
+      <Filter>Source Files\Objects\Physics\Colliders</Filter>
     </ClCompile>
     <ClCompile Include="PhysicsObject.cpp">
-      <Filter>Source Files\Physics</Filter>
+      <Filter>Source Files\Objects\Physics</Filter>
     </ClCompile>
     <ClCompile Include="MovingPhysicsObjectInternal.cpp">
-      <Filter>Source Files\Physics</Filter>
+      <Filter>Source Files\Objects\Physics</Filter>
     </ClCompile>
     <ClCompile Include="StaticPhysicsObjectInternal.cpp">
-      <Filter>Source Files\Physics</Filter>
+      <Filter>Source Files\Objects\Physics</Filter>
     </ClCompile>
     <ClCompile Include="MovingPhysicsObject.cpp">
-      <Filter>Source Files\Physics</Filter>
+      <Filter>Source Files\Objects\Physics</Filter>
     </ClCompile>
     <ClCompile Include="StaticPhysicsObject.cpp">
-      <Filter>Source Files\Physics</Filter>
+      <Filter>Source Files\Objects\Physics</Filter>
     </ClCompile>
     <ClCompile Include="PhysicsEngine.cpp">
-      <Filter>Source Files\Physics</Filter>
+      <Filter>Source Files\Objects\Physics</Filter>
     </ClCompile>
     <ClCompile Include="c_m_Player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SceneGame.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Application.cpp">
+      <Filter>Source Files\Objects\Physics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -20,6 +20,7 @@ void SceneGame::Init()
 	// Set clear color
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
+	placing = 1;
 	// Use most general shader for configuration
 	shader::container.useShader(type::SHADER_2);
 	m_programID = shader::container.getID(type::SHADER_2);
@@ -49,11 +50,7 @@ void SceneGame::Init()
 
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	
-	// Initialize directional light
-	Vector3 sunDir = Vector3(0.4f, -0.35f, 0.85f).Normalize();
-	glBufferSubData(GL_UNIFORM_BUFFER, 2 * sizeof(Mtx44), 12, &sunDir.x);
-	glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
+	
 	// Allocate memory for each object required in SceneGame
 	axes = new Base3DPoly(MeshBuilder::GenerateAxes());
 	floor = MeshBuilder::GenerateGrass("Image//grass.tga", 200.0f, 20);
@@ -72,7 +69,9 @@ void SceneGame::Init()
 	player[1] = new c_m_Player(uSpotLight);
 
 	text = MeshBuilder::GenerateText(16, 16, "Image//calibri.tga");
-
+	GUI[0] = MeshBuilder::GenerateXYPlane("Image//slotBox.tga", 2.0f, 1, type::SHADER_TEXT); 
+	GUI[1] = MeshBuilder::GenerateXYPlane("Image//1place.tga", 4.0f, 1, type::SHADER_TEXT); 
+	GUI[2] = MeshBuilder::GenerateXYPlane("Image//2place.tga", 4.0f, 1, type::SHADER_TEXT); 
 	glViewport(0, 0, width * 0.5, height);
 	StartView(player[0]);
 
@@ -95,6 +94,11 @@ void SceneGame::Update(double dt, GLFWwindow * programID)
 	deltaTime = dt;
 	// Process keyboard input
 	processInput(programID);
+	// Initialize directional light
+	Vector3 sunDir = Vector3(0.4f, -0.35f, 0.85f).Normalize();
+	glBufferSubData(GL_UNIFORM_BUFFER, 2 * sizeof(Mtx44), 12, &sunDir.x);
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
 }
 
 void SceneGame::Render()
@@ -106,25 +110,25 @@ void SceneGame::Render()
 	UpdateView(player[0]);
 	renderView(0);
 
+	placing++;
 	glViewport(width * 0.5, 0, width * 0.5, height);
 	UpdateView(player[1]);
 	renderView(1);
 
 	glViewport(0, 0, width, height);
-
-	// Prepare projection matrix for HUD rendering
 	Mtx44 projection;
 	projection.SetToOrtho(0, 20, 0, 20, 0, 0.01);
 	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixP);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), projection.a);
 
 	// Render text
-	text->PrintTextForward("FPS:" + calculateFPS(), uMatrixMVS, 0.0f, 1.2f, 2.0f);
+	text->PrintTextForward("FPS:" + calculateFPS(), uMatrixMVS, 0.0f,19.f, 1.0f);
 
 	// Reset projection
 	projection.SetToPerspective(55.0, static_cast<double>(width) / static_cast<double>(height), 0.1, 100.0);
 	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixP);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), projection.a);
+	
 }
 
 void SceneGame::Exit()
@@ -159,6 +163,30 @@ void SceneGame::renderView(unsigned int view)
 		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), offset.a);
 		lamp[i]->draw();
 	}
+	// Prepare projection matrix for HUD rendering
+	Mtx44 projection;
+	projection.SetToOrtho(0, 20, 0, 20, 0, 0.01);
+	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixP);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), projection.a);
+	MS model;
+	model.LoadIdentity();
+	model.PushMatrix();
+	model.Translate(2.0f, 1.5f, 0.0f);
+	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixMVS);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), model.Top().a);
+	GUI[0]->Render();
+	model.Translate(15.0f, 0.0f, 0.0f);
+	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixMVS);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), model.Top().a);
+	GUI[placing]->Render();
+	placing = 1;
+	model.PopMatrix();
+
+	// Reset projection
+	projection.SetToPerspective(55.0, static_cast<double>(width) / static_cast<double>(height), 0.1, 100.0);
+	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixP);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), projection.a);
+	
 }
 
 void SceneGame::StartView(c_m_Player * player)

@@ -57,7 +57,12 @@ private :
 
 	Lamp* lamp[1]; // Pointer to lamp
 
+	Mesh* GUI[3]; // this is for GUI
+	int placing; // this is the placing for the playter
+	 
+
 	MeshText* text; // Text mesh
+
 
 	bool isCullFace; // Cull face setting
 
