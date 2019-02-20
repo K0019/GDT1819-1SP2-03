@@ -248,51 +248,52 @@ void Kart::update(GLFWwindow* window, double deltaTime)
 	{
 		turnForce -= 6.0 * deltaTime;
 	}
-
-	// analog control
-	if (gearShiftDelay <= 0.0 && (axes[1] > 0))
-	{
-		if (isDriveGear) // Driving
+	if (Present == 1) {
+		// analog control
+		if (gearShiftDelay <= 0.0 && (axes[1] > 0))
 		{
-			speed += axes[1] * 50.0 * deltaTime;
-		}
-		else // Reverse
-		{
-			speed += axes[1] * 50.0 * deltaTime;
-			if (speed > 0.0) // Check gear change
+			if (isDriveGear) // Driving
 			{
-				isDriveGear = true;
-				gearShiftDelay = 0.15;
-				speed = 0.0;
+				speed += axes[1] * 50.0 * deltaTime;
+			}
+			else // Reverse
+			{
+				speed += axes[1] * 50.0 * deltaTime;
+				if (speed > 0.0) // Check gear change
+				{
+					isDriveGear = true;
+					gearShiftDelay = 0.15;
+					speed = 0.0;
+				}
 			}
 		}
-	}
-	if (gearShiftDelay <= 0.0 && (axes[1] < 0))
-	{
-		if (!isDriveGear) // Reverse
+		if (gearShiftDelay <= 0.0 && (axes[1] < 0))
 		{
-			speed -= -axes[1] * 21.0 * deltaTime;
-		}
-		else // Driving
-		{
-			speed -= -axes[1] * 50.0 * deltaTime;
-			if (speed < 0.0) // Check gear change
+			if (!isDriveGear) // Reverse
 			{
-				isDriveGear = false;
-				gearShiftDelay = 0.15;
-				speed = 0.0;
+				speed -= -axes[1] * 21.0 * deltaTime;
+			}
+			else // Driving
+			{
+				speed -= -axes[1] * 50.0 * deltaTime;
+				if (speed < 0.0) // Check gear change
+				{
+					isDriveGear = false;
+					gearShiftDelay = 0.15;
+					speed = 0.0;
+				}
 			}
 		}
-	}
-	// Turn input
-	if (axes[2] < 0)
-	{
-		turnForce += -axes[2] * 6.0 * deltaTime;
+		// Turn input
+		if (axes[2] < 0)
+		{
+			turnForce += -axes[2] * 6.0 * deltaTime;
 
-	}
-	if (axes[2] > 0)
-	{
-		turnForce -= axes[2] * 6.0 * deltaTime;
+		}
+		if (axes[2] > 0)
+		{
+			turnForce -= axes[2] * 6.0 * deltaTime;
+		}
 	}
 	// Friction / Air resistance
 	if (speed > 0.0)
@@ -616,49 +617,51 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 		turnForce -= 6.0 * deltaTime;
 	}
 	// analog control
-	if (gearShiftDelay <= 0.0 && (axes[1] > 0))
-	{
-		if (isDriveGear) // Driving
+	if (Present == 1) {
+		if (gearShiftDelay <= 0.0 && (axes[1] > 0))
 		{
-			speed += axes[1]* 50.0 * deltaTime;
-		}
-		else // Reverse
-		{
-			speed += axes[1] *50.0 * deltaTime;
-			if (speed > 0.0) // Check gear change
+			if (isDriveGear) // Driving
 			{
-				isDriveGear = true;
-				gearShiftDelay = 0.15;
-				speed = 0.0;
+				speed += axes[1] * 50.0 * deltaTime;
+			}
+			else // Reverse
+			{
+				speed += axes[1] * 50.0 * deltaTime;
+				if (speed > 0.0) // Check gear change
+				{
+					isDriveGear = true;
+					gearShiftDelay = 0.15;
+					speed = 0.0;
+				}
 			}
 		}
-	}
-	if (gearShiftDelay <= 0.0 && ( axes[1] < 0 ))
-	{
-		if (!isDriveGear) // Reverse
+		if (gearShiftDelay <= 0.0 && (axes[1] < 0))
 		{
-			speed -= -axes[1]*21.0 * deltaTime;
-		}
-		else // Driving
-		{
-			speed -= -axes[1]*50.0 * deltaTime;
-			if (speed < 0.0) // Check gear change
+			if (!isDriveGear) // Reverse
 			{
-				isDriveGear = false;
-				gearShiftDelay = 0.15;
-				speed = 0.0;
+				speed -= -axes[1] * 21.0 * deltaTime;
+			}
+			else // Driving
+			{
+				speed -= -axes[1] * 50.0 * deltaTime;
+				if (speed < 0.0) // Check gear change
+				{
+					isDriveGear = false;
+					gearShiftDelay = 0.15;
+					speed = 0.0;
+				}
 			}
 		}
-	}
-	// Turn input
-	if ( axes[2] < 0)
-	{
-		turnForce += -axes[2]*6.0 * deltaTime;
+		// Turn input
+		if (axes[2] < 0)
+		{
+			turnForce += -axes[2] * 6.0 * deltaTime;
 
-	}
-	if ( axes[2] > 0)
-	{
-		turnForce -= axes[2]*6.0 * deltaTime;
+		}
+		if (axes[2] > 0)
+		{
+			turnForce -= axes[2] * 6.0 * deltaTime;
+		}
 	}
 	// Friction / Air resistance
 	if (speed > 0.0)
