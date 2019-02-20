@@ -69,6 +69,7 @@ private:
 	int Present;
 	int axescount;
 	const float * axes;
+	int buttonscount;
 	const unsigned char* buttons;
 };
 
