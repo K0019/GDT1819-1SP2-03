@@ -37,7 +37,7 @@ public:
 
 	void processInput(GLFWwindow* window); // Function called every update cycle, checks for keyboard input
 	static void framebuffer_resize_callback(GLFWwindow* window, int width, int height); // Function called when window resizes to adapt render viewport
-
+	
 private:
 	static unsigned int uMatrixMVS, uMatrixP, uColorData, uSpotLight; // UBO handles for model, view, projection matrices, lighting and color, material data
 
@@ -54,8 +54,10 @@ private:
 
 	PlaceObjectHandler* placeObjHandler; // Handler of placing of objects
 	
-	Kart* kart; // Kart object
 
+	//////////////
+	Kart* kart; // Kart object
+	///////////////
 	Lamp* lamp[1]; // Pointer to lamp
 
 	MeshText* text; // Text mesh

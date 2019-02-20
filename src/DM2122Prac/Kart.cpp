@@ -1,7 +1,8 @@
 #include "Kart.h"
 
 // Constructor
-Kart::Kart(Mesh* body, Mesh* wheel, Mesh* steeringWheel,
+Kart::Kart(Mesh* basic, Mesh* pikachu, Mesh* eevee, Mesh*mew, Mesh*squirtle,
+	Mesh* basic_wheel, Mesh* pikachu_wheel, Mesh* eevee_wheel, Mesh* mew_wheel, Mesh* squirtle_wheel, Mesh* steeringWheel,
 	const Vector3& wheelFrontLeftPos, const Vector3& wheelFrontRightPos,
 	const Vector3& wheelBackLeftPos, const Vector3& wheelBackRightPos,
 	const Vector3& steeringWheelPos, unsigned int uSpotLight, const OBB& obb)
@@ -16,8 +17,16 @@ Kart::Kart(Mesh* body, Mesh* wheel, Mesh* steeringWheel,
 	, wheelRotation(0.0)
 	, isDriveGear(true)
 	, gearShiftDelay(0.0)
-	, body(body)
-	, wheel(wheel)
+	, basic(basic)
+	, pikachu(pikachu)
+	, eevee(eevee)
+	, mew(mew)
+	, squirtle(squirtle)
+	, basic_wheel(basic_wheel)
+	, pikachu_wheel(pikachu_wheel)
+	, eevee_wheel(eevee_wheel)
+	, mew_wheel(mew_wheel)
+	, squirtle_wheel(squirtle_wheel)
 	, steeringWheel(steeringWheel)
 	, frontLeftPos(wheelFrontLeftPos)
 	, frontRightPos(wheelFrontRightPos)
@@ -83,23 +92,59 @@ Kart::Kart(Mesh* body, Mesh* wheel, Mesh* steeringWheel,
 		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 92, 4, &spotLights[i].cosInner);
 		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 96, 4, &spotLights[i].cosOuter);
 	}
+
+	m_status = e_basic;
+	
 }
 
 // Destructor
 Kart::~Kart()
 {
 	// Delete meshes
-	delete body;
-	delete wheel;
+	delete basic,
+	delete pikachu,
+	delete mew,
+	delete squirtle,
+	delete eevee;
+	delete basic_wheel;
+	delete eevee_wheel;
+	delete pikachu_wheel;
+	delete mew_wheel;
+	delete squirtle_wheel;
 	delete steeringWheel;
 }
 
 // Move the kart and handle input
 void Kart::update(GLFWwindow* window, double deltaTime)
 {
+	if (isPressed(window, GLFW_KEY_P))
+	{
+		m_status = e_basic;
+	}
+	if (isPressed(window, GLFW_KEY_O))
+	{
+		m_status = e_pikachu;
+	}
+	if (isPressed(window, GLFW_KEY_L))
+	{
+		m_status = e_eevee;
+	}
+	if (isPressed(window, GLFW_KEY_K))
+	{
+		m_status = e_mew;
+	}
+	if (isPressed(window, GLFW_KEY_I))
+	{
+		m_status = e_squirtle;
+	}
+
+
+
+
+
+
 	// Gear shift bounce time
 	gearShiftDelay -= deltaTime;
-
 	// Speed up/down
 	if (gearShiftDelay <= 0.0 && isPressed(window, GLFW_KEY_W))
 	{
@@ -264,36 +309,101 @@ void Kart::render(unsigned int uMatrixMVS) const
 	MS model;
 	model.LoadIdentity();
 
+	
+
 	// Body
 	model.PushMatrix(); // 1
-	model.Translate(pos.x, pos.y + 1.75f, pos.z);
+	model.Translate(pos.x, pos.y + 0.4f, pos.z);
 	//model.Rotate(roll, static_cast<float>(sin(yaw)), static_cast<float>(sin(pitch)), static_cast<float>(cos(yaw)));
 	model.Rotate(static_cast<float>(yaw), 0.0f, 1.0f, 0.0f);
 	model.Rotate(static_cast<float>(pitch), 1.0f, 0.0f, 0.0f);
 	model.Rotate(static_cast<float>(roll), 0.0f, 0.0f, 1.0f);
-	model.Scale(2.0f, 2.0f, 2.0f);
+	model.Scale(0.5f,0.5f, 0.5f);
 	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixMVS);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), model.Top().a);
-	body->Render();
+	switch (m_status)
+	{
+	case Kart::e_basic:
+		basic->Render();
+		break;
+	case Kart::e_pikachu:
+		pikachu->Render();
+		break;
+	case Kart::e_eevee:
+		eevee->Render();
+		break;
+	case Kart::e_mew:
+		mew->Render();
+		break;
+	case Kart::e_squirtle:
+		squirtle->Render();
+		break;
+	default:
+		basic->Render();
+		break;
+	}
 
+	
 	// Front left wheel
 	model.PushMatrix(); // 2
-	model.Translate(frontLeftPos.x, frontLeftPos.y, frontLeftPos.z);
+	model.Translate(frontLeftPos.x-0.5f, frontLeftPos.y, frontLeftPos.z);
 	model.Rotate(static_cast<float>(turnForce) * 25.0f, 0.0f, 1.0f, 0.0f);
+	model.Translate(0.5f, 0, 0);
 	model.Rotate(static_cast<float>(wheelRotation), 1.0f, 0.0f, 0.0f);
 	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixMVS);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), model.Top().a);
-	wheel->Render();
+	switch (m_status)
+	{
+	case Kart::e_basic:
+		basic_wheel->Render();
+		break;
+	case Kart::e_pikachu:
+		pikachu_wheel->Render();
+		break;
+	case Kart::e_eevee:
+		eevee_wheel->Render();
+		break;
+	case Kart::e_mew:
+		mew_wheel->Render();
+		break;
+	case Kart::e_squirtle:
+		squirtle_wheel->Render();
+		break;
+	default:
+		basic_wheel->Render();
+		break;
+	}
 	model.PopMatrix(); // 2
 
 	// Front right wheel
 	model.PushMatrix(); // 2
-	model.Translate(frontRightPos.x, frontRightPos.y, frontRightPos.z);
+	model.Translate(frontRightPos.x+0.5f, frontRightPos.y, frontRightPos.z);
 	model.Rotate(180.0f + static_cast<float>(turnForce) * 25.0f, 0.0f, 1.0f, 0.0f);
+	model.Translate(0.5f, 0, 0);
 	model.Rotate(static_cast<float>(-wheelRotation), 1.0f, 0.0f, 0.0f);
 	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixMVS);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), model.Top().a);
-	wheel->Render();
+	switch (m_status)
+	{
+	case Kart::e_basic:
+		basic_wheel->Render();
+		break;
+	case Kart::e_pikachu:
+		pikachu_wheel->Render();
+		break;
+	case Kart::e_eevee:
+		eevee_wheel->Render();
+		break;
+	case Kart::e_mew:
+		mew_wheel->Render();
+		break;
+	case Kart::e_squirtle:
+		squirtle_wheel->Render();
+		break;
+	default:
+		basic_wheel->Render();
+		break;
+	}
 	model.PopMatrix(); // 2
 
 	// Back left wheel
@@ -302,7 +412,27 @@ void Kart::render(unsigned int uMatrixMVS) const
 	model.Rotate(static_cast<float>(wheelRotation), 1.0f, 0.0f, 0.0f);
 	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixMVS);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), model.Top().a);
-	wheel->Render();
+	switch (m_status)
+	{
+	case Kart::e_basic:
+		basic_wheel->Render();
+		break;
+	case Kart::e_pikachu:
+		pikachu_wheel->Render();
+		break;
+	case Kart::e_eevee:
+		eevee_wheel->Render();
+		break;
+	case Kart::e_mew:
+		mew_wheel->Render();
+		break;
+	case Kart::e_squirtle:
+		squirtle_wheel->Render();
+		break;
+	default:
+		basic_wheel->Render();
+		break;
+	}
 	model.PopMatrix(); // 2
 
 	// Back right wheel
@@ -312,7 +442,27 @@ void Kart::render(unsigned int uMatrixMVS) const
 	model.Rotate(static_cast<float>(-wheelRotation), 1.0f, 0.0f, 0.0f);
 	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixMVS);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), model.Top().a);
-	wheel->Render();
+	switch (m_status)
+	{
+	case Kart::e_basic:
+		basic_wheel->Render();
+		break;
+	case Kart::e_pikachu:
+		pikachu_wheel->Render();
+		break;
+	case Kart::e_eevee:
+		eevee_wheel->Render();
+		break;
+	case Kart::e_mew:
+		mew_wheel->Render();
+		break;
+	case Kart::e_squirtle:
+		squirtle_wheel->Render();
+		break;
+	default:
+		basic_wheel->Render();
+		break;
+	}
 	model.PopMatrix(); // 2
 
 	// Steering wheel
@@ -322,7 +472,6 @@ void Kart::render(unsigned int uMatrixMVS) const
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), model.Top().a);
 	steeringWheel->Render();
 	model.PopMatrix(); // 2
-
 	model.PopMatrix(); // 1
 }
 
@@ -373,6 +522,12 @@ std::string Kart::getGear() const
 	else // Neutral
 		return "N";
 }
+
+void Kart::changeStatus()
+{
+	std::cout << "Change" << std::endl;
+}
+
 // Set kart velocity to 0
 void Kart::stop()
 {

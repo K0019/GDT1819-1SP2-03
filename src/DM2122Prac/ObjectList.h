@@ -5,6 +5,7 @@
 #include "Object.h"
 #include "Source/MeshBuilder.h"
 #include "CollisionChecker.h"
+#include "ModificationGate.h"
 
 using namespace std;
 /* File: ObjectList.h

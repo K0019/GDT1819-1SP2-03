@@ -50,7 +50,7 @@ bool ObjectList::addObject(unsigned int ID, int gridX, int gridZ, Object::Rotati
 	}
 	
 	// Add object
-	objects.push_back(new Object(meshes[ID - 1], gridX, gridZ, rotation));
+	objects.push_back((ID == 4 ? new ModificationGate(meshes[ID - 1], gridX, gridZ, rotation) : new Object(meshes[ID - 1], gridX, gridZ, rotation)));
 	(*(objects.end() - 1))->setID(ID);
 	return true;
 }
@@ -169,7 +169,6 @@ bool ObjectList::queryOccupiedArea(int lengthX, int lengthY, int lengthZ, int gr
 			return true;
 		}
 	}
-
 	// Return result
 	return false;
 }

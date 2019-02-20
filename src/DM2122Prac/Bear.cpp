@@ -89,13 +89,17 @@ void Bear::draw(const Vector3& offset, float yaw) const
 
 	// Body main (Spliced sphere)
 	matrixStack.PushMatrix(); // 1
+	matrixStack.Translate(0.f, 1.f, 0.f);
+	matrixStack.Scale(0.3f, 0.3f, 0.3f);
 	matrixStack.Scale(1.3f, 2.4f, 1.3f);
 	matrixStack.Translate(0.0f, 0.15f, 0.0f);
 	renderMesh(&matrixStack, mesh[meshType::SPLICEDSPHERE6]);
 	matrixStack.PopMatrix(); // 1
-	// Body bottom (Hemisphere)
+							 // Body bottom (Hemisphere)
 	matrixStack.PushMatrix(); // 1
-	matrixStack.Translate(0.0f, -1.1f, 0.0f);
+	matrixStack.Translate(0.f, 1.0f, 0.0f);
+	matrixStack.Scale(0.3f, 0.3f, 0.3f);
+
 	matrixStack.PushMatrix(); // 2
 	matrixStack.Translate(0.0f, -0.05f, 0.0f);
 	matrixStack.Rotate(180, 1.0f, 0.0f, 0.0f);
@@ -103,7 +107,7 @@ void Bear::draw(const Vector3& offset, float yaw) const
 	renderMesh(&matrixStack, mesh[meshType::HEMISPHERE]);
 	matrixStack.PopMatrix(); // 2
 
-	// Legs
+							 // Legs
 	switch (state)
 	{
 	case NONE:

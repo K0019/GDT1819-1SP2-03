@@ -1,12 +1,14 @@
 #include "Scene2.h"
 #include "GL\glew.h"
-
+#include <map>
 
 /* Initialize static member variables | Resolve LNK2001 */
 double Scene2::deltaTime = 0.0, Scene2::enterBounce = 0.0;
 int Scene2::width = 800, Scene2::height = 600;
 unsigned int Scene2::uMatrixMVS = NULL, Scene2::uMatrixP = NULL, Scene2::uColorData = NULL, Scene2::uSpotLight;
 unsigned Scene2::m_programID = 0;
+
+
 
 // Function called every update cycle, checks for keyboard input
 void Scene2::processInput(GLFWwindow* window)
@@ -200,20 +202,29 @@ void Scene2::Init()
 		"Image//Skybox//right.tga"
 		));
 	player = new Player(uMatrixMVS, uColorData);
-	kart = new Kart(MeshBuilder::GenerateOBJ("OBJ//Kart5.obj", "Image//UV.tga", type::SHADER_3),
-					MeshBuilder::GenerateOBJ("OBJ//Wheel.obj", "Image//UV.tga", type::SHADER_3),
-					MeshBuilder::GenerateOBJ("OBJ//SteeringWheel.obj", "Image//UV.tga", type::SHADER_3),
-					Vector3(0.9f, -0.3f, 1.98f), // Front left
-					Vector3(-0.9f, -0.3f, 1.98f), // Front right
-					Vector3(0.9f, -0.3f, -1.734f), // Back left
-					Vector3(-0.9f, -0.3f, -1.734f), // Back right
-					Vector3(0.0f, 0.368f, 0.774f),
+	kart = new Kart(MeshBuilder::GenerateOBJ("OBJ//basic_kart.obj", "Image//basic_texture.tga", type::SHADER_3),
+		            MeshBuilder::GenerateOBJ("OBJ//pikachu_kart.obj", "Image//pikachu_texture.tga", type::SHADER_3),
+					MeshBuilder::GenerateOBJ("OBJ//eevee_kart.obj", "Image//eevee_texture.tga", type::SHADER_3),
+					MeshBuilder::GenerateOBJ("OBJ//mew_kart.obj", "Image//mew_texture.tga", type::SHADER_3),
+					MeshBuilder::GenerateOBJ("OBJ//squirtle_kart.obj", "Image//squirtle_texture.tga", type::SHADER_3),
+					MeshBuilder::GenerateOBJ("OBJ//basic_wheel.obj", "Image//basic_wheel_texture.tga", type::SHADER_3),
+					MeshBuilder::GenerateOBJ("OBJ//basic_wheel.obj", "Image//pikachu_wheel_texture.tga", type::SHADER_3),
+					MeshBuilder::GenerateOBJ("OBJ//basic_wheel.obj", "Image//eevee_wheel_texture.tga", type::SHADER_3),
+					MeshBuilder::GenerateOBJ("OBJ//basic_wheel.obj", "Image//mew_wheel_texture.tga", type::SHADER_3),
+					MeshBuilder::GenerateOBJ("OBJ//basic_wheel.obj", "Image//squirtle_wheel_texture.tga", type::SHADER_3),
+					MeshBuilder::GenerateOBJ("OBJ//SteeringWheel.obj", "Image//Steering_wheel_texture.tga", type::SHADER_3),
+					Vector3(2.68f, 1.24f, 1.59f), // Front left
+					Vector3(-2.68f, 1.24f, 1.59f), // Front right
+					Vector3(3.28f, 1.24f, -1.43f), // Back left
+					Vector3(-3.28f, 1.24f, -1.43f), // Back right
+					Vector3(0.0f, 0.368f, 1.974f),
 					uSpotLight,
 					OBB(Vector3(0.0f, 2.0f, 0.0f), Vector3(1.0f, 0.0f, 0.0f), Vector3(0.0f, 1.0f, 0.0f), Vector3(0.0f, 0.0f, 1.0f), 2.0f, 2.0f, 2.0f)); // Steering wheel
+	ModGate::detector.registerKart(kart);
 
 	text = MeshBuilder::GenerateText(16, 16, "Image//calibri.tga");
 	placeObjHandler = new PlaceObjectHandler(&objectList, player, hotbar);
-
+	
 
 	// Enable culling and depth test
 	glEnable(GL_DEPTH_TEST);
@@ -234,6 +245,7 @@ void Scene2::Update(double dt, GLFWwindow* programID)
 	placeObjHandler->update(programID, dt);
 
 	Physics::physicsEngine.update();
+	ModGate::detector.update();
 	kart->updateOpenGL(uSpotLight);
 	player->updateCamera(programID);
 
@@ -250,6 +262,8 @@ void Scene2::Update(double dt, GLFWwindow* programID)
 	glBufferSubData(GL_UNIFORM_BUFFER, 2 * sizeof(Mtx44) + 16, 12, &lamp[0]->light.position.x);
 
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+	
 }
 
 // Render the scene
@@ -333,6 +347,7 @@ void Scene2::Exit()
 	delete hotbar;
 	delete skybox;
 	delete player;
+	ModGate::detector.removeKart(kart);
 	delete kart;
 	delete text;
 	delete placeObjHandler;

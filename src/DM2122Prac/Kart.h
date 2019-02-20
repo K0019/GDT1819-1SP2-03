@@ -20,7 +20,8 @@
 class Kart : public MovingPhysicsObject
 {
 public:
-	Kart(Mesh* body, Mesh* wheel, Mesh* steeringWheel, 
+	Kart(Mesh* basic, Mesh* pikachu, Mesh* eevee, Mesh*mew, Mesh*squirtle,
+         Mesh* basic_wheel, Mesh* pikachu_wheel, Mesh* eevee_wheel, Mesh* mew_wheel, Mesh* squirtle_wheel,Mesh* steeringWheel,
 		const Vector3& wheelFrontLeftPos, const Vector3& wheelFrontRightPos, 
 		const Vector3& wheelBackLeftPos, const Vector3& wheelBackRightPos,
 		const Vector3& steeringWheelPos, unsigned int uSpotLight, const OBB& obb); // Constructor
@@ -38,16 +39,26 @@ public:
 
 	std::string getSpeedText() const; // Generate HUD text for speed
 	std::string getGear() const; // Generate HUD text for drive gear
+	
+	enum status
+	{
+		e_basic,
+		e_pikachu,
+		e_eevee,
+		e_mew,
+		e_squirtle
+	};
+	void changeStatus();
 
 	void stop(); // Set kart velocity to 0
 protected:
 	virtual void moveObject(const Vector3& displacement);
 
 private:
-
+	status m_status;
 	Vector3 pos, velocity; // Position and velocity of kart
 	double yaw, pitch, roll, speed, turnForce, wheelRotation; // Misc. variables (UNUSED - pitch & roll)
-	Mesh* body, * wheel, * steeringWheel; // Meshes loaded for kart
+	Mesh* basic, * pikachu, * eevee , * mew , * squirtle , * basic_wheel, *pikachu_wheel, *eevee_wheel, *mew_wheel, *squirtle_wheel, * steeringWheel; // Meshes loaded for kart
 	Vector3 frontLeftPos, frontRightPos, backLeftPos, backRightPos, steeringPos; // Position of the wheel and steering wheel relative to kart position
 
 	SpotLight spotLights[2]; // Spotlight structures to render headlight effect
