@@ -35,6 +35,9 @@ private:
 
 	std::vector<Object*> objects; // Container of all objects placed
 	std::vector<MeshPlaceable*> meshes; // Container of all meshPlaceables
+
+	std::vector<Object*> finishLine;
+	MeshPlaceable* finishLineMesh;
 };
 
 #endif // !OBJECTLIST_H
