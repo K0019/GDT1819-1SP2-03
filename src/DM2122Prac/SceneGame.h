@@ -54,6 +54,11 @@ private :
 	Base3DPoly* axes, *skybox; // Axes and skybox mesh
 	MeshFloor* floor; // Floor mesh
 	c_m_Player* player[2]; // Player object
+	Player* playerDummy; // Player object
+
+	Hotbar* hotbar; // Hotbar object
+	PlaceObjectHandler* Map;
+	ObjectList objectList; // List of objects (meshPlaceable)
 
 	Lamp* lamp[1]; // Pointer to lamp
 

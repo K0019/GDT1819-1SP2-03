@@ -73,11 +73,17 @@ void SceneGame::Init()
 	));
 	player[0] = new c_m_Player(uSpotLight);
 	player[1] = new c_m_Player(uSpotLight);
+	hotbar = new Hotbar(MeshBuilder::GenerateXYPlane("Image//slotBox.tga", 2.0f, 1, type::SHADER_TEXT),
+		MeshBuilder::GenerateXYPlane("Image//selectionBox.tga", 2.125f, 1, type::SHADER_TEXT),
+		MeshBuilder::GenerateSprite(8, 8, "Image//PlaceableObjects//spritesheet.tga"),
+		5);
+	playerDummy = new Player(uMatrixMVS, uColorData);
 
 	text = MeshBuilder::GenerateText(16, 16, "Image//calibri.tga");
 	GUI[0] = MeshBuilder::GenerateXYPlane("Image//slotBox.tga", 2.0f, 1, type::SHADER_TEXT); 
 	GUI[1] = MeshBuilder::GenerateXYPlane("Image//1place.tga", 4.0f, 1, type::SHADER_TEXT); 
-	GUI[2] = MeshBuilder::GenerateXYPlane("Image//2place.tga", 4.0f, 1, type::SHADER_TEXT); 
+	GUI[2] = MeshBuilder::GenerateXYPlane("Image//2place.tga", 4.0f, 1, type::SHADER_TEXT);
+	Map = new PlaceObjectHandler(&objectList, playerDummy, hotbar);
 	glViewport(0, 0, width * 0.5, height);
 	StartView(player[0]);
 
@@ -101,7 +107,7 @@ void SceneGame::Update(double dt, GLFWwindow * programID)
 	// Process keyboard input
 	processInput(programID);
 	
-
+	Map->update(programID, dt);
 }
 
 void SceneGame::Render()
@@ -136,6 +142,31 @@ void SceneGame::Render()
 
 void SceneGame::Exit()
 {
+	for (int i = 0; i < NO_OF_POINTLIGHTS; ++i)
+	{
+		delete lamp[i];
+	}
+	delete axes;
+	delete floor;
+	delete hotbar;
+	delete skybox;
+	for (int i = 0; i < 2; ++i)
+	{
+		delete player[i];
+	}
+	for (int i = 0; i < 3; ++i)
+	{
+		delete GUI[i];
+	}
+	delete playerDummy;
+	delete text;
+	delete Map;
+
+	// Free memory allocated for UBOs
+	glDeleteBuffers(1, &uMatrixMVS);
+	glDeleteBuffers(1, &uMatrixP);
+	glDeleteBuffers(1, &uColorData);
+	glDeleteBuffers(1, &uSpotLight);
 }
 
 void SceneGame::renderView(unsigned int view)
@@ -156,6 +187,7 @@ void SceneGame::renderView(unsigned int view)
 		player[i]->render(uMatrixMVS);
 	}
 	//player->render(); // Draw player (if applicable)
+	objectList.renderObjects(uMatrixMVS);
 
 	// Draw the lamps
 	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixMVS);
