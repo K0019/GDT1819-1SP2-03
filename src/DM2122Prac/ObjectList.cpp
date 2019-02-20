@@ -17,6 +17,8 @@ ObjectList::~ObjectList()
 	{
 		delete mesh;
 	}
+
+	delete finishLineMesh;
 }
 
 // Load meshPlaceables
@@ -29,7 +31,10 @@ void ObjectList::init()
 		REPLACE LINE BELOW WITH MODIFICATION GATE
 	*/
 	meshes.push_back(MeshBuilder::GenerateMeshPlaceable("OBJ//PlaceableObjects//trackTurnCurved.obj", "Image//PlaceableObjects//trackTestUV.tga", type::SHADER_3, 2, 10, false));
-	
+
+	finishLineMesh = MeshBuilder::GenerateMeshPlaceable("OBJ//PlaceableObjects//finishLine.obj", "Image//PlaceableObjects//finishLine.tga", type::SHADER_3, 2, 10, false);
+	finishLine.push_back(new Object(finishLineMesh, 0, 0, Object::Rotation::NORTH));
+	finishLine.push_back(new Object(meshes[0], 0, 0, Object::Rotation::NORTH));
 }
 
 // Attempt to add an object of meshPlaceable ID at a certain grid area and rotation
@@ -108,6 +113,11 @@ void ObjectList::renderObjects(unsigned int uMatrixMVS) const
 	{
 		obj->render(uMatrixMVS);
 	}
+
+	for (const Object* obj : finishLine)
+	{
+		obj->render(uMatrixMVS);
+	}
 }
 
 // Render a single object, used for selection rendering
@@ -131,6 +141,7 @@ std::vector<Object*>::iterator ObjectList::queryOccupied(int lengthX, int length
 		if (CollisionChecker::collide(selection, (*obj)->getAABB()) || CollisionChecker::collide((*obj)->getAABB(), selection))
 			return obj;
 	}
+
 	return objects.end();
 }
 
@@ -147,6 +158,14 @@ bool ObjectList::queryOccupiedArea(int lengthX, int lengthY, int lengthZ, int gr
 	
 	// Check collision against each object
 	for (std::vector<Object*>::const_iterator iter = objects.begin(); iter != objects.end(); ++iter)
+	{
+		if (CollisionChecker::collide(selection, (*iter)->getAABB()) || CollisionChecker::collide((*iter)->getAABB(), selection))
+		{
+			return true;
+		}
+	}
+
+	for (std::vector<Object*>::const_iterator iter = finishLine.begin(); iter != finishLine.end(); ++iter)
 	{
 		if (CollisionChecker::collide(selection, (*iter)->getAABB()) || CollisionChecker::collide((*iter)->getAABB(), selection))
 		{
