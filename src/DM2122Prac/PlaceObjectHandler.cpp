@@ -8,6 +8,7 @@ PlaceObjectHandler::PlaceObjectHandler(ObjectList* objectList, const Player* pla
 	, objectList(objectList)
 	, player(player)
 	, hotbar(hotbar)
+	, gridy(0)
 {
 }
 
@@ -24,13 +25,6 @@ void PlaceObjectHandler::update(GLFWwindow* window, double dt)
 	if (isPressed(window, GLFW_KEY_B))
 	{
 		objectList->deleteAll();
-		ifstream del;
-		del.open("delete.txt");
-		while (del >> id >> gridx >> gridy >> gridz >> rotate)
-		{
-			objectList->deleteObject(gridx, gridz, static_cast<Object::Rotation>(rotate));
-		}
-		del.close();
 	}
 	// Save function
 	if (isPressed(window, GLFW_KEY_N))
@@ -41,13 +35,6 @@ void PlaceObjectHandler::update(GLFWwindow* window, double dt)
 	if (isPressed(window, GLFW_KEY_M))
 	{
 		objectList->deleteAll();
-		ifstream del;
-		del.open("delete.txt");
-		while (del >> id >> gridx >> gridy >> gridz >> rotate)
-		{
-			objectList->deleteObject(gridx, gridz, static_cast<Object::Rotation>(rotate));
-		}
-		del.close();
 		ifstream read;
 		read.open("save.txt");
 		//for (int i = 0; i < 100; i++)

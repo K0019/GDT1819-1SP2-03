@@ -85,6 +85,12 @@ private:
 	bool isDriveGear; // Drive/Reverse gear
 	double gearShiftDelay; // Bounce time for changing between drive and reverse gear
 	double skillDelay;
+
+	int Present;
+	int axescount;
+	const float * axes;
+	int buttonscount;
+	const unsigned char* buttons;
 };
 
 #endif // !KART_H
