@@ -152,6 +152,7 @@
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="CollisionChecker.cpp" />
     <ClCompile Include="CollisionInfo.cpp" />
+    <ClCompile Include="c_m_Player.cpp" />
     <ClCompile Include="Hotbar.cpp" />
     <ClCompile Include="Kart.cpp" />
     <ClCompile Include="Lamp.cpp" />
@@ -171,6 +172,7 @@
     <ClCompile Include="PhysicsObject.cpp" />
     <ClCompile Include="PlaceObjectHandler.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="SceneGame.cpp" />
     <ClCompile Include="Source\Application.cpp" />
     <ClCompile Include="Source\LoadOBJ.cpp" />
     <ClCompile Include="Source\LoadTGA.cpp" />
@@ -195,6 +197,7 @@
     <ClInclude Include="Collider.h" />
     <ClInclude Include="CollisionChecker.h" />
     <ClInclude Include="CollisionInfo.h" />
+    <ClInclude Include="c_m_Player.h" />
     <ClInclude Include="Definitions.h" />
     <ClInclude Include="Hotbar.h" />
     <ClInclude Include="Kart.h" />
@@ -216,6 +219,7 @@
     <ClInclude Include="PlaceObjectHandler.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PointLight.h" />
+    <ClInclude Include="SceneGame.h" />
     <ClInclude Include="Source\Application.h" />
     <ClInclude Include="Source\LoadOBJ.h" />
     <ClInclude Include="Source\LoadTGA.h" />

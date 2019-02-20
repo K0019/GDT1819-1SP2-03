@@ -93,13 +93,13 @@ void Application::Init()
 void Application::Run()
 {
 	//Main Loop
-	Scene *scene = new Scene2();
+	Scene *scene = new SceneGame();
 	scene->Init();
 	//glfwSetKeyCallback(m_window, Scene1::key_callback);
 	glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); //! Using mouse cursor movement
 	glfwSetCursorPosCallback(m_window, Player::mouse_callback); //! Set function to call when mouse moves
 	glfwSetScrollCallback(m_window, Hotbar::scroll_callback); //! Set function to call when mouse wheel is scrolled
-	glfwSetFramebufferSizeCallback(m_window, Scene2::framebuffer_resize_callback); //! Set function to call when window is resized
+	glfwSetFramebufferSizeCallback(m_window, SceneGame::framebuffer_resize_callback); //! Set function to call when window is resized
 
 	m_timer.startTimer();    // Start timer to calculate how long it takes to render this frame
 	while (!glfwWindowShouldClose(m_window) && !IsKeyPressed(VK_ESCAPE))

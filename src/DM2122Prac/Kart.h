@@ -29,6 +29,7 @@ public:
 
 	void update(GLFWwindow* window, double deltaTime); // Move the kart and handle input
 	void updateOpenGL(unsigned int uSpotLight);
+	void update(GLFWwindow* window, double deltaTime, unsigned int uSpotLight, int PlayerID); // Move the kart and handle input
 	void render(unsigned int uMatrixMVS) const; // Render the kart
 
 	void reset(); // Reset kart position, rotation, velocity and gear
