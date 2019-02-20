@@ -25,10 +25,7 @@ void ObjectList::init()
 	meshes.push_back(MeshBuilder::GenerateMeshPlaceable("OBJ//PlaceableObjects//trackTest.obj", "Image//PlaceableObjects//trackTestUV.tga", type::SHADER_3, 10, 10, true));
 	meshes.push_back(MeshBuilder::GenerateMeshPlaceable("OBJ//PlaceableObjects//trackTurnAngled.obj", "Image//PlaceableObjects//trackTestUV.tga", type::SHADER_3, 10, 10, true));
 	meshes.push_back(MeshBuilder::GenerateMeshPlaceable("OBJ//PlaceableObjects//trackTurnCurved.obj", "Image//PlaceableObjects//trackTestUV.tga", type::SHADER_3, 10, 10, true));
-	/*
-		REPLACE LINE BELOW WITH MODIFICATION GATE
-	*/
-	meshes.push_back(MeshBuilder::GenerateMeshPlaceable("OBJ//PlaceableObjects//trackTurnCurved.obj", "Image//PlaceableObjects//trackTestUV.tga", type::SHADER_3, 2, 10, false));
+	meshes.push_back(MeshBuilder::GenerateMeshPlaceable("OBJ//PlaceableObjects/modi_gate.obj", "Image//PlaceableObjects//modi_gate.tga", type::SHADER_3, 2, 10, true));
 	
 }
 
