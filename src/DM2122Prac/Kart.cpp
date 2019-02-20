@@ -95,6 +95,9 @@ Kart::Kart(Mesh* basic, Mesh* pikachu, Mesh* eevee, Mesh*mew, Mesh*squirtle,
 
 	m_status = e_basic;
 	
+	Present = glfwJoystickPresent(GLFW_JOYSTICK_1);
+	
+	
 }
 
 // Destructor
@@ -137,6 +140,7 @@ void Kart::update(GLFWwindow* window, double deltaTime)
 	{
 		m_status = e_squirtle;
 	}
+	
 
 
 
@@ -463,11 +467,67 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 	}
 	else // player 2 
 	{
+	if (Present == 1) {
+		int axescount;
+		axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &axescount);
+		
+		//std::cout << "No of axes " << axes[0] << std::endl;
+		std::cout <<"Lefttrack pad X axis"<< axes[0] << std::endl;
+		std::cout <<"Lefttrack pad y axis"<< axes[1] << std::endl;
+	/*	std::cout <<"Righttrack pad x axis"<< axes[2] << std::endl;
+		std::cout <<"Righttrack pad y axis"<< axes[3] << std::endl;
+		std::cout <<"L2"<< axes[4] << std::endl;
+		std::cout <<"R2"<< axes[5] << std::endl;*/
+
+		int buttonscount;
+		 buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &buttonscount);
+		/*std::cout << "no of buttons : " << buttonscount << std :: endl;*/
+		/*if (GLFW_PRESS == buttons[0]) {
+			std::cout << " A button pressed" << std::endl;
+		}
+		if (GLFW_PRESS == buttons[1]) {
+			std::cout << "B pressed" << std::endl;
+		}
+		if (GLFW_PRESS == buttons[2]) {
+			std::cout << "X pressed" << std::endl;
+		}
+		if (GLFW_PRESS == buttons[3]) {
+			std::cout << "Y pressed" << std::endl;
+		}
+		if (GLFW_PRESS == buttons[4]) {
+			std::cout << " L1 pressed" << std::endl;
+		}
+		if (GLFW_PRESS == buttons[5]) {
+			std::cout << " R1 pressed" << std::endl;
+		}
+		if (GLFW_PRESS == buttons[6]) {
+			std::cout << " Back pressed" << std::endl;
+		}
+		if (GLFW_PRESS == buttons[7]) {
+			std::cout << " start pressed" << std::endl;
+		}
+		if (GLFW_PRESS == buttons[8]) {
+			std::cout << " Left Track pad is pressed" << std::endl;
+		}if (GLFW_PRESS == buttons[9]) {
+			std::cout << " Right Track pad is pressed" << std::endl;
+		}if (GLFW_PRESS == buttons[10]) {
+			std::cout << " UP is pressed" << std::endl;
+		}if (GLFW_PRESS == buttons[11]) {
+			std::cout << "  Right is pressed" << std::endl;
+		}if (GLFW_PRESS == buttons[12]) {
+			std::cout << "  Down is pressed" << std::endl;
+		}if (GLFW_PRESS == buttons[13]) {
+			std::cout << "  Left is pressed" << std::endl;
+		}*/
+		
+		const char* name = glfwGetJoystickName(GLFW_JOYSTICK_1);
+		
+	}
 	// Gear shift bounce time
 	gearShiftDelay -= deltaTime;
 
 	// Speed up/down
-	if (gearShiftDelay <= 0.0 && isPressed(window,GLFW_KEY_U))
+	if (gearShiftDelay <= 0.0 && (isPressed(window,GLFW_KEY_U)))
 	{
 		if (isDriveGear) // Driving
 		{
@@ -484,7 +544,7 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 			}
 		}
 	}
-	if (gearShiftDelay <= 0.0 && isPressed(window, GLFW_KEY_J))
+	if (gearShiftDelay <= 0.0 && (isPressed(window, GLFW_KEY_J)))
 	{
 		if (!isDriveGear) // Reverse
 		{
@@ -502,16 +562,60 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 		}
 	}
 	// Turn input
-	if (isPressed(window, GLFW_KEY_H))
+	if (isPressed(window, GLFW_KEY_H) )
 	{
 		turnForce += 6.0 * deltaTime;
 
 	}
-	if (isPressed(window, GLFW_KEY_K))
+	if (isPressed(window, GLFW_KEY_K) )
 	{
 		turnForce -= 6.0 * deltaTime;
 	}
+	// analog control
+	if (gearShiftDelay <= 0.0 && (axes[1] > 0))
+	{
+		if (isDriveGear) // Driving
+		{
+			speed += axes[1]* 50.0 * deltaTime;
+		}
+		else // Reverse
+		{
+			speed += axes[1] *50.0 * deltaTime;
+			if (speed > 0.0) // Check gear change
+			{
+				isDriveGear = true;
+				gearShiftDelay = 0.15;
+				speed = 0.0;
+			}
+		}
+	}
+	if (gearShiftDelay <= 0.0 && ( axes[1] < 0 ))
+	{
+		if (!isDriveGear) // Reverse
+		{
+			speed -= -axes[1]*21.0 * deltaTime;
+		}
+		else // Driving
+		{
+			speed -= -axes[1]*50.0 * deltaTime;
+			if (speed < 0.0) // Check gear change
+			{
+				isDriveGear = false;
+				gearShiftDelay = 0.15;
+				speed = 0.0;
+			}
+		}
+	}
+	// Turn input
+	if ( axes[2] < 0)
+	{
+		turnForce += -axes[2]*6.0 * deltaTime;
 
+	}
+	if ( axes[2] > 0)
+	{
+		turnForce -= axes[2]*6.0 * deltaTime;
+	}
 	// Friction / Air resistance
 	if (speed > 0.0)
 	{
