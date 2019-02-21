@@ -187,9 +187,11 @@
     <ClCompile Include="Source\ShaderPrograms.cpp" />
     <ClCompile Include="StaticPhysicsObject.cpp" />
     <ClCompile Include="StaticPhysicsObjectInternal.cpp" />
+    <ClCompile Include="NewTimer.cpp" />
     <ClCompile Include="TreeWinter.cpp" />
     <ClCompile Include="Triangle.cpp" />
     <ClCompile Include="UsefulFunctions.cpp" />
+    <ClCompile Include="WinLoseGraphic.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AABB.h" />
@@ -239,9 +241,11 @@
     <ClInclude Include="SpotLight.h" />
     <ClInclude Include="StaticPhysicsObject.h" />
     <ClInclude Include="StaticPhysicsObjectInternal.h" />
+    <ClInclude Include="NewTimer.h" />
     <ClInclude Include="TreeWinter.h" />
     <ClInclude Include="Triangle.h" />
     <ClInclude Include="UsefulFunctions.h" />
+    <ClInclude Include="WinLoseGraphic.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\AxesFragmentShader.frag" />

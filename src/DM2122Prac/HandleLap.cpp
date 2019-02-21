@@ -106,3 +106,16 @@ int HandleLap::getPlacing(const Kart* kart) const
 
 	return placing;
 }
+
+int HandleLap::getWinner() const
+{
+	for (int i = 0, size = static_cast<int>(karts.size()); i < size; ++i)
+	{
+		if (laps[i] >= 3)
+		{
+			return i;
+		}
+	}
+
+	return -1;
+}

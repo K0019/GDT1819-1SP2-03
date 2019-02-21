@@ -189,6 +189,37 @@ Mesh* MeshBuilder::GenerateXYPlane(const std::string& tex_file_path, float size,
 	return new Mesh(vertex_buffer_data, texture_buffer_data, index_buffer_data, shader, GL_TRIANGLES, tex_file_path.c_str());
 }
 
+Mesh* MeshBuilder::GenerateXYPlane(const std::string& tex_file_path, float x, float y, unsigned int repeat, type shader)
+{
+	// Determine length from 0 in x and y direction
+	x /= 2.0f;
+	y /= 2.0f;
+
+	// Populate VBO and EBO/IBO
+	std::vector<Vector3> vertex_buffer_data
+	{
+		Vector3(-x, y, 0.0f),
+		Vector3(x, y, 0.0f),
+		Vector3(-x, -y, 0.0f),
+		Vector3(x, -y, 0.0f)
+	};
+	std::vector<TexCoord> texture_buffer_data
+	{
+		{ 0.0f, static_cast<float>(repeat) },
+		{ static_cast<float>(repeat), static_cast<float>(repeat) },
+		{ 0.0f, 0.0f },
+		{ static_cast<float>(repeat), 0.0f }
+	};
+	std::vector<GLuint> index_buffer_data
+	{
+		1, 0, 2,
+		1, 2, 3
+	};
+
+	// Return created mesh
+	return new Mesh(vertex_buffer_data, texture_buffer_data, index_buffer_data, shader, GL_TRIANGLES, tex_file_path.c_str());
+}
+
 /******************************************************************************/
 /*!
 \brief

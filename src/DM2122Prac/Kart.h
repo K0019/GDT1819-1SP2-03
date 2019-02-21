@@ -47,9 +47,16 @@ public:
 		e_pikachu,
 		e_eevee,
 		e_mew,
-		e_squirtle
+		e_squirtle,
 	};
-
+	enum buff
+	{
+		b_stun,
+		b_slow,
+		b_confuse,
+		b_speed,
+		b_nothing,
+	};
 	bool player_used = false;
 	bool player_eevee_up = false;
 
@@ -69,11 +76,19 @@ public:
 	bool getStun1();
 	bool getStun2();
 
+	
+
+
+	status getStatus() const;
+	bool get_used() const;
+	buff getBuff() const;
+
 	void stop(); // Set kart velocity to 0
 protected:
 	virtual void moveObject(const Vector3& displacement);
 
 private:
+	buff m_buff;
 	status m_status;
 	Vector3 pos, velocity; // Position and velocity of kart
 	double yaw, pitch, roll, speed, turnForce, wheelRotation; // Misc. variables (UNUSED - pitch & roll)
@@ -87,7 +102,7 @@ private:
 	bool isDriveGear; // Drive/Reverse gear
 	double gearShiftDelay; // Bounce time for changing between drive and reverse gear
 	double skillDelay;
-
+	double buffDelay;
 	int Present;
 	int axescount;
 	const float * axes;

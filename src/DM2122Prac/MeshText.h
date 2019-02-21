@@ -10,7 +10,7 @@
 class MeshText : public Mesh
 {
 public:
-	explicit MeshText(const std::vector<Vector3>& vertexData, const std::vector<TexCoord>& texCoordData, const std::vector<GLuint>& indexData, const char* imageLocation); // Constructor
+	explicit MeshText(const std::vector<Vector3>& vertexData, const std::vector<TexCoord>& texCoordData, const std::vector<GLuint>& indexData, const char* imageLocation, type shaderType = type::SHADER_TEXT); // Constructor
 	virtual ~MeshText(); // Destructor
 
 	void PrintTextForward(const std::string& text, unsigned int uMatrixMVS, float x, float y, float size) const; // Print text from left to right
