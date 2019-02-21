@@ -25,6 +25,8 @@ enum type // Types of shaders available
 				   // SkyboxXXXXShader.XXXX
 	SHADER_TEXT, // Shader that renders meshes in 2D (no modification to view matrix needed)
 				 // TextXXXXShader.XXXX
+	SHADER_WINLOSE, // Shader that renders meshes in 2D with modifiable alpha
+					// TextVertexShader.vert, WinLoseFragmentShader.frag
 	NO_OF_SHADER // To be used internally, does not represent any shader
 };
 class ShaderProg

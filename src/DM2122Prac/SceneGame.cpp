@@ -86,8 +86,8 @@ void SceneGame::Init()
 	Map = new PlaceObjectHandler(&objectList, playerDummy, hotbar);
 	Map->Loadmap();
 	handleLap = new HandleLap(&objectList, { player[0]->getCar(), player[1]->getCar() });
-	winLoseGraphic = new WinLoseGraphic(MeshBuilder::GenerateXYPlane("Image//winner.tga", 6.0f, 3.375f, 1, type::SHADER_TEXT),
-										MeshBuilder::GenerateXYPlane("Image//loser.tga", 6.0f, 3.375f, 1, type::SHADER_TEXT));
+	winLoseGraphic = new WinLoseGraphic(MeshBuilder::GenerateXYPlane("Image//winner.tga", 6.0f, 3.375f, 1, type::SHADER_WINLOSE),
+										MeshBuilder::GenerateXYPlane("Image//loser.tga", 6.0f, 3.375f, 1, type::SHADER_WINLOSE));
 
 	timer = new Timer();
 

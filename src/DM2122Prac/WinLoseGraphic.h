@@ -13,7 +13,7 @@ public:
 
 	void registerWin(int winnerID);
 
-	void render(unsigned int uMatrixMVS) const;
+	void render(unsigned int uMatrixMVS);
 protected:
 
 private:
@@ -23,6 +23,7 @@ private:
 	int winnerID;
 
 	StopWatch* timer;
+	double totalTime;
 };
 
 #endif // !WINLOSEGRAPHIC_H

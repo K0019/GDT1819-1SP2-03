@@ -913,9 +913,6 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 				break;
 			}
 		}
-		
-
-
 
 		// analog control
 		if (Present == 1)

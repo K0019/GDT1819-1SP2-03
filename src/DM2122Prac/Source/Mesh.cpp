@@ -264,6 +264,7 @@ void Mesh::preRenderSetting() const
 		glUniform1f(glGetUniformLocation(shader::container.getID(type::SHADER_3), "material.shininess"), shininess);
 		break;
 	case type::SHADER_TEXT: // Text
+	case type::SHADER_WINLOSE:
 		glDisable(GL_DEPTH_TEST);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, textureID);
@@ -277,6 +278,7 @@ void Mesh::postRenderSetting() const
 	switch (shaderType)
 	{
 	case type::SHADER_TEXT: // Text
+	case type::SHADER_WINLOSE:
 		glEnable(GL_DEPTH_TEST);
 		break;
 	}

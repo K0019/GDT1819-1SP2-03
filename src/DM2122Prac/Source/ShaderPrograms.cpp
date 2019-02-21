@@ -65,6 +65,11 @@ void ShaderProg::init()
 		"Shader//TextFragmentShader.frag",
 		""
 	);
+	shader[type::SHADER_WINLOSE] = LoadShaders(
+		"Shader//TextVertexShader.vert",
+		"Shader//WinLoseFragmentShader.frag",
+		""
+	);
 
 	// Set uniform block indexes
 	/* 
@@ -96,6 +101,12 @@ void ShaderProg::init()
 	useShader(type::SHADER_TEXT);
 	glUniform1i(glGetUniformLocation(getID(type::SHADER_TEXT), "material.diffuse"), 0);
 	glUniform1i(glGetUniformLocation(getID(type::SHADER_TEXT), "material.specular"), 1);
+	setUniformID(type::SHADER_WINLOSE, getUniformID(type::SHADER_WINLOSE, "MatrixMV"), 0);
+	setUniformID(type::SHADER_WINLOSE, getUniformID(type::SHADER_WINLOSE, "MatrixP"), 1);
+	useShader(type::SHADER_WINLOSE);
+	glUniform1i(glGetUniformLocation(getID(type::SHADER_WINLOSE), "material.diffuse"), 0);
+	glUniform1i(glGetUniformLocation(getID(type::SHADER_WINLOSE), "material.specular"), 1);
+	glUniform1f(glGetUniformLocation(getID(type::SHADER_WINLOSE), "alpha"), 1.0f);
 }
 
 // Bind the specified shader

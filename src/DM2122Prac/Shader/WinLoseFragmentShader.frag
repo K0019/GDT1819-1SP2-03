@@ -25,5 +25,6 @@ uniform float alpha;
 void main()
 {
 	// Apply color sampled from texture
-	color = vec4(vec3(texture(material.diffuse, texCoord)), alpha);
+	color = texture(material.diffuse, texCoord);
+	color.w *= alpha;
 }
