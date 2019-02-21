@@ -74,3 +74,35 @@ void HandleLap::removeKart(const Kart* kart)
 		}
 	}
 }
+
+int HandleLap::getPlacing(const Kart* kart) const
+{
+	int index = 0;
+	for (auto& k : karts)
+	{
+		if (kart == k)
+		{
+			break;
+		}
+		++index;
+	}
+
+	int placing = 1;
+	for (int i = 0, size = static_cast<int>(karts.size()); i < size; ++i)
+	{
+		if (laps[i] > laps[index])
+		{
+			++placing;
+			continue;
+		}
+		if (laps[i] == laps[index])
+		{
+			if (location[i] > location[index])
+			{
+				++placing;
+			}
+		}
+	}
+
+	return placing;
+}
