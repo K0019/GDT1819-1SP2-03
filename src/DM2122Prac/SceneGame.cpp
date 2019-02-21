@@ -87,6 +87,8 @@ void SceneGame::Init()
 	Map->Loadmap();
 	handleLap = new HandleLap(&objectList, { player[0]->getCar(), player[1]->getCar() });
 
+	timer = new Timer();
+
 	glViewport(0, 0, width * 0.5, height);
 	StartView(player[0]);
 
@@ -139,6 +141,7 @@ void SceneGame::Render()
 
 	// Render text
 	text->PrintTextForward("FPS:" + calculateFPS(), uMatrixMVS, 0.0f,19.f, 1.0f);
+	text->PrintTextBackward("Elapsed:" + timer->getTimeText() + "s", uMatrixMVS, 19.0f, 19.0f, 1.0f);
 
 	// Reset projection
 	projection.SetToPerspective(55.0, static_cast<double>(width) / 2.0 / static_cast<double>(height), 0.1, 100.0);
@@ -169,6 +172,7 @@ void SceneGame::Exit()
 	delete playerDummy;
 	delete text;
 	delete Map;
+	delete timer;
 
 	// Free memory allocated for UBOs
 	glDeleteBuffers(1, &uMatrixMVS);

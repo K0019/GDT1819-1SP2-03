@@ -18,6 +18,7 @@
 #include "UsefulFunctions.h"
 #include "c_m_Player.h"
 #include "HandleLap.h"
+#include "NewTimer.h"
 
 #include "PlaceObjectHandler.h"
 
@@ -67,6 +68,7 @@ private :
 	Mesh* GUI[3]; // this is for GUI
 	int placing; // this is the placing for the playter
 	 
+	Timer* timer;
 
 	MeshText* text; // Text mesh
 
