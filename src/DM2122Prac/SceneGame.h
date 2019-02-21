@@ -18,6 +18,8 @@
 #include "UsefulFunctions.h"
 #include "c_m_Player.h"
 #include "HandleLap.h"
+#include "NewTimer.h"
+#include "WinLoseGraphic.h"
 
 #include "PlaceObjectHandler.h"
 
@@ -63,6 +65,7 @@ private :
 	Hotbar* hotbar; // Hotbar object
 	PlaceObjectHandler* Map;
 	HandleLap* handleLap;
+	WinLoseGraphic* winLoseGraphic;
 	ObjectList objectList; // List of objects (meshPlaceable)
 
 	Lamp* lamp[1]; // Pointer to lamp
@@ -70,6 +73,7 @@ private :
 	Mesh* GUI[8]; // this is for GUI
 	int placing; // this is the placing for the playter
 	 
+	Timer* timer;
 
 	MeshText* text; // Text mesh
 

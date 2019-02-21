@@ -91,8 +91,12 @@ void SceneGame::Init()
 	GUI[7] = MeshBuilder::GenerateXYPlane("Image//slow.tga", 2.0f, 1, type::SHADER_TEXT);
 
 	Map = new PlaceObjectHandler(&objectList, playerDummy, hotbar);
-
+	Map->Loadmap();
 	handleLap = new HandleLap(&objectList, { player[0]->getCar(), player[1]->getCar() });
+	winLoseGraphic = new WinLoseGraphic(MeshBuilder::GenerateXYPlane("Image//winner.tga", 6.0f, 3.375f, 1, type::SHADER_TEXT),
+										MeshBuilder::GenerateXYPlane("Image//loser.tga", 6.0f, 3.375f, 1, type::SHADER_TEXT));
+
+	timer = new Timer();
 
 	glViewport(0, 0, width * 0.5, height);
 	StartView(player[0]);
@@ -122,6 +126,8 @@ void SceneGame::Update(double dt, GLFWwindow * programID)
 	Physics::physicsEngine.update();
 	ModGate::detector.update();
 	handleLap->update();
+
+	winLoseGraphic->registerWin(handleLap->getWinner());
 }
 
 void SceneGame::Render()
@@ -146,6 +152,9 @@ void SceneGame::Render()
 
 	// Render text
 	text->PrintTextForward("FPS:" + calculateFPS(), uMatrixMVS, 0.0f,19.f, 1.0f);
+	text->PrintTextBackward("Elapsed:" + timer->getTimeText() + "s", uMatrixMVS, 19.0f, 19.0f, 1.0f);
+
+	winLoseGraphic->render(uMatrixMVS);
 
 	// Reset projection
 	projection.SetToPerspective(55.0, static_cast<double>(width) / 2.0 / static_cast<double>(height), 0.1, 100.0);
@@ -176,6 +185,8 @@ void SceneGame::Exit()
 	delete playerDummy;
 	delete text;
 	delete Map;
+	delete winLoseGraphic;
+	delete timer;
 
 	// Free memory allocated for UBOs
 	glDeleteBuffers(1, &uMatrixMVS);
@@ -231,7 +242,7 @@ void SceneGame::renderView(unsigned int view)
 	model.Translate(15.0f, 0.0f, 0.0f);
 	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixMVS);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), model.Top().a);
-	GUI[placing]->Render();
+	GUI[handleLap->getPlacing(player[view]->getCar())]->Render();
 	placing = 1;
 	model.PopMatrix();
 	

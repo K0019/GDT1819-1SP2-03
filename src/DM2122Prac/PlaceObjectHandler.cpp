@@ -34,25 +34,7 @@ void PlaceObjectHandler::update(GLFWwindow* window, double dt)
 	// Load save file
 	if (isPressed(window, GLFW_KEY_M))
 	{
-		objectList->deleteAll();
-		ifstream read;
-		read.open("save.txt");
-		//for (int i = 0; i < 100; i++)
-		while(read >> id >> gridx >> gridy >> gridz >> rotate)
-		{
-			//read >> id >> gridx >> gridy >> gridz >> rotate;
-			if (id == 0 && gridx == 0 && gridz == 0 && rotate == 0)
-			{
-			}
-			else
-			{
-				objectList->addObject(id, gridx, gridz, static_cast<Object::Rotation>(rotate));
-			}
-			
-		}
-		read.close();
-
-		objectList->searchTrackPath();
+		Loadmap();
 	}
 	// Rotate selection
 	if (isPressed(window, GLFW_KEY_R))
@@ -125,6 +107,29 @@ void PlaceObjectHandler::update(GLFWwindow* window, double dt)
 Object::Rotation PlaceObjectHandler::getRotation() const
 {
 	return rotation;
+}
+
+void PlaceObjectHandler::Loadmap()
+{
+	objectList->deleteAll();
+	ifstream read;
+	read.open("save.txt");
+	//for (int i = 0; i < 100; i++)
+	while (read >> id >> gridx >> gridy >> gridz >> rotate)
+	{
+		//read >> id >> gridx >> gridy >> gridz >> rotate;
+		if (id == 0 && gridx == 0 && gridz == 0 && rotate == 0)
+		{
+		}
+		else
+		{
+			objectList->addObject(id, gridx, gridz, static_cast<Object::Rotation>(rotate));
+		}
+
+	}
+	read.close();
+
+	objectList->searchTrackPath();
 }
 
 // Draw selection

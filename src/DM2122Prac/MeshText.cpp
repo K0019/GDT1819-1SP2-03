@@ -1,8 +1,8 @@
 #include "MeshText.h"
 
 // Constructor
-MeshText::MeshText(const std::vector<Vector3>& vertexData, const std::vector<TexCoord>& texCoordData, const std::vector<GLuint>& indexData, const char* imageLocation)
-	: Mesh(vertexData, texCoordData, indexData, type::SHADER_TEXT, GL_TRIANGLES, imageLocation)
+MeshText::MeshText(const std::vector<Vector3>& vertexData, const std::vector<TexCoord>& texCoordData, const std::vector<GLuint>& indexData, const char* imageLocation, type shaderType)
+	: Mesh(vertexData, texCoordData, indexData, shaderType, GL_TRIANGLES, imageLocation)
 {
 
 }
@@ -41,7 +41,6 @@ void MeshText::PrintTextForward(const std::string& text, unsigned int uMatrixMVS
 	// Set pre-render settings
 	preRenderSetting();
 	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixMVS);
-	
 
 	// Transform text
 	MS model;
@@ -83,19 +82,24 @@ void MeshText::PrintTextBackward(std::string text, unsigned int uMatrixMVS, floa
 	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixMVS);
 
 	// Transform text
-	Mtx44 model;
+	MS model;
+	model.PushMatrix();
+	model.Scale(size, size, size);
 	// Offset from right
 	float offset = 0.0f;
 
 	// Render the text
 	for (auto& c : text)
 	{
-		model.SetToTranslation(x + static_cast<float>(offset), y, 0.0f);
-		offset -= 1.0f;
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), model.a);
+		model.PushMatrix();
+		model.Translate(x + static_cast<float>(offset), y, 0.0f);
+		offset -= 0.7f;
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), model.Top().a);
 
 		Render(c);
+		model.PopMatrix();
 	}
+	model.PopMatrix();
 
 	// Set post-render settings
 	postRenderSetting();

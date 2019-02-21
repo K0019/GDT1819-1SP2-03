@@ -19,6 +19,8 @@ public:
 	void drawSelection(unsigned int uMatrixMVS) const; // Draw selection
 
 	Object::Rotation getRotation() const; // Get selection rotation
+
+	void  Loadmap();
 protected:
 
 private:

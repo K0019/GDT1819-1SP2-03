@@ -35,6 +35,7 @@ public:
 	static MeshSprite* GenerateSprite(unsigned int numRow, unsigned int numCol, const char* imageLocation); // Create a meshSprite from a tga file
 	static MeshFloor* GenerateGrass(const std::string& tex_file_path, float size, unsigned int repeat); // Create a meshFloor from a tga file
 	static Mesh* GenerateXYPlane(const std::string& tex_file_path, float size, unsigned int repeat, type shader); // Create a vertical mesh from a tga file
+	static Mesh* GenerateXYPlane(const std::string& tex_file_path, float x, float y, unsigned int repeat, type shader); // Create vertical mesh from a tga file
 
 	// The function names literally spell out what they do
 	// They allocate memory for a mesh of the function's shape

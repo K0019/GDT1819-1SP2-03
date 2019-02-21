@@ -14,6 +14,9 @@ public:
 
 	void registerKart(const Kart* kart);
 	void removeKart(const Kart* kart);
+
+	int getPlacing(const Kart* kart) const;
+	int getWinner() const;
 protected:
 
 private:

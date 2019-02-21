@@ -105,7 +105,7 @@ Kart::Kart(Mesh* basic, Mesh* pikachu, Mesh* eevee, Mesh*mew, Mesh*squirtle,
 
 	srand((unsigned)time(NULL));
 
-	m_status = e_squirtle;
+	m_status = e_basic;
 	m_buff = b_nothing;
 
 
