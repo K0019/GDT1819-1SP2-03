@@ -19,6 +19,7 @@ ObjectList::~ObjectList()
 	}
 
 	delete finishLineMesh;
+	ModGate::detector.removeObjects();
 }
 
 // Load meshPlaceables
@@ -32,6 +33,8 @@ void ObjectList::init()
 	finishLineMesh = MeshBuilder::GenerateMeshPlaceable("OBJ//PlaceableObjects//finishLine.obj", "Image//PlaceableObjects//finishLine.tga", type::SHADER_3, 2, 10, false);
 	finishLine.push_back(new Object(finishLineMesh, 0, 0, Object::Rotation::NORTH));
 	finishLine.push_back(new Object(meshes[0], 0, 0, Object::Rotation::NORTH));
+
+	ModGate::detector.registerObjects(&objects);
 }
 
 // Attempt to add an object of meshPlaceable ID at a certain grid area and rotation
@@ -72,17 +75,7 @@ void ObjectList::saveObject()
 
 void ObjectList::deleteAll()
 {
-	ofstream file;
-	file.open("delete.txt");
-	for (const auto& obj : objects)
-	{
-		file << obj->getID() << " ";
-		file << obj->getGridX() << " ";
-		file << obj->getGridY() << " ";
-		file << obj->getGridZ() << " ";
-		file << obj->getrotation() << endl;
-	}
-	file.close();
+	objects.clear();
 }
 
 // Attempt to delete any object that intersects a certain grid area and rotation

@@ -49,7 +49,25 @@ public:
 		e_mew,
 		e_squirtle
 	};
+
+	bool player_used = false;
+	bool player_eevee_up = false;
+
+	static bool player2_slow;
+	static bool player1_slow;
+	static bool player2_invert_control;
+	static bool player1_invert_control;
+	static bool player1_stun;
+	static bool player2_stun;
+
 	void changeStatus();
+
+	bool getInvert2();
+	bool getInvert1();
+	bool getSlow2();
+	bool getSlow1();
+	bool getStun1();
+	bool getStun2();
 
 	void stop(); // Set kart velocity to 0
 protected:
@@ -68,6 +86,13 @@ private:
 
 	bool isDriveGear; // Drive/Reverse gear
 	double gearShiftDelay; // Bounce time for changing between drive and reverse gear
+	double skillDelay;
+
+	int Present;
+	int axescount;
+	const float * axes;
+	int buttonscount;
+	const unsigned char* buttons;
 };
 
 #endif // !KART_H

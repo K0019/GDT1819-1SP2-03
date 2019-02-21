@@ -3,6 +3,7 @@
 ModificationGateDetector ModGate::detector = ModificationGateDetector();
 
 ModificationGateDetector::ModificationGateDetector()
+	: objects(nullptr)
 {
 
 }
@@ -14,24 +15,27 @@ ModificationGateDetector::~ModificationGateDetector()
 
 void ModificationGateDetector::update()
 {
-	int index = 0;
-	for (auto& k : karts)
+	if (objects != nullptr)
 	{
-		bool detected = false;
-		for (auto& o : objects)
+		int index = 0;
+		for (auto& k : karts)
 		{
-			if (CollisionChecker::collide(k->getCollisionBox(), o->getAABB()))
+			bool detected = false;
+			for (auto& o : *objects)
 			{
-				detected = true;
-				if (!changed[index])
+				if (o->getID() == 4 && CollisionChecker::collide(k->getCollisionBox(), o->getAABB()))
 				{
-					k->changeStatus();
+					detected = true;
+					if (!changed[index])
+					{
+						k->changeStatus();
+					}
+					break;
 				}
-				break;
 			}
-		}
 
-		changed[index++] = detected;
+			changed[index++] = detected;
+		}
 	}
 }
 
@@ -41,9 +45,9 @@ void ModificationGateDetector::registerKart(Kart* kart)
 	changed.push_back(false);
 }
 
-void ModificationGateDetector::registerGate(const Object* gate)
+void ModificationGateDetector::registerObjects(std::vector<Object*>* objects)
 {
-	objects.push_back(gate);
+	this->objects = objects;
 }
 
 void ModificationGateDetector::removeKart(Kart* kart)
@@ -61,14 +65,7 @@ void ModificationGateDetector::removeKart(Kart* kart)
 	}
 }
 
-void ModificationGateDetector::removeGate(const Object* gate)
+void ModificationGateDetector::removeObjects()
 {
-	for (std::vector<const Object*>::const_iterator o = objects.begin(); o != objects.end(); ++o)
-	{
-		if (*o == gate)
-		{
-			objects.erase(o);
-			break;
-		}
-	}
+	objects = nullptr;
 }

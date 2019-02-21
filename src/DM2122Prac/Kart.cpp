@@ -1,5 +1,12 @@
 #include "Kart.h"
+#include <chrono>
 
+bool Kart::player2_invert_control = false;
+bool Kart::player1_invert_control = false;
+bool Kart::player2_slow = false;
+bool Kart::player1_slow = false;
+bool Kart::player1_stun = false;
+bool Kart::player2_stun = false;
 // Constructor
 Kart::Kart(Mesh* basic, Mesh* pikachu, Mesh* eevee, Mesh*mew, Mesh*squirtle,
 	Mesh* basic_wheel, Mesh* pikachu_wheel, Mesh* eevee_wheel, Mesh* mew_wheel, Mesh* squirtle_wheel, Mesh* steeringWheel,
@@ -94,7 +101,12 @@ Kart::Kart(Mesh* basic, Mesh* pikachu, Mesh* eevee, Mesh*mew, Mesh*squirtle,
 		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 96, 4, &spotLights[i].cosOuter);
 	}
 
-	m_status = e_basic;
+	srand((unsigned)time(NULL));
+
+	m_status = e_mew;
+	
+	Present = glfwJoystickPresent(GLFW_JOYSTICK_1);
+	std::cout << Present;
 	
 }
 
@@ -118,31 +130,61 @@ Kart::~Kart()
 // Move the kart and handle input
 void Kart::update(GLFWwindow* window, double deltaTime)
 {
-	if (isPressed(window, GLFW_KEY_P))
-	{
-		m_status = e_basic;
-	}
-	if (isPressed(window, GLFW_KEY_O))
-	{
-		m_status = e_pikachu;
-	}
-	if (isPressed(window, GLFW_KEY_L))
-	{
-		m_status = e_eevee;
-	}
-	if (isPressed(window, GLFW_KEY_K))
-	{
-		m_status = e_mew;
-	}
-	if (isPressed(window, GLFW_KEY_I))
-	{
-		m_status = e_squirtle;
-	}
+	if (Present == 1) {
+		axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &axescount);
+
+		std::cout << "No of axes " << axes[0] << std::endl;
+		//std::cout << "Lefttrack pad X axis" << axes[0] << std::endl;
+		//std::cout << "Lefttrack pad y axis" << axes[1] << std::endl;
+		/*	std::cout <<"Righttrack pad x axis"<< axes[2] << std::endl;
+		std::cout <<"Righttrack pad y axis"<< axes[3] << std::endl;
+		std::cout <<"L2"<< axes[4] << std::endl;
+		std::cout <<"R2"<< axes[5] << std::endl;*/
 
 
+		buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &buttonscount);
+		/*std::cout << "no of buttons : " << buttonscount << std :: endl;*/
+		/*if (GLFW_PRESS == buttons[0]) {
+		std::cout << " A button pressed" << std::endl;
+		}
+		if (GLFW_PRESS == buttons[1]) {
+		std::cout << "B pressed" << std::endl;
+		}
+		if (GLFW_PRESS == buttons[2]) {
+		std::cout << "X pressed" << std::endl;
+		}
+		if (GLFW_PRESS == buttons[3]) {
+		std::cout << "Y pressed" << std::endl;
+		}
+		if (GLFW_PRESS == buttons[4]) {
+		std::cout << " L1 pressed" << std::endl;
+		}
+		if (GLFW_PRESS == buttons[5]) {
+		std::cout << " R1 pressed" << std::endl;
+		}
+		if (GLFW_PRESS == buttons[6]) {
+		std::cout << " Back pressed" << std::endl;
+		}
+		if (GLFW_PRESS == buttons[7]) {
+		std::cout << " start pressed" << std::endl;
+		}
+		if (GLFW_PRESS == buttons[8]) {
+		std::cout << " Left Track pad is pressed" << std::endl;
+		}if (GLFW_PRESS == buttons[9]) {
+		std::cout << " Right Track pad is pressed" << std::endl;
+		}if (GLFW_PRESS == buttons[10]) {
+		std::cout << " UP is pressed" << std::endl;
+		}if (GLFW_PRESS == buttons[11]) {
+		std::cout << "  Right is pressed" << std::endl;
+		}if (GLFW_PRESS == buttons[12]) {
+		std::cout << "  Down is pressed" << std::endl;
+		}if (GLFW_PRESS == buttons[13]) {
+		std::cout << "  Left is pressed" << std::endl;
+		}*/
 
+		const char* name = glfwGetJoystickName(GLFW_JOYSTICK_1);
 
-
+	}
 
 	// Gear shift bounce time
 	gearShiftDelay -= deltaTime;
@@ -191,7 +233,53 @@ void Kart::update(GLFWwindow* window, double deltaTime)
 	{
 		turnForce -= 6.0 * deltaTime;
 	}
+	if (Present == 1) {
+		// analog control
+		if (gearShiftDelay <= 0.0 && (axes[1] > 0))
+		{
+			if (isDriveGear) // Driving
+			{
+				speed += axes[1] * 50.0 * deltaTime;
+			}
+			else // Reverse
+			{
+				speed += axes[1] * 50.0 * deltaTime;
+				if (speed > 0.0) // Check gear change
+				{
+					isDriveGear = true;
+					gearShiftDelay = 0.15;
+					speed = 0.0;
+				}
+			}
+		}
+		if (gearShiftDelay <= 0.0 && (axes[1] < 0))
+		{
+			if (!isDriveGear) // Reverse
+			{
+				speed -= -axes[1] * 21.0 * deltaTime;
+			}
+			else // Driving
+			{
+				speed -= -axes[1] * 50.0 * deltaTime;
+				if (speed < 0.0) // Check gear change
+				{
+					isDriveGear = false;
+					gearShiftDelay = 0.15;
+					speed = 0.0;
+				}
+			}
+		}
+		// Turn input
+		if (axes[2] < 0)
+		{
+			turnForce += -axes[2] * 6.0 * deltaTime;
 
+		}
+		if (axes[2] > 0)
+		{
+			turnForce -= axes[2] * 6.0 * deltaTime;
+		}
+	}
 	// Friction / Air resistance
 	if (speed > 0.0)
 	{
@@ -306,56 +394,253 @@ void Kart::updateOpenGL(unsigned int uSpotLight)
 
 void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight, int PlayerID)
 {
+	if (Present == 1) {
+		axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &axescount);
+
+		//std::cout << "No of axes " << axescount << std::endl;
+		//std::cout << "Lefttrack pad X axis" << axes[0] << std::endl;
+		//std::cout << "Lefttrack pad y axis" << axes[1] << std::endl;
+		/*	std::cout <<"Righttrack pad x axis"<< axes[2] << std::endl;
+		std::cout <<"Righttrack pad y axis"<< axes[3] << std::endl;
+		std::cout <<"L2"<< axes[4] << std::endl;
+		std::cout <<"R2"<< axes[5] << std::endl;*/
+
+
+		buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &buttonscount);
+		/*std::cout << "no of buttons : " << buttonscount << std :: endl;*/
+		/*if (GLFW_PRESS == buttons[0]) {
+		std::cout << " A button pressed" << std::endl;
+		}
+		if (GLFW_PRESS == buttons[1]) {
+		std::cout << "B pressed" << std::endl;
+		}
+		if (GLFW_PRESS == buttons[2]) {
+		std::cout << "X pressed" << std::endl;
+		}
+		if (GLFW_PRESS == buttons[3]) {
+		std::cout << "Y pressed" << std::endl;
+		}
+		if (GLFW_PRESS == buttons[4]) {
+		std::cout << " L1 pressed" << std::endl; ///////
+		}
+		if (GLFW_PRESS == buttons[5]) {
+		std::cout << " R1 pressed" << std::endl;
+		}
+		if (GLFW_PRESS == buttons[6]) {
+		std::cout << " Back pressed" << std::endl;
+		}
+		if (GLFW_PRESS == buttons[7]) {
+		std::cout << " start pressed" << std::endl;
+		}
+		if (GLFW_PRESS == buttons[8]) {
+		std::cout << " Left Track pad is pressed" << std::endl;
+		}if (GLFW_PRESS == buttons[9]) {
+		std::cout << " Right Track pad is pressed" << std::endl;
+		}if (GLFW_PRESS == buttons[10]) {
+		std::cout << " UP is pressed" << std::endl;
+		}if (GLFW_PRESS == buttons[11]) {
+		std::cout << "  Right is pressed" << std::endl;
+		}if (GLFW_PRESS == buttons[12]) {
+		std::cout << "  Down is pressed" << std::endl;
+		}if (GLFW_PRESS == buttons[13]) {
+		std::cout << "  Left is pressed" << std::endl;
+		}*/
+
+		const char* name = glfwGetJoystickName(GLFW_JOYSTICK_1);
+
+	}
 	if (PlayerID == 1) {
 		// Gear shift bounce time
 		gearShiftDelay -= deltaTime;
-
+		skillDelay -= deltaTime;
 		// Speed up/down
 		if (gearShiftDelay <= 0.0 && isPressed(window, GLFW_KEY_W))
 		{
-			if (isDriveGear) // Driving
+			if (Kart::getInvert1() == false)
 			{
-				speed += 50.0 * deltaTime;
-			}
-			else // Reverse
-			{
-				speed += 50.0 * deltaTime;
-				if (speed > 0.0) // Check gear change
+				if (isDriveGear) // Driving
 				{
-					isDriveGear = true;
-					gearShiftDelay = 0.15;
-					speed = 0.0;
+					speed += 50.0 * deltaTime;
 				}
+				else // Reverse
+				{
+					speed += 50.0 * deltaTime;
+					if (speed > 0.0) // Check gear change
+					{
+						isDriveGear = true;
+						gearShiftDelay = 0.15;
+						speed = 0.0;
+					}
+				}
+			}
+			if (Kart::getInvert1() == true)
+			{
+				if (!isDriveGear) // Reverse
+				{
+					speed -= 21.0 * deltaTime;
+				}
+				else // Driving
+				{
+					speed -= 50.0 * deltaTime;
+					if (speed < 0.0) // Check gear change
+					{
+						isDriveGear = false;
+						gearShiftDelay = 0.15;
+						speed = 0.0;
+					}
+				}
+				
 			}
 		}
 		if (gearShiftDelay <= 0.0 && isPressed(window, GLFW_KEY_S))
 		{
-			if (!isDriveGear) // Reverse
+			if (Kart::getInvert1() == false)
 			{
-				speed -= 21.0 * deltaTime;
-			}
-			else // Driving
-			{
-				speed -= 50.0 * deltaTime;
-				if (speed < 0.0) // Check gear change
+				if (!isDriveGear) // Reverse
 				{
-					isDriveGear = false;
-					gearShiftDelay = 0.15;
-					speed = 0.0;
+					speed -= 21.0 * deltaTime;
+				}
+				else // Driving
+				{
+					speed -= 50.0 * deltaTime;
+					if (speed < 0.0) // Check gear change
+					{
+						isDriveGear = false;
+						gearShiftDelay = 0.15;
+						speed = 0.0;
+					}
+				}
+			}
+			else
+			{
+				if (isDriveGear) // Driving
+				{
+					speed += 50.0 * deltaTime;
+				}
+				else // Reverse
+				{
+					speed += 50.0 * deltaTime;
+					if (speed > 0.0) // Check gear change
+					{
+						isDriveGear = true;
+						gearShiftDelay = 0.15;
+						speed = 0.0;
+					}
 				}
 			}
 		}
 		// Turn input
 		if (isPressed(window, GLFW_KEY_A))
 		{
-			turnForce += 6.0 * deltaTime;
+			if (Kart::getInvert1() == false)
+			{
+				turnForce += 6.0 * deltaTime;
+			}
+			if (Kart::getInvert1() == true)
+			{
+				turnForce -= 6.0 * deltaTime;
+			}
 
 		}
 		if (isPressed(window, GLFW_KEY_D))
 		{
-			turnForce -= 6.0 * deltaTime;
+			if (Kart::getInvert1() == false)
+			{
+				turnForce -= 6.0 * deltaTime;
+			}
+			if (Kart::getInvert1() == true)
+			{
+				turnForce += 6.0 * deltaTime;
+			}
 		}
+		//use skill
+		if (isPressed(window, GLFW_KEY_Q))
+		{
+			std::cout << "here" << std::endl;
+			switch (m_status)
+			{
+			case e_basic:
+				break;
+			case e_pikachu:
+				if (player_used == false)
+				{
+					player2_stun = true;
+					skillDelay = 0.5;
+				}
+				break;
+			case e_eevee:
+				if (player_used == false)
+				{
+					player_eevee_up = true;
+					skillDelay = 1.5;
+				}
+				break;
+			case e_mew:
+				if (player_used == false)
+				{
+					player2_invert_control = true;
+					skillDelay = 3.5;
+				}
+				break;
+			case e_squirtle:
+				if (player_used == false)
+				{
+					player2_slow = true;
+					skillDelay = 1.5;
+					std::cout << "here" << std::endl;
+				}
+				break;
+			}
+		}
+		//eevee speed up
+		if (player_eevee_up == true)
+		{
 
+			if (skillDelay <= 0.0)
+			{
+				speed += 75 * deltaTime;
+
+			}
+			player_eevee_up = false;
+			player_used = true;
+
+		}
+		//Mew invert 
+		if (player2_invert_control == true)
+		{
+			player_used = true;
+			if (skillDelay <= 0.0)
+			{
+				player2_invert_control = false;
+
+			}
+		}
+		//squirtle slow
+		if (player2_slow == true)
+		{
+			player_used = true;
+			if (skillDelay <= 0.0)
+			{
+				player2_slow = false;
+
+			}
+		}
+		if (player2_stun == true)
+		{
+			player_used = true;
+			if (skillDelay <= 0.0)
+			{
+				player2_stun = false;
+			}
+		}
+		if (getStun1() == true)
+		{
+			speed = 0;
+		}
+		if (getSlow1() == true)
+		{
+			speed -= 40 * deltaTime;
+		}
 		// Friction / Air resistance
 		if (speed > 0.0)
 		{
@@ -377,14 +662,19 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 		// Turnforce decay
 		turnForce *= 0.9;
 		if (turnForce < 0.05 && turnForce > -0.05)
+		{
 			turnForce = 0.0;
-
+		}
 		// Turnforce clamp
 		if (turnForce < -6.0)
+		{
 			turnForce = -6.0;
+		}
 		else if (turnForce > 6.0)
-			turnForce = 6.0;
+		{
 
+			turnForce = 6.0;
+		}
 		// Calculate Rotation
 		if (speed != 0.0)
 		{
@@ -404,14 +694,28 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 
 		// Wheel rotation
 		if (speed >= 0.0)
+		{
 			wheelRotation += velocity.Length() * 40.0f * deltaTime;
+		}
 		else
+		{
+
 			wheelRotation -= velocity.Length() * 40.0f * deltaTime;
+		}
 		// Keep rotation within 0 - 360
 		if (wheelRotation > 360.0f)
+		{
+
 			wheelRotation -= 360.0f;
+		}
 		else if (wheelRotation < 0.0f)
+		{
+
 			wheelRotation += 360.0f;
+		}
+
+
+
 
 		// Move
 		pos += velocity * static_cast<float>(deltaTime);
@@ -464,161 +768,469 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 	}
 	else // player 2 
 	{
-	// Gear shift bounce time
-	gearShiftDelay -= deltaTime;
+		// Gear shift bounce time
+		gearShiftDelay -= deltaTime;
+		skillDelay -= deltaTime;
 
-	// Speed up/down
-	if (gearShiftDelay <= 0.0 && isPressed(window,GLFW_KEY_U))
-	{
-		if (isDriveGear) // Driving
+		// Speed up/down
+		if (gearShiftDelay <= 0.0 && (isPressed(window, GLFW_KEY_U)))
 		{
-			speed += 50.0 * deltaTime;
-		}
-		else // Reverse
-		{
-			speed += 50.0 * deltaTime;
-			if (speed > 0.0) // Check gear change
+			if (Kart::getInvert2() == false)
 			{
-				isDriveGear = true;
-				gearShiftDelay = 0.15;
-				speed = 0.0;
+				if (isDriveGear) // Driving
+				{
+					speed += 50.0 * deltaTime;
+				}
+				else // Reverse
+				{
+					speed += 50.0 * deltaTime;
+					if (speed > 0.0) // Check gear change
+					{
+						isDriveGear = true;
+						gearShiftDelay = 0.15;
+						speed = 0.0;
+					}
+				}
+			}
+			if (Kart::getInvert2() == true)
+			{
+				if (isDriveGear) // Driving
+				{
+					speed -= 50.0 * deltaTime;
+				}
+				else // Reverse
+				{
+					speed -= 50.0 * deltaTime;
+					if (speed < 0.0) // Check gear change
+					{
+						isDriveGear = false;
+						gearShiftDelay = 0.15;
+						speed = 0.0;
+					}
+				}
 			}
 		}
-	}
-	if (gearShiftDelay <= 0.0 && isPressed(window, GLFW_KEY_J))
-	{
-		if (!isDriveGear) // Reverse
+		if (gearShiftDelay <= 0.0 && isPressed(window, GLFW_KEY_J))
 		{
-			speed -= 21.0 * deltaTime;
-		}
-		else // Driving
-		{
-			speed -= 50.0 * deltaTime;
-			if (speed < 0.0) // Check gear change
+			if (Kart::getInvert2() == false)
 			{
-				isDriveGear = false;
-				gearShiftDelay = 0.15;
-				speed = 0.0;
+				if (!isDriveGear) // Reverse
+				{
+					speed -= 21.0 * deltaTime;
+				}
+				else // Driving
+				{
+					speed -= 50.0 * deltaTime;
+					if (speed < 0.0) // Check gear change
+					{
+						isDriveGear = false;
+						gearShiftDelay = 0.15;
+						speed = 0.0;
+					}
+				}
+			}
+			if (Kart::getInvert2() == true)
+			{
+				if (!isDriveGear) // Reverse
+				{
+					speed += 21.0 * deltaTime;
+				}
+				else // Driving
+				{
+					speed += 50.0 * deltaTime;
+					if (speed > 0.0) // Check gear change
+					{
+						isDriveGear = true;
+						gearShiftDelay = 0.15;
+						speed = 0.0;
+					}
+				}
 			}
 		}
-	}
-	// Turn input
-	if (isPressed(window, GLFW_KEY_H))
-	{
-		turnForce += 6.0 * deltaTime;
+		// Turn input
+		if (isPressed(window, GLFW_KEY_H))
+		{
+			if (Kart::getInvert2() == false)
+			{
+				turnForce += 6.0 * deltaTime;
+			}
+			if (Kart::getInvert2() == true)
+			{
+				turnForce -= 6.0 * deltaTime;
+			}
 
-	}
-	if (isPressed(window, GLFW_KEY_K))
-	{
-		turnForce -= 6.0 * deltaTime;
-	}
 
-	// Friction / Air resistance
-	if (speed > 0.0)
-	{
-		speed -= 3.0 * deltaTime + speed * 0.4 * deltaTime;
-		if (speed < 0.0)
-			speed = 0.0;
-	}
-	else if (speed < 0.0)
-	{
-		speed += 3.0 * deltaTime - speed * 0.4 * deltaTime;
+		}
+		if (isPressed(window, GLFW_KEY_K))
+		{
+			if (Kart::getInvert2() == false)
+			{
+				turnForce -= 6.0 * deltaTime;
+			}
+			if (Kart::getInvert2() == true)
+			{
+				turnForce += 6.0 * deltaTime;
+			}
+		}
+		if (isPressed(window, GLFW_KEY_I))
+		{
+			std::cout << "here" << std::endl;
+			switch (m_status)
+			{
+			case e_basic:
+				break;
+			case e_pikachu:
+				if (player_used == false)
+				{
+					player1_stun = true;
+					skillDelay = 0.5;
+					break;
+				}
+
+			case e_eevee:
+				if (player_used == false)
+				{
+					player_eevee_up = true;
+					skillDelay = 1.5;
+					std::cout << "here" << std::endl;
+				}
+
+				break;
+			case e_mew:
+				if (player_used == false)
+				{
+					player1_invert_control = true;
+					skillDelay = 3.5;
+					std::cout << "here" << std::endl;
+				}
+				break;
+			case e_squirtle:
+				if (player_used == false)
+				{
+					player1_slow = true;
+					skillDelay = 1.5;
+				}
+				break;
+			}
+		}
+		
+
+
+
+		// analog control
+		if (Present == 1)
+		{
+			if (Kart::getInvert2() == false)
+			{
+				if (gearShiftDelay <= 0.0 && (axes[1] > 0))
+				{
+
+					if (isDriveGear) // Driving
+					{
+						speed += axes[1] * 50.0 * deltaTime;
+					}
+					else // Reverse
+					{
+						speed += axes[1] * 50.0 * deltaTime;
+						if (speed > 0.0) // Check gear change
+						{
+							isDriveGear = true;
+							gearShiftDelay = 0.15;
+							speed = 0.0;
+						}
+					}
+				}
+
+				if (gearShiftDelay <= 0.0 && (axes[1] < 0))
+				{
+					if (!isDriveGear) // Reverse
+					{
+						speed -= -axes[1] * 21.0 * deltaTime;
+					}
+					else // Driving
+					{
+						speed -= -axes[1] * 50.0 * deltaTime;
+						if (speed < 0.0) // Check gear change
+						{
+							isDriveGear = false;
+							gearShiftDelay = 0.15;
+							speed = 0.0;
+						}
+					}
+				}
+				// Turn input
+				if (axes[2] < 0)
+				{
+					turnForce += -axes[2] * 6.0 * deltaTime;
+
+				}
+				if (axes[2] > 0)
+				{
+					turnForce -= axes[2] * 6.0 * deltaTime;
+				}
+			}
+			if (Kart::getInvert2() == true)
+			{
+				if (gearShiftDelay <= 0.0 && (axes[1] > 0))
+				{
+
+					
+					if (!isDriveGear) // Reverse
+					{
+						speed += axes[1] * 21.0 * deltaTime;
+					}
+					else // Driving
+					{
+						speed += axes[1] * 50.0 * deltaTime;
+						if (speed < 0.0) // Check gear change
+						{
+							isDriveGear = false;
+							gearShiftDelay = 0.15;
+							speed = 0.0;
+						}
+					}
+				}
+
+				if (gearShiftDelay <= 0.0 && (axes[1] < 0))
+				{
+					if (isDriveGear) // Driving
+					{
+						speed -= axes[1] * 50.0 * deltaTime;
+					}
+					else // Reverse
+					{
+						speed -= axes[1] * 50.0 * deltaTime;
+						if (speed > 0.0) // Check gear change
+						{
+							isDriveGear = true;
+							gearShiftDelay = 0.15;
+							speed = 0.0;
+						}
+					}
+				}
+				// Turn input
+				if (axes[2] < 0)
+				{
+					turnForce -= -axes[2] * 6.0 * deltaTime;
+
+				}
+				if (axes[2] > 0)
+				{
+					turnForce += axes[2] * 6.0 * deltaTime;
+				}
+			}
+			if (GLFW_PRESS == buttons[4])
+			{
+				switch (m_status)
+				{
+				case e_basic:
+					break;
+				case e_pikachu:
+					if (player_used == false)
+					{
+						player1_stun = true;
+						skillDelay = 0.5;
+						break;
+					}
+
+				case e_eevee:
+					if (player_used == false)
+					{
+						player_eevee_up = true;
+						skillDelay = 1.5;
+						std::cout << "here" << std::endl;
+					}
+
+					break;
+				case e_mew:
+					if (player_used == false)
+					{
+						player1_invert_control = true;
+						skillDelay = 3.5;
+						std::cout << "here" << std::endl;
+					}
+					break;
+				case e_squirtle:
+					if (player_used == false)
+					{
+						player1_slow = true;
+						skillDelay = 1.5;
+					}
+					break;
+				}
+			}
+		}
+		//eevee speed up
+		if (player_eevee_up == true)
+		{
+			if (skillDelay <= 0.0)
+			{
+				speed += 75 * deltaTime;
+				std::cout << "working" << std::endl;
+			}
+			player_eevee_up = false;
+			player_used = true;
+		}
+		//mew invert
+		if (player1_invert_control == true)
+		{
+			if (skillDelay <= 0.0)
+			{
+				player1_invert_control = false;
+				player_used = true;
+			}
+		}
+		//squirtle slow
+		if (player1_slow == true)
+		{
+			player_used = true;
+			if (skillDelay <= 0.0)
+			{
+				player1_slow = false;
+
+			}
+		}
+		if (player1_stun == true)
+		{
+			player_used = true;
+			if (skillDelay <= 0.0)
+			{
+				player1_stun = false;
+			}
+		}
+		if (getStun2() == true)
+		{
+			speed = 0;
+		}
+		if (getSlow2() == true)
+		{
+			speed -= 40 * deltaTime;
+		}
+		// Friction / Air resistance
 		if (speed > 0.0)
+		{
+			speed -= 3.0 * deltaTime + speed * 0.4 * deltaTime;
+			if (speed < 0.0)
+				speed = 0.0;
+		}
+		else if (speed < 0.0)
+		{
+			speed += 3.0 * deltaTime - speed * 0.4 * deltaTime;
+			if (speed > 0.0)
+				speed = 0.0;
+		}
+		else
+		{
 			speed = 0.0;
+		}
+
+		// Turnforce decay
+		turnForce *= 0.9;
+		if (turnForce < 0.05 && turnForce > -0.05)
+		{
+			turnForce = 0.0;
+		}
+		// Turnforce clamp
+		if (turnForce < -6.0)
+		{
+			turnForce = -6.0;
+		}
+		else if (turnForce > 6.0)
+		{
+
+			turnForce = 6.0;
+		}
+		// Calculate Rotation
+		if (speed != 0.0)
+		{
+			double turnDegreeLinear = fabs(turnForce * (speed / 60.0) * 3.5);
+			double turnDegreeQuadratic = fabs(turnForce / (speed / 60.0) * 0.7);
+			double turnDegree = ((turnDegreeLinear < turnDegreeQuadratic) ? (turnDegreeLinear) : (turnDegreeQuadratic));
+			if (turnForce < 0.0) // Rotate left
+				turnDegree = -turnDegree;
+			if (speed < 0.0) // Reverse
+				turnDegree = -turnDegree;
+
+			yaw += turnDegree;
+		}
+
+		// Calculate velocity
+		velocity = Vector3(sinf(Math::DegreeToRadian(static_cast<float>(yaw))), 0.0f, cosf(Math::DegreeToRadian(static_cast<float>(yaw)))) * static_cast<float>(speed);
+
+		// Wheel rotation
+		if (speed >= 0.0)
+		{
+			wheelRotation += velocity.Length() * 40.0f * deltaTime;
+		}
+		else
+		{
+
+			wheelRotation -= velocity.Length() * 40.0f * deltaTime;
+		}
+		// Keep rotation within 0 - 360
+		if (wheelRotation > 360.0f)
+		{
+
+			wheelRotation -= 360.0f;
+		}
+		else if (wheelRotation < 0.0f)
+		{
+
+			wheelRotation += 360.0f;
+		}
+
+
+
+
+		// Move
+		pos += velocity * static_cast<float>(deltaTime);
+
+		// Spotlight
+		MS model;
+		model.LoadIdentity();
+
+		// Translation
+		model.PushMatrix(); // 1
+		model.Translate(pos.x, pos.y, pos.z);
+		model.Rotate(static_cast<float>(yaw), 0.0f, 1.0f, 0.0f);
+		model.Translate(0.0f, 2.5f, 4.5f);
+		// Right headlight
+		model.PushMatrix(); // 2
+		model.Translate(1.8f, 0.0f, 0.0f);
+		spotLights[0].position = model.Top() * Vector3();
+		model.PopMatrix(); // 2
+						   // Left headlight
+		model.PushMatrix(); // 2
+		model.Translate(-1.8f, 0.0f, 0.0f);
+		spotLights[1].position = model.Top() * Vector3();
+		model.PopMatrix(); // 2
+
+		model.PopMatrix(); // 1
+
+						   // Set spotlight direction
+		spotLights[0].direction = spotLights[1].direction = Vector3(cosf(Math::DegreeToRadian(static_cast<float>(pitch))) * cosf(Math::DegreeToRadian(static_cast<float>(-yaw + 90.0f))),
+			sinf(Math::DegreeToRadian(static_cast<float>(pitch))),
+			cosf(Math::DegreeToRadian(static_cast<float>(pitch))) * sinf(Math::DegreeToRadian(static_cast<float>(-yaw + 90.0f))));
+
+		// Update opengl spotlights
+		glBindBuffer(GL_UNIFORM_BUFFER, uSpotLight);
+		for (int i = 0; i < 2; ++i)
+		{
+			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i, 12, &spotLights[i].position.x);
+			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 12, 4, &spotLights[i].constant);
+			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 16, 4, &spotLights[i].linear);
+			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 20, 4, &spotLights[i].quadratic);
+			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 32, 12, &spotLights[i].ambient.x);
+			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 48, 12, &spotLights[i].diffuse.x);
+			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 64, 12, &spotLights[i].specular.x);
+			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 80, 12, &spotLights[i].direction.x);
+			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 92, 4, &spotLights[i].cosInner);
+			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 96, 4, &spotLights[i].cosOuter);
+		}
+
+		// Update OBB
+		setCollisionPosition(Vector3(pos.x, pos.y + 3.0f, pos.z));
 	}
-	else
-	{
-		speed = 0.0;
-	}
-
-	// Turnforce decay
-	turnForce *= 0.9;
-	if (turnForce < 0.05 && turnForce > -0.05)
-		turnForce = 0.0;
-
-	// Turnforce clamp
-	if (turnForce < -6.0)
-		turnForce = -6.0;
-	else if (turnForce > 6.0)
-		turnForce = 6.0;
-
-	// Calculate Rotation
-	if (speed != 0.0)
-	{
-		double turnDegreeLinear = fabs(turnForce * (speed / 60.0) * 3.5);
-		double turnDegreeQuadratic = fabs(turnForce / (speed / 60.0) * 0.7);
-		double turnDegree = ((turnDegreeLinear < turnDegreeQuadratic) ? (turnDegreeLinear) : (turnDegreeQuadratic));
-		if (turnForce < 0.0) // Rotate left
-			turnDegree = -turnDegree;
-		if (speed < 0.0) // Reverse
-			turnDegree = -turnDegree;
-
-		yaw += turnDegree;
-	}
-
-	// Calculate velocity
-	velocity = Vector3(sinf(Math::DegreeToRadian(static_cast<float>(yaw))), 0.0f, cosf(Math::DegreeToRadian(static_cast<float>(yaw)))) * static_cast<float>(speed);
-
-	// Wheel rotation
-	if (speed >= 0.0)
-		wheelRotation += velocity.Length() * 40.0f * deltaTime;
-	else
-		wheelRotation -= velocity.Length() * 40.0f * deltaTime;
-	// Keep rotation within 0 - 360
-	if (wheelRotation > 360.0f)
-		wheelRotation -= 360.0f;
-	else if (wheelRotation < 0.0f)
-		wheelRotation += 360.0f;
-
-	// Move
-	pos += velocity * static_cast<float>(deltaTime);
-
-	// Spotlight
-	MS model;
-	model.LoadIdentity();
-
-	// Translation
-	model.PushMatrix(); // 1
-	model.Translate(pos.x, pos.y, pos.z);
-	model.Rotate(static_cast<float>(yaw), 0.0f, 1.0f, 0.0f);
-	model.Translate(0.0f, 2.5f, 4.5f);
-	// Right headlight
-	model.PushMatrix(); // 2
-	model.Translate(1.8f, 0.0f, 0.0f);
-	spotLights[0].position = model.Top() * Vector3();
-	model.PopMatrix(); // 2
-	// Left headlight
-	model.PushMatrix(); // 2
-	model.Translate(-1.8f, 0.0f, 0.0f);
-	spotLights[1].position = model.Top() * Vector3();
-	model.PopMatrix(); // 2
-
-	model.PopMatrix(); // 1
-
-	// Set spotlight direction
-	spotLights[0].direction = spotLights[1].direction = Vector3(cosf(Math::DegreeToRadian(static_cast<float>(pitch))) * cosf(Math::DegreeToRadian(static_cast<float>(-yaw + 90.0f))),
-		sinf(Math::DegreeToRadian(static_cast<float>(pitch))),
-		cosf(Math::DegreeToRadian(static_cast<float>(pitch))) * sinf(Math::DegreeToRadian(static_cast<float>(-yaw + 90.0f))));
-
-	// Update opengl spotlights
-	/*glBindBuffer(GL_UNIFORM_BUFFER, uSpotLight);
-	for (int i = 0; i < 2; ++i)
-	{
-		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i, 12, &spotLights[i].position.x);
-		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 12, 4, &spotLights[i].constant);
-		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 16, 4, &spotLights[i].linear);
-		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 20, 4, &spotLights[i].quadratic);
-		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 32, 12, &spotLights[i].ambient.x);
-		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 48, 12, &spotLights[i].diffuse.x);
-		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 64, 12, &spotLights[i].specular.x);
-		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 80, 12, &spotLights[i].direction.x);
-		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 92, 4, &spotLights[i].cosInner);
-		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 96, 4, &spotLights[i].cosOuter);
-	}*/
-
-	// Update OBB
-	setCollisionPosition(Vector3(pos.x, pos.y + 3.0f, pos.z));
-    }
 }
 
 // Render the kart
@@ -843,7 +1455,32 @@ std::string Kart::getGear() const
 
 void Kart::changeStatus()
 {
-	std::cout << "Change" << std::endl;
+	int m_random;
+	m_random = (1 + rand() % 5);
+	std::cout << m_random << std::endl;
+	switch (m_random)
+	{
+	case 1:
+		m_status = e_basic;
+		player_used = false;
+		break;
+	case 2:
+		m_status = e_pikachu;
+		player_used = false;
+		break;
+	case 3:
+		m_status = e_eevee;
+		player_used = false;
+		break;
+	case 4:
+		m_status = e_mew;
+		player_used = false;
+		break;
+	case 5:
+		m_status = e_squirtle;
+		player_used = false;
+		break;
+	}
 }
 
 // Set kart velocity to 0
@@ -856,4 +1493,35 @@ void Kart::moveObject(const Vector3& displacement)
 {
 	pos += displacement;
 	setCollisionPosition(Vector3(pos.x, pos.y + 2.0f, pos.z));
+}
+
+
+bool Kart::getInvert2()
+{
+	return player2_invert_control;
+}
+
+bool Kart::getInvert1()
+{
+	return player1_invert_control;
+}
+
+bool Kart::getSlow2()
+{
+	return player2_slow;
+}
+
+bool Kart::getSlow1()
+{
+	return player1_slow;
+}
+
+bool Kart::getStun1()
+{
+	return player1_stun;
+}
+
+bool Kart::getStun2()
+{
+	return player2_stun;
 }

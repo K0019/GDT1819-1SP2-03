@@ -14,16 +14,16 @@ public:
 	void update();
 
 	void registerKart(Kart* kart);
-	void registerGate(const Object* gate);
+	void registerObjects(std::vector<Object*>* objects);
 
 	void removeKart(Kart* kart);
-	void removeGate(const Object* gate);
+	void removeObjects();
 protected:
 
 private:
 	std::vector<Kart*> karts;
 	std::vector<bool> changed;
-	std::vector<const Object*> objects;
+	std::vector<Object*>* objects;
 };
 
 namespace ModGate
