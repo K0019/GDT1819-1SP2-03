@@ -18,6 +18,7 @@
 #include "UsefulFunctions.h"
 #include "c_m_Player.h"
 #include "HandleLap.h"
+#include "Sound.h"
 #include "NewTimer.h"
 #include "WinLoseGraphic.h"
 
@@ -46,6 +47,7 @@ public:
 	void processInput(GLFWwindow* window); // Function called every update cycle, checks for keyboard input
 	static void framebuffer_resize_callback(GLFWwindow* window, int width, int height); // Function called when window resizes to adapt render viewport
 
+
 private :
 	static unsigned int uMatrixMVS, uMatrixP, uColorData, uSpotLight; // UBO handles for model, view, projection matrices, lighting and color, material data
 
@@ -53,6 +55,8 @@ private :
 	static double deltaTime; // Store time since last frame, used for camera movement
 	static int width, height;
 	static double enterBounce;
+
+
 
 	Base3DPoly* axes, *skybox; // Axes and skybox mesh
 	MeshFloor* floor; // Floor mesh
@@ -67,7 +71,7 @@ private :
 
 	Lamp* lamp[1]; // Pointer to lamp
 
-	Mesh* GUI[3]; // this is for GUI
+	Mesh* GUI[8]; // this is for GUI
 	int placing; // this is the placing for the playter
 	 
 	Timer* timer;

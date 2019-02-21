@@ -180,10 +180,7 @@
     <ClCompile Include="Source\MeshBuilder.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
-    <ClCompile Include="NewTimer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="WinLoseGraphic.cpp">
+    <ClCompile Include="Sound.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -335,10 +332,7 @@
     <ClInclude Include="HandleLap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="NewTimer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="WinLoseGraphic.h">
+    <ClInclude Include="Sound.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
