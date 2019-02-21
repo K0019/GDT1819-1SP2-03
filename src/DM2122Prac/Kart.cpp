@@ -7,6 +7,8 @@ bool Kart::player2_slow = false;
 bool Kart::player1_slow = false;
 bool Kart::player1_stun = false;
 bool Kart::player2_stun = false;
+
+
 // Constructor
 Kart::Kart(Mesh* basic, Mesh* pikachu, Mesh* eevee, Mesh*mew, Mesh*squirtle,
 	Mesh* basic_wheel, Mesh* pikachu_wheel, Mesh* eevee_wheel, Mesh* mew_wheel, Mesh* squirtle_wheel, Mesh* steeringWheel,
@@ -103,8 +105,10 @@ Kart::Kart(Mesh* basic, Mesh* pikachu, Mesh* eevee, Mesh*mew, Mesh*squirtle,
 
 	srand((unsigned)time(NULL));
 
-	m_status = e_mew;
-	
+	m_status = e_squirtle;
+	m_buff = b_nothing;
+
+
 	Present = glfwJoystickPresent(GLFW_JOYSTICK_1);
 	std::cout << Present;
 	
@@ -453,6 +457,7 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 		// Gear shift bounce time
 		gearShiftDelay -= deltaTime;
 		skillDelay -= deltaTime;
+		
 		// Speed up/down
 		if (gearShiftDelay <= 0.0 && isPressed(window, GLFW_KEY_W))
 		{
@@ -489,7 +494,7 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 						speed = 0.0;
 					}
 				}
-				
+
 			}
 		}
 		if (gearShiftDelay <= 0.0 && isPressed(window, GLFW_KEY_S))
@@ -566,6 +571,7 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 				{
 					player2_stun = true;
 					skillDelay = 0.5;
+					player_used = true;
 				}
 				break;
 			case e_eevee:
@@ -573,6 +579,7 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 				{
 					player_eevee_up = true;
 					skillDelay = 1.5;
+					player_used = true;
 				}
 				break;
 			case e_mew:
@@ -580,6 +587,7 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 				{
 					player2_invert_control = true;
 					skillDelay = 3.5;
+					player_used = true;
 				}
 				break;
 			case e_squirtle:
@@ -588,59 +596,77 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 					player2_slow = true;
 					skillDelay = 1.5;
 					std::cout << "here" << std::endl;
+					player_used = true;
 				}
 				break;
+			default:
+				player_used = false;
+					break;
 			}
 		}
 		//eevee speed up
-		if (player_eevee_up == true)
-		{
+		
+		
+		
 
-			if (skillDelay <= 0.0)
-			{
-				speed += 75 * deltaTime;
-
-			}
-			player_eevee_up = false;
-			player_used = true;
-
-		}
-		//Mew invert 
 		if (player2_invert_control == true)
 		{
-			player_used = true;
+
 			if (skillDelay <= 0.0)
 			{
 				player2_invert_control = false;
-
 			}
+
 		}
-		//squirtle slow
 		if (player2_slow == true)
 		{
-			player_used = true;
+
 			if (skillDelay <= 0.0)
 			{
 				player2_slow = false;
-
 			}
+
 		}
 		if (player2_stun == true)
 		{
-			player_used = true;
+
 			if (skillDelay <= 0.0)
 			{
 				player2_stun = false;
 			}
+
 		}
-		if (getStun1() == true)
+
+		if (player_eevee_up == true)
 		{
+
+			speed += 75 * deltaTime;
+			m_buff = b_speed;
+			if (skillDelay <= 0.0)
+			{
+				player_eevee_up = false;
+			}
+		}
+		else if (getStun1() == true)
+		{
+			m_buff = b_stun;
 			speed = 0;
 		}
-		if (getSlow1() == true)
+		else if (getSlow1() == true)
 		{
+			m_buff = b_slow;
 			speed -= 40 * deltaTime;
 		}
+		else if (player1_invert_control == true)
+		{
+			m_buff = b_confuse;
+		}
+		else { m_buff = b_nothing; }
+
+
+
+
+
 		// Friction / Air resistance
 		if (speed > 0.0)
 		{
@@ -884,24 +910,23 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 				{
 					player1_stun = true;
 					skillDelay = 0.5;
-					break;
+					player_used = true;
 				}
-
+				break;
 			case e_eevee:
 				if (player_used == false)
 				{
 					player_eevee_up = true;
 					skillDelay = 1.5;
-					std::cout << "here" << std::endl;
+					player_used = true;
 				}
-
 				break;
 			case e_mew:
 				if (player_used == false)
 				{
 					player1_invert_control = true;
 					skillDelay = 3.5;
-					std::cout << "here" << std::endl;
+					player_used = true;
 				}
 				break;
 			case e_squirtle:
@@ -909,11 +934,16 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 				{
 					player1_slow = true;
 					skillDelay = 1.5;
+					std::cout << "here" << std::endl;
+					player_used = true;
 				}
+				break;
+			default:
+				player_used = false;
 				break;
 			}
 		}
-		
+
 
 
 
@@ -974,7 +1004,7 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 				if (gearShiftDelay <= 0.0 && (axes[1] > 0))
 				{
 
-					
+
 					if (!isDriveGear) // Reverse
 					{
 						speed += axes[1] * 21.0 * deltaTime;
@@ -1021,6 +1051,7 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 			}
 			if (GLFW_PRESS == buttons[4])
 			{
+				std::cout << "here" << std::endl;
 				switch (m_status)
 				{
 				case e_basic:
@@ -1030,17 +1061,17 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 					{
 						player1_stun = true;
 						skillDelay = 0.5;
-						break;
+						player_used = true;
 					}
-
+					break;
 				case e_eevee:
 					if (player_used == false)
 					{
 						player_eevee_up = true;
 						skillDelay = 1.5;
 						std::cout << "here" << std::endl;
+						player_used = true;
 					}
-
 					break;
 				case e_mew:
 					if (player_used == false)
@@ -1048,6 +1079,7 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 						player1_invert_control = true;
 						skillDelay = 3.5;
 						std::cout << "here" << std::endl;
+						player_used = true;
 					}
 					break;
 				case e_squirtle:
@@ -1055,57 +1087,75 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 					{
 						player1_slow = true;
 						skillDelay = 1.5;
+						player_used = true;
 					}
+					break;
+				default:
+					player_used = false;
 					break;
 				}
 			}
 		}
 		//eevee speed up
-		if (player_eevee_up == true)
-		{
-			if (skillDelay <= 0.0)
-			{
-				speed += 75 * deltaTime;
-				std::cout << "working" << std::endl;
-			}
-			player_eevee_up = false;
-			player_used = true;
-		}
+		
+
 		//mew invert
 		if (player1_invert_control == true)
 		{
+			
 			if (skillDelay <= 0.0)
 			{
 				player1_invert_control = false;
-				player_used = true;
 			}
+
 		}
-		//squirtle slow
 		if (player1_slow == true)
 		{
-			player_used = true;
+			
 			if (skillDelay <= 0.0)
 			{
 				player1_slow = false;
-
 			}
+
 		}
 		if (player1_stun == true)
 		{
-			player_used = true;
+
 			if (skillDelay <= 0.0)
 			{
-				player1_stun = false;
+				player1_stun=false;
 			}
+
 		}
-		if (getStun2() == true)
+
+		if (player_eevee_up == true)
 		{
+
+			speed += 75 * deltaTime;
+			m_buff = b_speed;
+			if (skillDelay <= 0.0)
+			{
+				player_eevee_up = false;
+			}
+
+		}
+		else if (getStun2() == true)
+		{
+			m_buff = b_stun;
 			speed = 0;
-		}
-		if (getSlow2() == true)
+		}	
+		else if (getSlow2() == true)
 		{
+			m_buff = b_slow;
 			speed -= 40 * deltaTime;
+		}		
+		else if (player2_invert_control == true)
+		{
+			m_buff = b_confuse;
 		}
+		else { m_buff = b_nothing; }
+		
+		
 		// Friction / Air resistance
 		if (speed > 0.0)
 		{
@@ -1458,27 +1508,32 @@ void Kart::changeStatus()
 	int m_random;
 	m_random = (1 + rand() % 5);
 	std::cout << m_random << std::endl;
+	player_used = false;
 	switch (m_random)
 	{
 	case 1:
+	
 		m_status = e_basic;
-		player_used = false;
+		
 		break;
 	case 2:
+		
 		m_status = e_pikachu;
-		player_used = false;
+		
 		break;
 	case 3:
+	
 		m_status = e_eevee;
-		player_used = false;
+		
 		break;
 	case 4:
 		m_status = e_mew;
-		player_used = false;
 		break;
 	case 5:
 		m_status = e_squirtle;
-		player_used = false;
+	
+		break;
+	default:
 		break;
 	}
 }
@@ -1525,3 +1580,21 @@ bool Kart::getStun2()
 {
 	return player2_stun;
 }
+
+Kart::status Kart::getStatus() const
+{
+	return m_status;
+}
+
+bool::Kart::get_used() const
+{
+	return player_used;
+}
+
+
+Kart::buff Kart::getBuff() const
+{
+	return m_buff;
+}
+
+

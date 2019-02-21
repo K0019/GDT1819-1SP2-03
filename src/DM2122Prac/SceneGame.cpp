@@ -83,6 +83,13 @@ void SceneGame::Init()
 	GUI[0] = MeshBuilder::GenerateXYPlane("Image//slotBox.tga", 2.0f, 1, type::SHADER_TEXT); 
 	GUI[1] = MeshBuilder::GenerateXYPlane("Image//1place.tga", 4.0f, 1, type::SHADER_TEXT); 
 	GUI[2] = MeshBuilder::GenerateXYPlane("Image//2place.tga", 4.0f, 1, type::SHADER_TEXT);
+
+	GUI[3] = MeshBuilder::GenerateXYPlane("Image//nothing.tga", 2.0f, 1, type::SHADER_TEXT);
+	GUI[4] = MeshBuilder::GenerateXYPlane("Image//stun.tga", 2.0f, 1, type::SHADER_TEXT);
+	GUI[5] = MeshBuilder::GenerateXYPlane("Image//speed_up.tga", 2.0f, 1, type::SHADER_TEXT);
+	GUI[6] = MeshBuilder::GenerateXYPlane("Image//confuse.tga", 2.0f, 1, type::SHADER_TEXT);
+	GUI[7] = MeshBuilder::GenerateXYPlane("Image//slow.tga", 2.0f, 1, type::SHADER_TEXT);
+
 	Map = new PlaceObjectHandler(&objectList, playerDummy, hotbar);
 
 	handleLap = new HandleLap(&objectList, { player[0]->getCar(), player[1]->getCar() });
@@ -227,6 +234,106 @@ void SceneGame::renderView(unsigned int view)
 	GUI[placing]->Render();
 	placing = 1;
 	model.PopMatrix();
+	
+
+	//item player holding now
+	model.PushMatrix();
+	model.LoadIdentity();
+	model.Translate(2.0f, 1.5f, 0.0f);
+	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixMVS);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), model.Top().a);
+		switch (player[view]->getCar()->getStatus())
+		{
+
+		    case Kart::e_basic:
+				if (player[view]->getCar()->get_used())
+				{
+					GUI[3]->Render();
+					break;
+				}
+				else
+				{
+					GUI[3]->Render();
+					break;
+				}	
+	     	case Kart::e_pikachu:
+				if (player[view]->getCar()->get_used())
+				{
+					GUI[3]->Render();
+					break;
+				}
+				else
+				{
+					GUI[4]->Render();
+					break;
+				}	
+			case Kart::e_eevee:
+				if (player[view]->getCar()->get_used())
+				{
+					GUI[3]->Render();
+					break;
+				}
+				else
+				{
+					GUI[5]->Render();
+					break;
+				}
+			case Kart::e_mew:
+				if (player[view]->getCar()->get_used())
+				{
+					GUI[3]->Render();
+					break;
+				}
+				else
+				{
+					GUI[6]->Render();
+					break;
+				}
+			case Kart::e_squirtle:
+				if (player[view]->getCar()->get_used())
+				{
+					GUI[3]->Render();
+					break;
+				}
+				else
+				{
+					GUI[7]->Render();
+					break;
+				}
+			default:
+				break;
+	    }
+		model.PopMatrix();
+	////////
+
+		//////current debuff
+		model.PushMatrix();
+		model.LoadIdentity();
+		model.Translate(10.0f, 15.0f, 0.0f);
+		glBindBuffer(GL_UNIFORM_BUFFER, uMatrixMVS);
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), model.Top().a);		
+		switch (player[view]->getCar()->getBuff())
+		{			
+		case Kart::b_stun:
+			GUI[4]->Render();
+			break;
+		case Kart::b_speed:
+			GUI[5]->Render();
+			break;
+		case Kart::b_confuse:
+			GUI[6]->Render();
+			break;
+		case Kart::b_slow:
+			GUI[7]->Render();
+			break;
+		case Kart::b_nothing:
+			break;
+		default:
+			break;
+		}
+		model.PopMatrix();
+
+
 
 	// Reset projection
 	projection.SetToPerspective(55.0, static_cast<double>(width) / 2.0 / static_cast<double>(height), 0.1, 100.0);
@@ -356,3 +463,5 @@ std::string SceneGame::calculateFPS() const
 //
 //	text->PrintTextForward(std::to_string(Physics::physicsEngine.testCollision()), uMatrixMVS, 0, 15, 1);
 //}
+
+
