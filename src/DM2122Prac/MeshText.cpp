@@ -1,8 +1,8 @@
 #include "MeshText.h"
 
 // Constructor
-MeshText::MeshText(const std::vector<Vector3>& vertexData, const std::vector<TexCoord>& texCoordData, const std::vector<GLuint>& indexData, const char* imageLocation)
-	: Mesh(vertexData, texCoordData, indexData, type::SHADER_TEXT, GL_TRIANGLES, imageLocation)
+MeshText::MeshText(const std::vector<Vector3>& vertexData, const std::vector<TexCoord>& texCoordData, const std::vector<GLuint>& indexData, const char* imageLocation, type shaderType)
+	: Mesh(vertexData, texCoordData, indexData, shaderType, GL_TRIANGLES, imageLocation)
 {
 
 }

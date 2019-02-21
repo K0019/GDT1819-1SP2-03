@@ -86,6 +86,8 @@ void SceneGame::Init()
 	Map = new PlaceObjectHandler(&objectList, playerDummy, hotbar);
 	Map->Loadmap();
 	handleLap = new HandleLap(&objectList, { player[0]->getCar(), player[1]->getCar() });
+	winLoseGraphic = new WinLoseGraphic(MeshBuilder::GenerateXYPlane("Image//winner.tga", 6.0f, 3.375f, 1, type::SHADER_TEXT),
+										MeshBuilder::GenerateXYPlane("Image//loser.tga", 6.0f, 3.375f, 1, type::SHADER_TEXT));
 
 	timer = new Timer();
 
@@ -117,6 +119,8 @@ void SceneGame::Update(double dt, GLFWwindow * programID)
 	Physics::physicsEngine.update();
 	ModGate::detector.update();
 	handleLap->update();
+
+	winLoseGraphic->registerWin(handleLap->getWinner());
 }
 
 void SceneGame::Render()
@@ -142,6 +146,8 @@ void SceneGame::Render()
 	// Render text
 	text->PrintTextForward("FPS:" + calculateFPS(), uMatrixMVS, 0.0f,19.f, 1.0f);
 	text->PrintTextBackward("Elapsed:" + timer->getTimeText() + "s", uMatrixMVS, 19.0f, 19.0f, 1.0f);
+
+	winLoseGraphic->render(uMatrixMVS);
 
 	// Reset projection
 	projection.SetToPerspective(55.0, static_cast<double>(width) / 2.0 / static_cast<double>(height), 0.1, 100.0);
@@ -172,6 +178,7 @@ void SceneGame::Exit()
 	delete playerDummy;
 	delete text;
 	delete Map;
+	delete winLoseGraphic;
 	delete timer;
 
 	// Free memory allocated for UBOs
