@@ -224,7 +224,7 @@ void SceneGame::renderView(unsigned int view)
 	model.Translate(15.0f, 0.0f, 0.0f);
 	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixMVS);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), model.Top().a);
-	GUI[placing]->Render();
+	GUI[handleLap->getPlacing(player[view]->getCar())]->Render();
 	placing = 1;
 	model.PopMatrix();
 
