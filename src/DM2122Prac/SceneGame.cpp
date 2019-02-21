@@ -24,7 +24,9 @@ void SceneGame::Init()
 	// Use most general shader for configuration
 	shader::container.useShader(type::SHADER_2);
 	m_programID = shader::container.getID(type::SHADER_2);
-
+	music::player.init();
+	music::player.playsound("Sound/test.mp3", true);
+	music::player.setsoundvol(0.1f);
 	// Generate UBOs
 	glGenBuffers(1, &uMatrixMVS);
 	glGenBuffers(1, &uMatrixP);
