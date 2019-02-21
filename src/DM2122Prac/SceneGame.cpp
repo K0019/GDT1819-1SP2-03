@@ -84,7 +84,7 @@ void SceneGame::Init()
 	GUI[1] = MeshBuilder::GenerateXYPlane("Image//1place.tga", 4.0f, 1, type::SHADER_TEXT); 
 	GUI[2] = MeshBuilder::GenerateXYPlane("Image//2place.tga", 4.0f, 1, type::SHADER_TEXT);
 	Map = new PlaceObjectHandler(&objectList, playerDummy, hotbar);
-
+	Map->Loadmap();
 	handleLap = new HandleLap(&objectList, { player[0]->getCar(), player[1]->getCar() });
 
 	glViewport(0, 0, width * 0.5, height);
