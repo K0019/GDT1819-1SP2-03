@@ -29,7 +29,7 @@ public:
 	int getGridX() const;
 	int getGridY() const;
 	int getGridZ() const;
-	int getrotation() const;
+	Object::Rotation getrotation() const;
 	int getID() const;
 protected:
 

@@ -64,6 +64,8 @@ void PlaceObjectHandler::update(GLFWwindow* window, double dt)
 			
 		}
 		read.close();
+
+		objectList->searchTrackPath();
 	}
 	// Rotate selection
 	if (isPressed(window, GLFW_KEY_R))

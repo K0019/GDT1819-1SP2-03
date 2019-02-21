@@ -215,3 +215,142 @@ bool ObjectList::queryModificationGatePlacing(int gridX, int gridY, int gridZ, O
 
 	return possible;
 }
+
+void ObjectList::searchTrackPath()
+{
+	raceTrack.clear();
+
+	int gridX = 0, gridZ = 0;
+	Object::Rotation rotation = Object::Rotation::NORTH;
+	unsigned int ID = 1;
+
+	while (true)
+	{
+		int offsetX1, offsetX2, offsetZ1, offsetZ2;
+		switch (ID)
+		{
+		case 1:
+			switch (rotation)
+			{
+			case Object::Rotation::NORTH:
+				offsetX1 = gridX + 10;
+				offsetX2 = gridX - 10;
+				offsetZ1 = offsetZ2 = gridZ;
+				break;
+			case Object::Rotation::SOUTH:
+				offsetX1 = gridX - 10;
+				offsetX2 = gridX + 10;
+				offsetZ1 = offsetZ2 = gridZ;
+				break;
+			case Object::Rotation::EAST:
+				offsetX1 = offsetX2 = gridX;
+				offsetZ1 = gridZ + 10;
+				offsetZ2 = gridZ - 10;
+				break;
+			case Object::Rotation::WEST:
+				offsetX1 = offsetX2 = gridX;
+				offsetZ1 = gridZ - 10;
+				offsetZ2 = gridZ + 10;
+				break;
+			}
+			break;
+		case 2:
+		case 3:
+			switch (rotation)
+			{
+			case Object::Rotation::NORTH:
+				offsetX1 = gridX + 10;
+				offsetZ1 = gridZ;
+				offsetX2 = gridX;
+				offsetZ2 = gridZ - 10;
+				break;
+			case Object::Rotation::SOUTH:
+				offsetX1 = gridX;
+				offsetZ1 = gridZ + 10;
+				offsetX2 = gridX - 10;
+				offsetZ2 = gridZ;
+				break;
+			case Object::Rotation::EAST:
+				offsetX1 = gridX;
+				offsetZ1 = gridZ - 10;
+				offsetX2 = gridX - 10;
+				offsetZ2 = gridZ;
+				break;
+			case Object::Rotation::WEST:
+				offsetX1 = gridX + 10;
+				offsetZ1 = gridZ;
+				offsetX2 = gridX;
+				offsetZ2 = gridZ + 10;
+				break;
+			}
+			break;
+		}
+
+		if (raceTrack.size() > 1 && ((offsetX1 == 0 && offsetZ1 == 0) || (offsetX2 == 0 && offsetZ2 == 0)))
+		{
+			std::cout << "End" << std::endl;
+			break;
+		}
+
+		std::vector<Object*>::iterator obj1 = queryOccupied(1, 1, 1, offsetX1, 5, offsetZ1, Object::Rotation::NORTH);
+		std::vector<Object*>::iterator obj2 = queryOccupied(1, 1, 1, offsetX2, 5, offsetZ2, Object::Rotation::NORTH);
+		for (const Object* obj : raceTrack)
+		{
+			if (obj1 != objects.end() && *obj1 == obj)
+				obj1 = objects.end();
+			if (obj2 != objects.end() && *obj2 == obj)
+				obj2 = objects.end();
+		}
+
+		if (obj1 != objects.end() || obj2 != objects.end())
+		{
+			std::cout << "found" << std::endl;
+			std::vector<Object*>::iterator objectToPick = (obj1 != objects.end() ? obj1 : obj2);
+
+			raceTrack.push_back(*objectToPick);
+			ID = (*objectToPick)->getID();
+			rotation = (*objectToPick)->getrotation();
+			if (objectToPick == obj1)
+			{
+				gridX = offsetX1;
+				gridZ = offsetZ1;
+			}
+			else
+			{
+				gridX = offsetX2;
+				gridZ = offsetZ2;
+			}
+		}
+		else
+		{
+			std::cout << "not found" << std::endl;
+			break;
+		}
+	}
+}
+
+bool ObjectList::intersectLap(const OBB& kartBox) const
+{
+	return CollisionChecker::collide(finishLine[0]->getAABB(), kartBox);
+}
+
+int ObjectList::getKartLocation(const OBB& kartBox) const
+{
+	int location = 0;
+
+	for (const auto& obj : raceTrack)
+	{
+		if (CollisionChecker::collide(obj->getAABB(), kartBox))
+		{
+			return location;
+		}
+		++location;
+	}
+
+	return -1;
+}
+
+unsigned int ObjectList::getTrackLength() const
+{
+	return raceTrack.size();
+}

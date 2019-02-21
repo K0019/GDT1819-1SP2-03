@@ -5,7 +5,6 @@ int c_m_Player::Player_ID = 0;
 
 c_m_Player::c_m_Player(unsigned int uSpotLight)
 {
-	
 	if (Player_ID == NULL) {
 		Player_ID = 1;
 	}
@@ -32,12 +31,16 @@ c_m_Player::c_m_Player(unsigned int uSpotLight)
 		Vector3(-3.28f, 1.24f, -1.43f), // Back right
 		Vector3(0.0f, 0.368f, 1.974f),
 		uSpotLight,
-		OBB(Vector3(0.0f, 2.0f, 0.0f), Vector3(1.0f, 0.0f, 0.0f), Vector3(0.0f, 1.0f, 0.0f), Vector3(0.0f, 0.0f, 1.0f), 2.0f, 2.0f, 2.0f)); // Steering wheel
+		OBB(Vector3(0.0f, 4.0f, 0.0f), Vector3(1.0f, 0.0f, 0.0f), Vector3(0.0f, 1.0f, 0.0f), Vector3(0.0f, 0.0f, 1.0f), 2.0f, 2.0f, 2.0f)); // Steering wheel
+
+	ModGate::detector.registerKart(car);
 }
 
 
 c_m_Player::~c_m_Player()
 {
+	ModGate::detector.removeKart(car);
+	delete car;
 }
 
 void c_m_Player::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight)
@@ -76,4 +79,9 @@ const Camera & c_m_Player::getCam() const
 {
 	// TODO: insert return statement here
 	return Cam;
+}
+
+const Kart* c_m_Player::getCar() const
+{
+	return car;
 }

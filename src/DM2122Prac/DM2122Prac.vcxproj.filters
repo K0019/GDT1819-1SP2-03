@@ -60,9 +60,6 @@
     <ClCompile Include="Source\ShaderPrograms.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\MeshBuilder.cpp">
-      <Filter>Source Files\Objects</Filter>
-    </ClCompile>
     <ClCompile Include="Lamp.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
@@ -176,6 +173,12 @@
     </ClCompile>
     <ClCompile Include="Source\Application.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HandleLap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\MeshBuilder.cpp">
+      <Filter>Source Files\Objects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -321,6 +324,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SceneGame.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HandleLap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

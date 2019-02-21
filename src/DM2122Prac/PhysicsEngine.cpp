@@ -51,11 +51,11 @@ void PhysicsEngine::removeStaticObject(StaticPhysicsObjectInternal* object)
 void PhysicsEngine::update()
 {
 	updateHorizontal();
-	for (auto& m : movingObjects)
+	/*for (auto& m : movingObjects)
 	{
 		m->moveObject(Vector3(0.0f, -0.5f, 0.0f));
 	}
-	updateVertical();
+	updateVertical();*/
 
 	//for (auto& m : movingObjects)
 	//{
@@ -142,7 +142,7 @@ void PhysicsEngine::updateHorizontal()
 					CollisionInfo triangleTest = CollisionChecker::collide(m->getCollisionBox(), *iter);
 					if (triangleTest.isColliding() && triangleTest.getContactNormal().y < 0.01f)
 					{
-						std::cout << i << ": " << triangleTest.getDistance() << ' ' << triangleTest.getContactNormal().y << std::endl;
+						//std::cout << i << ": " << triangleTest.getDistance() << ' ' << triangleTest.getContactNormal().y << std::endl;
 						collisions.push_back(PackedCollision(triangleTest, &m->getCollisionBox(), &(*iter)));
 					}
 					++i;
@@ -150,11 +150,11 @@ void PhysicsEngine::updateHorizontal()
 
 				std::sort(collisions.begin(), collisions.end(), PhysicsEngine::compareLowerDistance);
 
-				std::cout << "Update horizontal" << std::endl;
+				//std::cout << "Update horizontal" << std::endl;
 				while (collisions.size())
 				{
 					Vector3 move = collisions[0].getInfo().getDistance() * collisions[0].getInfo().getContactNormal();
-					std::cout << move.x << ' ' << move.y << ' ' << move.z << std::endl;
+					//std::cout << move.x << ' ' << move.y << ' ' << move.z << std::endl;
 					m->moveObject(move);
 
 					collisions.erase(collisions.begin());
@@ -193,7 +193,7 @@ void PhysicsEngine::updateVertical()
 					CollisionInfo triangleTest = CollisionChecker::collide(m->getCollisionBox(), *iter);
 					if (triangleTest.isColliding() && triangleTest.getContactNormal().y > 0.01f)
 					{
-						std::cout << i << ": " << triangleTest.getDistance() << ' ' << triangleTest.getContactNormal().y << std::endl;
+						//std::cout << i << ": " << triangleTest.getDistance() << ' ' << triangleTest.getContactNormal().y << std::endl;
 						collisions.push_back(PackedCollision(triangleTest, &m->getCollisionBox(), &(*iter)));
 					}
 					++i;
@@ -201,11 +201,11 @@ void PhysicsEngine::updateVertical()
 
 				std::sort(collisions.begin(), collisions.end(), PhysicsEngine::compareLowerDistance);
 
-				std::cout << "Update vertical" << std::endl;
+				//std::cout << "Update vertical" << std::endl;
 				while (collisions.size())
 				{
 					Vector3 move = collisions[0].getInfo().getDistance() * collisions[0].getInfo().getContactNormal();
-					std::cout << move.x << ' ' << move.y << ' ' << move.z << std::endl;
+					//std::cout << move.x << ' ' << move.y << ' ' << move.z << std::endl;
 					m->moveObject(move);
 
 					collisions.erase(collisions.begin());

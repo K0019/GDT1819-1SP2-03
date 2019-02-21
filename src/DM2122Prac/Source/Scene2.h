@@ -17,6 +17,7 @@
 #include "CollisionChecker.h"
 #include "UsefulFunctions.h"
 #include "c_m_Player.h"
+#include "HandleLap.h"
 
 #include "PlaceObjectHandler.h"
 
@@ -54,7 +55,7 @@ private:
 	Player* player; // Player object
 
 	PlaceObjectHandler* placeObjHandler; // Handler of placing of objects
-	
+	HandleLap* handleLap;
 
 	//////////////
 	Kart* kart; // Kart object

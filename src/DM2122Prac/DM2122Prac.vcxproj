@@ -153,6 +153,7 @@
     <ClCompile Include="CollisionChecker.cpp" />
     <ClCompile Include="CollisionInfo.cpp" />
     <ClCompile Include="c_m_Player.cpp" />
+    <ClCompile Include="HandleLap.cpp" />
     <ClCompile Include="Hotbar.cpp" />
     <ClCompile Include="Kart.cpp" />
     <ClCompile Include="Lamp.cpp" />
@@ -199,6 +200,7 @@
     <ClInclude Include="CollisionInfo.h" />
     <ClInclude Include="c_m_Player.h" />
     <ClInclude Include="Definitions.h" />
+    <ClInclude Include="HandleLap.h" />
     <ClInclude Include="Hotbar.h" />
     <ClInclude Include="Kart.h" />
     <ClInclude Include="Lamp.h" />

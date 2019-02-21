@@ -221,6 +221,7 @@ void Scene2::Init()
 					uSpotLight,
 					OBB(Vector3(0.0f, 2.0f, 0.0f), Vector3(1.0f, 0.0f, 0.0f), Vector3(0.0f, 1.0f, 0.0f), Vector3(0.0f, 0.0f, 1.0f), 2.0f, 2.0f, 2.0f)); // Steering wheel
 	ModGate::detector.registerKart(kart);
+	handleLap = new HandleLap(&objectList, { kart });
 
 	text = MeshBuilder::GenerateText(16, 16, "Image//calibri.tga");
 	placeObjHandler = new PlaceObjectHandler(&objectList, player, hotbar);
@@ -248,6 +249,8 @@ void Scene2::Update(double dt, GLFWwindow* programID)
 	ModGate::detector.update();
 	kart->updateOpenGL(uSpotLight);
 	player->updateCamera(programID);
+
+	handleLap->update();
 
 	// Update shaders with new view matrix
 	Mtx44 view;
@@ -348,6 +351,7 @@ void Scene2::Exit()
 	delete skybox;
 	delete player;
 	ModGate::detector.removeKart(kart);
+	delete handleLap;
 	delete kart;
 	delete text;
 	delete placeObjHandler;

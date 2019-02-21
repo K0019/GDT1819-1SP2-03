@@ -17,6 +17,7 @@
 #include "CollisionChecker.h"
 #include "UsefulFunctions.h"
 #include "c_m_Player.h"
+#include "HandleLap.h"
 
 #include "PlaceObjectHandler.h"
 
@@ -58,6 +59,7 @@ private :
 
 	Hotbar* hotbar; // Hotbar object
 	PlaceObjectHandler* Map;
+	HandleLap* handleLap;
 	ObjectList objectList; // List of objects (meshPlaceable)
 
 	Lamp* lamp[1]; // Pointer to lamp

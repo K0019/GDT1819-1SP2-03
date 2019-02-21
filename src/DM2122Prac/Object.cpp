@@ -113,7 +113,7 @@ int Object::getGridZ() const
 	return gridZ;
 }
 
-int Object::getrotation() const
+Object::Rotation Object::getrotation() const
 {
 	return rotation;
 }

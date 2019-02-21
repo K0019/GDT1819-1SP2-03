@@ -62,6 +62,8 @@ private:
 	Mesh* basic, * pikachu, * eevee , * mew , * squirtle , * basic_wheel, *pikachu_wheel, *eevee_wheel, *mew_wheel, *squirtle_wheel, * steeringWheel; // Meshes loaded for kart
 	Vector3 frontLeftPos, frontRightPos, backLeftPos, backRightPos, steeringPos; // Position of the wheel and steering wheel relative to kart position
 
+	int lap;
+
 	SpotLight spotLights[2]; // Spotlight structures to render headlight effect
 
 	bool isDriveGear; // Drive/Reverse gear

@@ -84,6 +84,9 @@ void SceneGame::Init()
 	GUI[1] = MeshBuilder::GenerateXYPlane("Image//1place.tga", 4.0f, 1, type::SHADER_TEXT); 
 	GUI[2] = MeshBuilder::GenerateXYPlane("Image//2place.tga", 4.0f, 1, type::SHADER_TEXT);
 	Map = new PlaceObjectHandler(&objectList, playerDummy, hotbar);
+
+	handleLap = new HandleLap(&objectList, { player[0]->getCar(), player[1]->getCar() });
+
 	glViewport(0, 0, width * 0.5, height);
 	StartView(player[0]);
 
@@ -108,6 +111,10 @@ void SceneGame::Update(double dt, GLFWwindow * programID)
 	processInput(programID);
 	
 	Map->update(programID, dt);
+
+	Physics::physicsEngine.update();
+	ModGate::detector.update();
+	handleLap->update();
 }
 
 void SceneGame::Render()
@@ -134,7 +141,7 @@ void SceneGame::Render()
 	text->PrintTextForward("FPS:" + calculateFPS(), uMatrixMVS, 0.0f,19.f, 1.0f);
 
 	// Reset projection
-	projection.SetToPerspective(55.0, static_cast<double>(width) / static_cast<double>(height), 0.1, 100.0);
+	projection.SetToPerspective(55.0, static_cast<double>(width) / 2.0 / static_cast<double>(height), 0.1, 100.0);
 	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixP);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), projection.a);
 	
@@ -158,6 +165,7 @@ void SceneGame::Exit()
 	{
 		delete GUI[i];
 	}
+	delete handleLap;
 	delete playerDummy;
 	delete text;
 	delete Map;
@@ -203,8 +211,8 @@ void SceneGame::renderView(unsigned int view)
 	projection.SetToOrtho(0, 20, 0, 20, 0, 0.01);
 	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixP);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), projection.a);
-	text->PrintTextBackward(player[view]->car->getSpeedText(), uMatrixMVS, 19.0f, 2.5f, 1.0f);
-	text->PrintTextBackward("Gear:" + player[view]->car->getGear(), uMatrixMVS, 19.0f, 3.5f, 1.0f);
+	text->PrintTextBackward(player[view]->getCar()->getSpeedText(), uMatrixMVS, 19.0f, 2.5f, 1.0f);
+	text->PrintTextBackward("Gear:" + player[view]->getCar()->getGear(), uMatrixMVS, 19.0f, 3.5f, 1.0f);
 	MS model;
 	model.LoadIdentity();
 	model.PushMatrix();
@@ -221,7 +229,7 @@ void SceneGame::renderView(unsigned int view)
 	model.PopMatrix();
 
 	// Reset projection
-	projection.SetToPerspective(55.0, static_cast<double>(width) / static_cast<double>(height), 0.1, 100.0);
+	projection.SetToPerspective(55.0, static_cast<double>(width) / 2.0 / static_cast<double>(height), 0.1, 100.0);
 	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixP);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), projection.a);
 	
@@ -229,15 +237,13 @@ void SceneGame::renderView(unsigned int view)
 
 void SceneGame::StartView(c_m_Player * player)
 {
-	
-
 	// Initialize model, view, projection matrices within shaders
 	Mtx44 MVP[3];
 	MVP[0].SetToIdentity();
 	MVP[1].SetToLookAt(player->getCam().pos.x, player->getCam().pos.y, player->getCam().pos.z,
 		player->getCam().pos.x + player->getCam().front.x, player->getCam().pos.y + player->getCam().front.y, player->getCam().pos.z + player->getCam().front.z,
 		player->getCam().up.x, player->getCam().up.y, player->getCam().up.z);
-	MVP[2].SetToPerspective(55.0, static_cast<double>(width) / static_cast<double>(height), 0.1, 100.0);
+	MVP[2].SetToPerspective(55.0, static_cast<double>(width) / 2.0 / static_cast<double>(height), 0.1, 100.0);
 	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixMVS);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, 2 * sizeof(Mtx44), MVP[0].a);
 	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixP);
@@ -268,8 +274,6 @@ void SceneGame::StartView(c_m_Player * player)
 		glBufferSubData(GL_UNIFORM_BUFFER, 2 * sizeof(Mtx44) + 16 + 80 * i + 48, 12, &lamp[i]->light.diffuse.x);
 		glBufferSubData(GL_UNIFORM_BUFFER, 2 * sizeof(Mtx44) + 16 + 80 * i + 64, 12, &lamp[i]->light.specular.x);
 	}
-
-
 }
 
 void SceneGame::UpdateView(c_m_Player * player)

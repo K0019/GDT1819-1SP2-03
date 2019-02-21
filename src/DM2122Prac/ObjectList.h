@@ -29,6 +29,11 @@ public:
 	std::vector<Object*>::iterator queryOccupied(int lengthX, int lengthY, int lengthZ, int gridX, int gridY, int gridZ, Object::Rotation rotation); // Retrieve an object that is at a certain grid area
 
 	bool queryModificationGatePlacing(int gridX, int gridY, int gridZ, Object::Rotation rotation) const;
+
+	void searchTrackPath();
+	bool intersectLap(const OBB& kartBox) const;
+	int getKartLocation(const OBB& kartBox) const;
+	unsigned int getTrackLength() const;
 protected:
 
 private:
@@ -36,6 +41,8 @@ private:
 
 	std::vector<Object*> objects; // Container of all objects placed
 	std::vector<MeshPlaceable*> meshes; // Container of all meshPlaceables
+
+	std::vector<Object*> raceTrack;
 
 	std::vector<Object*> finishLine;
 	MeshPlaceable* finishLineMesh;

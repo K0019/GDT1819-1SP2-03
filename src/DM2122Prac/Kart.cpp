@@ -17,6 +17,7 @@ Kart::Kart(Mesh* basic, Mesh* pikachu, Mesh* eevee, Mesh*mew, Mesh*squirtle,
 	, wheelRotation(0.0)
 	, isDriveGear(true)
 	, gearShiftDelay(0.0)
+	, lap(1)
 	, basic(basic)
 	, pikachu(pikachu)
 	, eevee(eevee)
@@ -254,7 +255,7 @@ void Kart::update(GLFWwindow* window, double deltaTime)
 	if (pos.y < 0.0f)
 		pos.y = 0.0f;
 	// Update OBB
-	setCollisionPosition(Vector3(pos.x, pos.y + 2.0f, pos.z));
+	setCollisionPosition(Vector3(pos.x, pos.y + 6.0f, pos.z));
 }
 
 void Kart::updateOpenGL(unsigned int uSpotLight)
@@ -459,7 +460,7 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 		}
 
 		// Update OBB
-		setCollisionPosition(Vector3(pos.x, pos.y + 2.0f, pos.z));
+		setCollisionPosition(Vector3(pos.x, pos.y + 3.0f, pos.z));
 	}
 	else // player 2 
 	{
@@ -616,7 +617,7 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 	}*/
 
 	// Update OBB
-	setCollisionPosition(Vector3(pos.x, pos.y + 2.0f, pos.z));
+	setCollisionPosition(Vector3(pos.x, pos.y + 3.0f, pos.z));
     }
 }
 
@@ -694,7 +695,7 @@ void Kart::render(unsigned int uMatrixMVS) const
 
 	// Front right wheel
 	model.PushMatrix(); // 2
-	model.Translate(frontRightPos.x+0.5f, frontRightPos.y, frontRightPos.z);
+	model.Translate(frontRightPos.x + 0.5f, frontRightPos.y, frontRightPos.z);
 	model.Rotate(180.0f + static_cast<float>(turnForce) * 25.0f, 0.0f, 1.0f, 0.0f);
 	model.Translate(0.5f, 0, 0);
 	model.Rotate(static_cast<float>(-wheelRotation), 1.0f, 0.0f, 0.0f);
