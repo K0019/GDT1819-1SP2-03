@@ -21,6 +21,7 @@
 #include "Sound.h"
 #include "NewTimer.h"
 #include "WinLoseGraphic.h"
+#include "Countdown.h"
 
 #include "PlaceObjectHandler.h"
 
@@ -66,6 +67,7 @@ private :
 	Hotbar* hotbar; // Hotbar object
 	PlaceObjectHandler* Map;
 	HandleLap* handleLap;
+	Countdown* countdown;
 	WinLoseGraphic* winLoseGraphic;
 	ObjectList objectList; // List of objects (meshPlaceable)
 

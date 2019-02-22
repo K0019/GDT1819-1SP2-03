@@ -1,9 +1,11 @@
 #include "WinLoseGraphic.h"
 
-WinLoseGraphic::WinLoseGraphic(Mesh* win, Mesh* lose)
-	: win(win)
+WinLoseGraphic::WinLoseGraphic(Mesh* finish, Mesh* win, Mesh* lose)
+	: finish(finish)
+	, win(win)
 	, lose(lose)
 	, finished(false)
+	, showFinish(false)
 	, timer(nullptr)
 	, totalTime(0.0)
 {
@@ -12,15 +14,19 @@ WinLoseGraphic::WinLoseGraphic(Mesh* win, Mesh* lose)
 
 WinLoseGraphic::~WinLoseGraphic()
 {
+	delete finish;
+	delete win;
+	delete lose;
+
 	delete timer;
 }
 
 void WinLoseGraphic::registerWin(int winnerID)
 {
-	if (!finished && winnerID != -1)
+	if (!showFinish && !finished && winnerID != -1)
 	{
 		this->winnerID = winnerID;
-		finished = true;
+		showFinish = true;
 		timer = new StopWatch();
 		timer->startTimer();
 	}
@@ -28,7 +34,61 @@ void WinLoseGraphic::registerWin(int winnerID)
 
 void WinLoseGraphic::render(unsigned int uMatrixMVS)
 {
-	if (finished)
+	if (showFinish)
+	{
+		// Finish main
+		totalTime += timer->getElapsedTime();
+		shader::container.useShader(type::SHADER_WINLOSE);
+		float opacity, size;
+
+		MS model;
+		model.PushMatrix();
+		model.LoadIdentity();
+
+		model.PushMatrix();
+		model.Translate(10.0f, 10.0f, 0.0f);
+
+		// Fading finishes
+		for (int i = 0; i < 3; ++i)
+		{
+			float time = static_cast<float>(totalTime - 0.5) - static_cast<float>(i) * 0.5f;
+			opacity = 1.0f - 1.333f * time;
+			if (opacity > 1.0f || opacity < 0.0f)
+				continue;
+			size = 1.0f + time * 0.5f;
+
+			model.PushMatrix();
+			model.Scale(size, size, size);
+			glUniform1f(glGetUniformLocation(shader::container.getID(type::SHADER_WINLOSE), "alpha"), opacity);
+			glBindBuffer(GL_UNIFORM_BUFFER, uMatrixMVS);
+			glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), model.Top().a);
+
+			finish->Render();
+			model.PopMatrix();
+		}
+
+		opacity = (totalTime < 1.5 ? (totalTime < 0.5 ? static_cast<float>(totalTime * 2.0) : 1.0f) : 0.0f);
+		size = (totalTime < 0.5 ? 1.5f - static_cast<float>(totalTime) : 1.0f);
+		glUniform1f(glGetUniformLocation(shader::container.getID(type::SHADER_WINLOSE), "alpha"), opacity);
+
+		model.PushMatrix();
+		model.Scale(size, size, size);
+		glBindBuffer(GL_UNIFORM_BUFFER, uMatrixMVS);
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), model.Top().a);
+		finish->Render();
+		model.PopMatrix();
+
+		model.PopMatrix();
+		model.PopMatrix();
+
+		if (totalTime >= 3.5)
+		{
+			totalTime -= 3.5;
+			finished = true;
+			showFinish = false;
+		}
+	}
+	else if (finished)
 	{
 		totalTime += timer->getElapsedTime();
 		shader::container.useShader(type::SHADER_WINLOSE);

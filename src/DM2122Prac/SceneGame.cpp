@@ -95,7 +95,12 @@ void SceneGame::Init()
 	Map = new PlaceObjectHandler(&objectList, playerDummy, hotbar);
 	Map->Loadmap();
 	handleLap = new HandleLap(&objectList, { player[0]->getCar(), player[1]->getCar() });
-	winLoseGraphic = new WinLoseGraphic(MeshBuilder::GenerateXYPlane("Image//winner.tga", 6.0f, 3.375f, 1, type::SHADER_WINLOSE),
+	countdown = new Countdown(MeshBuilder::GenerateXYPlane("Image//three.tga", 12.0f, 6.75f, 1, type::SHADER_WINLOSE),
+							  MeshBuilder::GenerateXYPlane("Image//two.tga", 12.0f, 6.75f, 1, type::SHADER_WINLOSE),
+							  MeshBuilder::GenerateXYPlane("Image//one.tga", 12.0f, 6.75f, 1, type::SHADER_WINLOSE),
+							  MeshBuilder::GenerateXYPlane("Image//go.tga", 12.0f, 6.75f, 1, type::SHADER_WINLOSE));
+	winLoseGraphic = new WinLoseGraphic(MeshBuilder::GenerateXYPlane("Image//finish.tga", 12.0f, 6.75f, 1, type::SHADER_WINLOSE),
+										MeshBuilder::GenerateXYPlane("Image//winner.tga", 6.0f, 3.375f, 1, type::SHADER_WINLOSE),
 										MeshBuilder::GenerateXYPlane("Image//loser.tga", 6.0f, 3.375f, 1, type::SHADER_WINLOSE));
 
 	timer = new Timer();
@@ -114,6 +119,8 @@ void SceneGame::Init()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_CULL_FACE);
 	isCullFace = true;
+
+	countdown->start();
 }
 
 void SceneGame::Update(double dt, GLFWwindow * programID)
@@ -155,7 +162,7 @@ void SceneGame::Render()
 	// Render text
 	text->PrintTextForward("FPS:" + calculateFPS(), uMatrixMVS, 0.0f,19.f, 1.0f);
 	text->PrintTextBackward("Elapsed:" + timer->getTimeText() + "s", uMatrixMVS, 19.0f, 19.0f, 1.0f);
-
+	countdown->render(uMatrixMVS);
 	winLoseGraphic->render(uMatrixMVS);
 
 	// Reset projection
@@ -188,6 +195,7 @@ void SceneGame::Exit()
 	delete text;
 	delete Map;
 	delete winLoseGraphic;
+	delete countdown;
 	delete timer;
 
 	// Free memory allocated for UBOs
@@ -420,8 +428,11 @@ void SceneGame::processInput(GLFWwindow * window)
 		glfwSetWindowShouldClose(window, GL_TRUE);
 
 	// Update the player and kart(if any)
-	player[0]->update(window, deltaTime, uSpotLight);
-	player[1]->update(window, deltaTime, uSpotLight);
+	if (!countdown->isCounting())
+	{
+		player[0]->update(window, deltaTime, uSpotLight);
+		player[1]->update(window, deltaTime, uSpotLight);
+	}
 
 	// Misc.
 	if (isPressed(window, GLFW_KEY_1)) // Enable cull face

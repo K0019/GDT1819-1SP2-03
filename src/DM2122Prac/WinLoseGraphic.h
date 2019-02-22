@@ -8,7 +8,7 @@
 class WinLoseGraphic
 {
 public:
-	WinLoseGraphic(Mesh* win, Mesh* lose);
+	WinLoseGraphic(Mesh* finish, Mesh* win, Mesh* lose);
 	~WinLoseGraphic();
 
 	void registerWin(int winnerID);
@@ -17,9 +17,9 @@ public:
 protected:
 
 private:
-	Mesh* win, *lose;
+	Mesh* finish, *win, *lose;
 
-	bool finished;
+	bool finished, showFinish;
 	int winnerID;
 
 	StopWatch* timer;
