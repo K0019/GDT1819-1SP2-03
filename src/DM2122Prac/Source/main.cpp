@@ -4,6 +4,7 @@
 
 int main( void )
 {
+	music::player.init();
 	Application app;
 	app.Init();
 	app.Run();

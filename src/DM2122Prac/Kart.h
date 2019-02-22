@@ -12,7 +12,7 @@
 #include "MovingPhysicsObject.h"
 #include "Definitions.h"
 #include "UsefulFunctions.h"
-
+#include "Sound.h"
 /* File: Kart.h
    Use: Class containing information about the kart
 		Handles kart rendering, and movement when this is attached to the player */
@@ -24,7 +24,7 @@ public:
          Mesh* basic_wheel, Mesh* pikachu_wheel, Mesh* eevee_wheel, Mesh* mew_wheel, Mesh* squirtle_wheel,Mesh* steeringWheel,
 		const Vector3& wheelFrontLeftPos, const Vector3& wheelFrontRightPos, 
 		const Vector3& wheelBackLeftPos, const Vector3& wheelBackRightPos,
-		const Vector3& steeringWheelPos, unsigned int uSpotLight, const OBB& obb); // Constructor
+		const Vector3& steeringWheelPos, unsigned int uSpotLight, const OBB& obb,const Vector3& pos1); // Constructor
 	~Kart(); // Destructor
 
 	void update(GLFWwindow* window, double deltaTime); // Move the kart and handle input

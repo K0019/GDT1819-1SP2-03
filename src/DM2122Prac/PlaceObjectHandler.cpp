@@ -25,16 +25,19 @@ void PlaceObjectHandler::update(GLFWwindow* window, double dt)
 	if (isPressed(window, GLFW_KEY_B))
 	{
 		objectList->deleteAll();
+		music::player.playsound("");
 	}
 	// Save function
 	if (isPressed(window, GLFW_KEY_N))
 	{
 		objectList->saveObject();
+		music::player.playsound("");
 	}
 	// Load save file
 	if (isPressed(window, GLFW_KEY_M))
 	{
 		Loadmap();
+		music::player.playsound("");
 	}
 	// Rotate selection
 	if (isPressed(window, GLFW_KEY_R))
@@ -71,6 +74,7 @@ void PlaceObjectHandler::update(GLFWwindow* window, double dt)
 				if (objectList->addObject(hotbar->querySelection(), gridX, gridY, rotation))
 					leftClicked = true;
 			}
+			music::player.playsound("");
 		}
 	}
 	else
@@ -95,6 +99,7 @@ void PlaceObjectHandler::update(GLFWwindow* window, double dt)
 				if (objectList->deleteObject(gridX, gridZ, Object::Rotation::NORTH))
 					rightClicked = true;
 			}
+			music::player.playsound("");
 		}
 	}
 	else

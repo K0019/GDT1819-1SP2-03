@@ -14,11 +14,11 @@ Kart::Kart(Mesh* basic, Mesh* pikachu, Mesh* eevee, Mesh*mew, Mesh*squirtle,
 	Mesh* basic_wheel, Mesh* pikachu_wheel, Mesh* eevee_wheel, Mesh* mew_wheel, Mesh* squirtle_wheel, Mesh* steeringWheel,
 	const Vector3& wheelFrontLeftPos, const Vector3& wheelFrontRightPos,
 	const Vector3& wheelBackLeftPos, const Vector3& wheelBackRightPos,
-	const Vector3& steeringWheelPos, unsigned int uSpotLight, const OBB& obb)
+	const Vector3& steeringWheelPos, unsigned int uSpotLight, const OBB& obb , const Vector3& pos1)
 	: MovingPhysicsObject(obb)
-	, pos(Vector3())
+	, pos(pos1)
 	, velocity(Vector3())
-	, yaw(0.0)
+	, yaw(90.0)
 	, pitch(0.0)
 	, roll(0.0)
 	, speed(0.0)
@@ -209,6 +209,7 @@ void Kart::update(GLFWwindow* window, double deltaTime)
 				speed = 0.0;
 			}
 		}
+
 	}
 	if (gearShiftDelay <= 0.0 && isPressed(window, GLFW_KEY_S))
 	{
@@ -496,6 +497,7 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 				}
 
 			}
+			music::player.playsound("");
 		}
 		if (gearShiftDelay <= 0.0 && isPressed(window, GLFW_KEY_S))
 		{
@@ -533,6 +535,7 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 					}
 				}
 			}
+			music::player.playsound("");
 		}
 		// Turn input
 		if (isPressed(window, GLFW_KEY_A))
@@ -545,7 +548,7 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 			{
 				turnForce -= 6.0 * deltaTime;
 			}
-
+			music::player.playsound("");
 		}
 		if (isPressed(window, GLFW_KEY_D))
 		{
@@ -557,6 +560,7 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 			{
 				turnForce += 6.0 * deltaTime;
 			}
+			music::player.playsound("");
 		}
 		//use skill
 		if (isPressed(window, GLFW_KEY_Q))
@@ -573,6 +577,7 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 					skillDelay = 0.5;
 					player_used = true;
 				}
+				music::player.playsound("");
 				break;
 			case e_eevee:
 				if (player_used == false)
@@ -581,6 +586,7 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 					skillDelay = 1.5;
 					player_used = true;
 				}
+				music::player.playsound("");
 				break;
 			case e_mew:
 				if (player_used == false)
@@ -589,6 +595,7 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 					skillDelay = 3.5;
 					player_used = true;
 				}
+				music::player.playsound("");
 				break;
 			case e_squirtle:
 				if (player_used == false)
@@ -598,6 +605,7 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 					std::cout << "here" << std::endl;
 					player_used = true;
 				}
+				music::player.playsound("");
 				break;
 			default:
 				player_used = false;
@@ -616,7 +624,7 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 			{
 				player2_invert_control = false;
 			}
-
+			music::player.playsound("");
 		}
 		if (player2_slow == true)
 		{
@@ -625,7 +633,7 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 			{
 				player2_slow = false;
 			}
-
+			music::player.playsound("");
 		}
 		if (player2_stun == true)
 		{
@@ -634,7 +642,7 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 			{
 				player2_stun = false;
 			}
-
+			music::player.playsound("");
 		}
 
 		if (player_eevee_up == true)
@@ -1198,7 +1206,7 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 			if (speed < 0.0) // Reverse
 				turnDegree = -turnDegree;
 
-			yaw += turnDegree;
+			yaw += turnDegree;	
 		}
 
 		// Calculate velocity
