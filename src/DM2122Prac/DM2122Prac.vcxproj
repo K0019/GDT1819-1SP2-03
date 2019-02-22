@@ -152,6 +152,7 @@
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="CollisionChecker.cpp" />
     <ClCompile Include="CollisionInfo.cpp" />
+    <ClCompile Include="Countdown.cpp" />
     <ClCompile Include="c_m_Player.cpp" />
     <ClCompile Include="HandleLap.cpp" />
     <ClCompile Include="Hotbar.cpp" />
@@ -201,6 +202,7 @@
     <ClInclude Include="Collider.h" />
     <ClInclude Include="CollisionChecker.h" />
     <ClInclude Include="CollisionInfo.h" />
+    <ClInclude Include="Countdown.h" />
     <ClInclude Include="c_m_Player.h" />
     <ClInclude Include="Definitions.h" />
     <ClInclude Include="HandleLap.h" />
