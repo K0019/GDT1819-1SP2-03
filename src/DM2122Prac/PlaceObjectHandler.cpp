@@ -21,21 +21,21 @@ PlaceObjectHandler::~PlaceObjectHandler()
 // Handle object placing/deleting input
 void PlaceObjectHandler::update(GLFWwindow* window, double dt)
 {
-	// clear world function
-	if (isPressed(window, GLFW_KEY_B))
-	{
-		objectList->deleteAll();
-	}
-	// Save function
-	if (isPressed(window, GLFW_KEY_N))
-	{
-		objectList->saveObject();
-	}
-	// Load save file
-	if (isPressed(window, GLFW_KEY_M))
-	{
-		Loadmap();
-	}
+	//// clear world function
+	//if (isPressed(window, GLFW_KEY_B))
+	//{
+	//	objectList->deleteAll();
+	//}
+	//// Save function
+	//if (isPressed(window, GLFW_KEY_N))
+	//{
+	//	objectList->saveObject();
+	//}
+	//// Load save file
+	//if (isPressed(window, GLFW_KEY_M))
+	//{
+	//	Loadmap();
+	//}
 	// Rotate selection
 	if (isPressed(window, GLFW_KEY_R))
 	{

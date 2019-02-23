@@ -8,7 +8,7 @@
 #include "MyMath.h"
 #include "Mtx44.h"
 #include "timer.h"
-#include "Lamp.h"
+#include "Base3DPoly.h"
 #include "Player.h"
 #include "Kart.h"
 #include "MeshFloor.h"
@@ -45,8 +45,10 @@ public:
 	// this is for updating 
 	void UpdateView(c_m_Player* player);
 
+	void resetCountdown();
+
 	void processInput(GLFWwindow* window); // Function called every update cycle, checks for keyboard input
-	static void framebuffer_resize_callback(GLFWwindow* window, int width, int height); // Function called when window resizes to adapt render viewport
+	static void resize(int width, int height); // Function called when window resizes to adapt render viewport
 
 
 private :
@@ -71,10 +73,7 @@ private :
 	WinLoseGraphic* winLoseGraphic;
 	ObjectList objectList; // List of objects (meshPlaceable)
 
-	Lamp* lamp[1]; // Pointer to lamp
-
 	Mesh* GUI[8]; // this is for GUI
-	int placing; // this is the placing for the playter
 	 
 	Timer* timer;
 

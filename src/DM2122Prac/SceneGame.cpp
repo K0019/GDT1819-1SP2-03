@@ -2,7 +2,7 @@
 
 /* Initialize static member variables | Resolve LNK2001 */
 double SceneGame::deltaTime = 0.0, SceneGame::enterBounce = 0.0;
-int SceneGame::width = 800, SceneGame::height = 600;
+int SceneGame::width = PROGRAM_WIDTH, SceneGame::height = PROGRAM_HEIGHT;
 unsigned int SceneGame::uMatrixMVS = NULL, SceneGame::uMatrixP = NULL, SceneGame::uColorData = NULL, SceneGame::uSpotLight;
 unsigned SceneGame::m_programID = 0;
 
@@ -20,11 +20,9 @@ void SceneGame::Init()
 	// Set clear color
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
-	placing = 1;
 	// Use most general shader for configuration
 	shader::container.useShader(type::SHADER_2);
 	m_programID = shader::container.getID(type::SHADER_2);
-	music::player.init();
 	music::player.playsound("Sound/test.mp3", true);
 	music::player.setsoundvol(0.1f);
 	// Generate UBOs
@@ -105,10 +103,10 @@ void SceneGame::Init()
 
 	timer = new Timer();
 
-	glViewport(0, 0, width * 0.5, height);
+	glViewport(0, 0, width / 2, height);
 	StartView(player[0]);
 
-	glViewport(0, height*0.5, width *0.5, height);
+	glViewport(0, height / 2, width / 2, height);
 	StartView(player[1]);
 
 	glViewport(0, 0, width, height);
@@ -137,6 +135,9 @@ void SceneGame::Update(double dt, GLFWwindow * programID)
 	handleLap->update();
 
 	winLoseGraphic->registerWin(handleLap->getWinner());
+
+	glBindBufferBase(GL_UNIFORM_BUFFER, 0, uMatrixMVS);
+	glBindBufferBase(GL_UNIFORM_BUFFER, 1, uMatrixP);
 }
 
 void SceneGame::Render()
@@ -144,29 +145,28 @@ void SceneGame::Render()
 	// Clear buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glViewport(0, 0, width * 0.5, height);
+	glViewport(0, 0, width / 2, height);
 	UpdateView(player[0]);
 	renderView(0);
 
-	placing++;
-	glViewport(width * 0.5, 0, width * 0.5, height);
+	glViewport(width / 2, 0, width / 2, height);
 	UpdateView(player[1]);
 	renderView(1);
 
 	glViewport(0, 0, width, height);
 	Mtx44 projection;
-	projection.SetToOrtho(0, 20, 0, 20, 0, 0.01);
+	projection.SetToOrtho(-10.0 * static_cast<double>(width) / static_cast<double>(height), 10.0 * static_cast<double>(width) / static_cast<double>(height), 0.0, 20.0, -0.1, 0.1);
 	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixP);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), projection.a);
 
 	// Render text
-	text->PrintTextForward("FPS:" + calculateFPS(), uMatrixMVS, 0.0f,19.f, 1.0f);
-	text->PrintTextBackward("Elapsed:" + timer->getTimeText() + "s", uMatrixMVS, 19.0f, 19.0f, 1.0f);
+	text->PrintTextForward("FPS:" + calculateFPS(), uMatrixMVS, -10.0f * static_cast<float>(width) / static_cast<float>(height), 19.0f, 1.0f);
+	text->PrintTextBackward("Elapsed:" + timer->getTimeText() + "s", uMatrixMVS, 9.5f * static_cast<float>(width) / static_cast<float>(height), 19.0f, 1.0f);
 	countdown->render(uMatrixMVS);
-	winLoseGraphic->render(uMatrixMVS);
+	winLoseGraphic->render(uMatrixMVS, static_cast<float>(width), static_cast<float>(height));
 
 	// Reset projection
-	projection.SetToPerspective(55.0, static_cast<double>(width) / 2.0 / static_cast<double>(height), 0.1, 100.0);
+	projection.SetToPerspective(41.25 * static_cast<double>(width) / static_cast<double>(height), static_cast<double>(width) / 2.0 / static_cast<double>(height), 0.1, 100.0);
 	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixP);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), projection.a);
 	
@@ -174,10 +174,6 @@ void SceneGame::Render()
 
 void SceneGame::Exit()
 {
-	for (int i = 0; i < NO_OF_POINTLIGHTS; ++i)
-	{
-		delete lamp[i];
-	}
 	delete axes;
 	delete floor;
 	delete hotbar;
@@ -186,7 +182,7 @@ void SceneGame::Exit()
 	{
 		delete player[i];
 	}
-	for (int i = 0; i < 3; ++i)
+	for (int i = 0; i < 8; ++i)
 	{
 		delete GUI[i];
 	}
@@ -222,45 +218,35 @@ void SceneGame::renderView(unsigned int view)
 	{
 		player[i]->render(uMatrixMVS);
 	}
-	//player->render(); // Draw player (if applicable)
 	objectList.renderObjects(uMatrixMVS);
 
-	// Draw the lamps
-	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixMVS);
-	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), offset.a);
-	for (int i = 0; i < NO_OF_POINTLIGHTS; ++i)
-	{
-		offset.SetToTranslation(lamp[i]->light.position.x, lamp[i]->light.position.y, lamp[i]->light.position.z);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), offset.a);
-		lamp[i]->draw();
-	}
 	// Prepare projection matrix for HUD rendering
 	Mtx44 projection;
-	projection.SetToOrtho(0, 20, 0, 20, 0, 0.01);
+	projection.SetToOrtho(-10.0 * static_cast<double>(width / 2) / static_cast<double>(height), 10.0 * static_cast<double>(width / 2) / static_cast<double>(height), 0.0, 20.0, -0.1, 0.1);
 	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixP);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), projection.a);
-	text->PrintTextBackward(player[view]->getCar()->getSpeedText(), uMatrixMVS, 19.0f, 2.5f, 1.0f);
-	text->PrintTextBackward("Gear:" + player[view]->getCar()->getGear(), uMatrixMVS, 19.0f, 3.5f, 1.0f);
+	text->PrintTextBackward(player[view]->getCar()->getSpeedText(), uMatrixMVS, 9.0f * static_cast<float>(width / 2) / static_cast<float>(height), 2.5f, 1.0f);
+	text->PrintTextBackward("Gear:" + player[view]->getCar()->getGear(), uMatrixMVS, 9.0f * static_cast<float>(width / 2) / static_cast<float>(height), 3.5f, 1.0f);
+
 	MS model;
 	model.LoadIdentity();
 	model.PushMatrix();
-	model.Translate(2.0f, 1.5f, 0.0f);
+	model.Translate(-8.0f * static_cast<float>(width / 2) / static_cast<float>(height), 1.5f, 0.0f);
 	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixMVS);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), model.Top().a);
 	GUI[0]->Render();
 	
-	model.Translate(15.0f, 0.0f, 0.0f);
+	model.Translate(15.0f * static_cast<float>(width / 2) / static_cast<float>(height), 0.0f, 0.0f);
 	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixMVS);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), model.Top().a);
 	GUI[handleLap->getPlacing(player[view]->getCar())]->Render();
-	placing = 1;
 	model.PopMatrix();
 	
 
 	//item player holding now
 	model.PushMatrix();
 	model.LoadIdentity();
-	model.Translate(2.0f, 1.5f, 0.0f);
+	model.Translate(-8.0f * static_cast<float>(width / 2) / static_cast<float>(height), 1.5f, 0.0f);
 	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixMVS);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), model.Top().a);
 		switch (player[view]->getCar()->getStatus())
@@ -330,7 +316,7 @@ void SceneGame::renderView(unsigned int view)
 		//////current debuff
 		model.PushMatrix();
 		model.LoadIdentity();
-		model.Translate(10.0f, 15.0f, 0.0f);
+		model.Translate(0.0f, 15.0f, 0.0f);
 		glBindBuffer(GL_UNIFORM_BUFFER, uMatrixMVS);
 		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), model.Top().a);		
 		switch (player[view]->getCar()->getBuff())
@@ -357,7 +343,7 @@ void SceneGame::renderView(unsigned int view)
 
 
 	// Reset projection
-	projection.SetToPerspective(55.0, static_cast<double>(width) / 2.0 / static_cast<double>(height), 0.1, 100.0);
+	projection.SetToPerspective(41.25 * static_cast<double>(width) / static_cast<double>(height), static_cast<double>(width) / 2.0 / static_cast<double>(height), 0.1, 100.0);
 	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixP);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), projection.a);
 	
@@ -371,37 +357,11 @@ void SceneGame::StartView(c_m_Player * player)
 	MVP[1].SetToLookAt(player->getCam().pos.x, player->getCam().pos.y, player->getCam().pos.z,
 		player->getCam().pos.x + player->getCam().front.x, player->getCam().pos.y + player->getCam().front.y, player->getCam().pos.z + player->getCam().front.z,
 		player->getCam().up.x, player->getCam().up.y, player->getCam().up.z);
-	MVP[2].SetToPerspective(55.0, static_cast<double>(width) / 2.0 / static_cast<double>(height), 0.1, 100.0);
+	MVP[2].SetToPerspective(41.25 * static_cast<double>(width) / static_cast<double>(height), static_cast<double>(width) / 2.0 / static_cast<double>(height), 0.1, 100.0);
 	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixMVS);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, 2 * sizeof(Mtx44), MVP[0].a);
 	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixP);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), MVP[2].a);
-
-	// Initialize each lamp
-	for (int i = 0; i < NO_OF_POINTLIGHTS; ++i)
-	{
-		lamp[i] = new Lamp(uColorData);
-		lamp[i]->light.position = Vector3(0.0f, 10.0f, -10.0f);
-		lamp[i]->light.ambient = Vector3(0.1f, 0.1f, 0.1f);
-		lamp[i]->light.diffuse = Vector3(0.7f, 0.7f, 0.7f);
-		lamp[i]->light.specular = Vector3(0.3f, 0.3f, 0.3f);
-		lamp[i]->light.constant = 0.6f;
-		lamp[i]->light.linear = 0.009f;
-		lamp[i]->light.quadratic = 0.0f;
-	}
-
-	// Initialize each point light within shaders
-	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixMVS);
-	for (int i = 0; i < NO_OF_POINTLIGHTS; ++i)
-	{
-		glBufferSubData(GL_UNIFORM_BUFFER, 2 * sizeof(Mtx44) + 16 + 80 * i, 12, &lamp[i]->light.position.x);
-		glBufferSubData(GL_UNIFORM_BUFFER, 2 * sizeof(Mtx44) + 16 + 80 * i + 12, 4, &lamp[i]->light.constant);
-		glBufferSubData(GL_UNIFORM_BUFFER, 2 * sizeof(Mtx44) + 16 + 80 * i + 16, 4, &lamp[i]->light.linear);
-		glBufferSubData(GL_UNIFORM_BUFFER, 2 * sizeof(Mtx44) + 16 + 80 * i + 20, 4, &lamp[i]->light.quadratic);
-		glBufferSubData(GL_UNIFORM_BUFFER, 2 * sizeof(Mtx44) + 16 + 80 * i + 32, 12, &lamp[i]->light.ambient.x);
-		glBufferSubData(GL_UNIFORM_BUFFER, 2 * sizeof(Mtx44) + 16 + 80 * i + 48, 12, &lamp[i]->light.diffuse.x);
-		glBufferSubData(GL_UNIFORM_BUFFER, 2 * sizeof(Mtx44) + 16 + 80 * i + 64, 12, &lamp[i]->light.specular.x);
-	}
 }
 
 void SceneGame::UpdateView(c_m_Player * player)
@@ -413,10 +373,6 @@ void SceneGame::UpdateView(c_m_Player * player)
 		player->getCam().up.x, player->getCam().up.y, player->getCam().up.z);
 	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixMVS);
 	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(Mtx44), sizeof(Mtx44), view.a);
-
-	// Update point light position within shaders
-	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixMVS);
-	glBufferSubData(GL_UNIFORM_BUFFER, 2 * sizeof(Mtx44) + 16, 12, &lamp[0]->light.position.x);
 
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
@@ -435,27 +391,24 @@ void SceneGame::processInput(GLFWwindow * window)
 	}
 
 	// Misc.
-	if (isPressed(window, GLFW_KEY_1)) // Enable cull face
+	if (isPressed(window, GLFW_KEY_F1)) // Enable cull face
 	{
 		glEnable(GL_CULL_FACE);
 		isCullFace = true;
 	}
-	else if (isPressed(window, GLFW_KEY_2)) // Disable cull face
+	else if (isPressed(window, GLFW_KEY_F2)) // Disable cull face
 	{
 		glDisable(GL_CULL_FACE);
 		isCullFace = false;
 	}
-	if (isPressed(window, GLFW_KEY_3)) // Disable wireframe
+	if (isPressed(window, GLFW_KEY_F3)) // Disable wireframe
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	else if (isPressed(window, GLFW_KEY_4)) // Enable wireframe
+	else if (isPressed(window, GLFW_KEY_F4)) // Enable wireframe
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
 
-void SceneGame::framebuffer_resize_callback(GLFWwindow * window, int width, int height)
+void SceneGame::resize(int width, int height)
 {
-	// Resize viewport
-	glViewport(0, 0, width, height);
-
 	SceneGame::width = width;
 	SceneGame::height = height;
 }
@@ -469,23 +422,7 @@ std::string SceneGame::calculateFPS() const
 	return convert.str();
 }
 
-//void SceneGame::drawCoordinates() const
-//{
-//	std::stringstream convertX, convertY, convertZ;
-//
-//	convertX.precision(1);
-//	convertX << std::fixed << player->getCam().pos.x;
-//	text->PrintTextForward("x:" + convertX.str(), uMatrixMVS, 0.0f, 19.0f, 1.0f);
-//
-//	convertY.precision(1);
-//	convertY << std::fixed << player->getCam().pos.y;
-//	text->PrintTextForward("y:" + convertY.str(), uMatrixMVS, 0.0f, 18.0f, 1.0f);
-//
-//	convertZ.precision(1);
-//	convertZ << std::fixed << player->getCam().pos.z;
-//	text->PrintTextForward("z:" + convertZ.str(), uMatrixMVS, 0.0f, 17.0f, 1.0f);
-//
-//	text->PrintTextForward(std::to_string(Physics::physicsEngine.testCollision()), uMatrixMVS, 0, 15, 1);
-//}
-
-
+void SceneGame::resetCountdown()
+{
+	countdown->reset();
+}

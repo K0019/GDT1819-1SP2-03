@@ -13,7 +13,7 @@ public:
 
 	void registerWin(int winnerID);
 
-	void render(unsigned int uMatrixMVS);
+	void render(unsigned int uMatrixMVS, float width, float height);
 protected:
 
 private:

@@ -8,6 +8,7 @@ Sound::Sound()
 	if (count == 1)
 		throw std::exception("Sound-> Can only create 1 player");
 	++count;
+	init();
 }
 
 

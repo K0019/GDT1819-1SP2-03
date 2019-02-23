@@ -41,6 +41,8 @@ c_m_Player::~c_m_Player()
 {
 	ModGate::detector.removeKart(car);
 	delete car;
+
+	--Player_ID;
 }
 
 void c_m_Player::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight)

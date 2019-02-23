@@ -8,7 +8,7 @@
 #include "MyMath.h"
 #include "Mtx44.h"
 #include "timer.h"
-#include "Lamp.h"
+#include "Base3DPoly.h"
 #include "Player.h"
 #include "Kart.h"
 #include "MeshFloor.h"
@@ -37,8 +37,12 @@ public:
 	virtual void Render() override; // Render the scene
 	virtual void Exit() override; // Cleanup
 
+	void saveMap();
+	void loadMap();
+	void clearMap();
+
 	void processInput(GLFWwindow* window); // Function called every update cycle, checks for keyboard input
-	static void framebuffer_resize_callback(GLFWwindow* window, int width, int height); // Function called when window resizes to adapt render viewport
+	static void resize(int width, int height); // Function called when window resizes to adapt render viewport
 	
 private:
 	static unsigned int uMatrixMVS, uMatrixP, uColorData, uSpotLight; // UBO handles for model, view, projection matrices, lighting and color, material data
@@ -60,7 +64,6 @@ private:
 	//////////////
 	Kart* kart; // Kart object
 	///////////////
-	Lamp* lamp[1]; // Pointer to lamp
 
 	MeshText* text; // Text mesh
 

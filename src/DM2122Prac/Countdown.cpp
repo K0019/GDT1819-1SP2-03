@@ -13,12 +13,24 @@ Countdown::Countdown(Mesh* three, Mesh* two, Mesh* one, Mesh* go)
 
 Countdown::~Countdown()
 {
+	for (int i = 0; i < 4; ++i)
+	{
+		delete meshes[i];
+	}
 	delete[] meshes;
 	delete timer;
 }
 
 void Countdown::start()
 {
+	timer->startTimer();
+}
+
+void Countdown::reset()
+{
+	delete timer;
+	timer = new StopWatch();
+	totalTime = 0.0;
 	timer->startTimer();
 }
 
@@ -37,7 +49,7 @@ void Countdown::render(unsigned int uMatrixMVS)
 		model.LoadIdentity();
 
 		model.PushMatrix();
-		model.Translate(10.0f, 10.0f, 0.0f);
+		model.Translate(0.0f, 10.0f, 0.0f);
 		model.Scale(size, size, size);
 
 		glUniform1f(glGetUniformLocation(shader::container.getID(type::SHADER_WINLOSE), "alpha"), opacity);

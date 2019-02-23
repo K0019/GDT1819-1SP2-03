@@ -5,7 +5,7 @@
 		Only used to handle rendering of a non-placed meshPlaceable */
 
 // No. of point lights
-#define NO_OF_POINTLIGHTS 1
+#define NO_OF_POINTLIGHTS 0
 
 // Info about primitive
 layout(location = 2) in vec3 vertexPosition_modelspace;
@@ -33,7 +33,7 @@ layout (std140) uniform MatrixMV // 208
 	mat4 view; // 64, 64
 	
 	vec3 sunDir; // 128, 12
-	PointLight vPointLights[NO_OF_POINTLIGHTS]; // 144, 80 * NO_OF_POINTLIGHTS
+	//PointLight vPointLights[NO_OF_POINTLIGHTS]; // 144, 80 * NO_OF_POINTLIGHTS
 };
 
 layout (std140) uniform MatrixP

@@ -5,7 +5,7 @@
 		Shader applicable to the bear object only */
 
 // No. of point lights
-#define NO_OF_POINTLIGHTS 1
+#define NO_OF_POINTLIGHTS 0
 #define NO_OF_SPOTLIGHTS 2
 
 // Info about primitive
@@ -49,7 +49,7 @@ out VS_OUT
 	vec3 aPos; // Vertex info
 	
 	vec3 aSunDir; // Directional light
-	PointLight aPointLights[NO_OF_POINTLIGHTS]; // Point lights
+	//PointLight aPointLights[NO_OF_POINTLIGHTS]; // Point lights
 	SpotLight aSpotLights[NO_OF_SPOTLIGHTS]; // Spotlights
 } vs_out;
 
@@ -61,7 +61,7 @@ layout (std140) uniform MatrixMV // 208
 	mat4 view; // 64, 64
 	
 	vec3 sunDir; // 128, 12
-	PointLight vPointLights[NO_OF_POINTLIGHTS]; // 144, 80 * NO_OF_POINTLIGHTS
+	//PointLight vPointLights[NO_OF_POINTLIGHTS]; // 144, 80 * NO_OF_POINTLIGHTS
 };
 
 // Uniform block for spotlights
@@ -82,11 +82,11 @@ void main()
 	vs_out.aSunDir = normalize(vec3(mat4(mat3(view)) * vec4(sunDir, 1.0f)));
 
 	// Convert point lights' positions to view space
-	for (int i = 0; i < NO_OF_POINTLIGHTS; ++i)
+	/*for (int i = 0; i < NO_OF_POINTLIGHTS; ++i)
 	{
 		vs_out.aPointLights[i] = vPointLights[i];
 		vs_out.aPointLights[i].position = vec3(view * vec4(vPointLights[i].position, 1.0f));
-	}
+	}*/
 	
 	// Convert spotlights' positions to view space
 	for (int i = 0; i < NO_OF_SPOTLIGHTS; ++i)

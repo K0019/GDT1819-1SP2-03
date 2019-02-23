@@ -22,3 +22,9 @@ bool linePlaneIntersect(const Vector3& linePoint, const Vector3& lineDir, const 
 					 static_cast<float>(linePoint.z + lambda * lineDir.z));
 	return true;
 }
+
+void updateUBO(GLenum UBO, GLint offset, GLsizeiptr size, const GLvoid* data)
+{
+	glBindBuffer(GL_UNIFORM_BUFFER, UBO);
+	glBufferSubData(GL_UNIFORM_BUFFER, offset, size, data);
+}

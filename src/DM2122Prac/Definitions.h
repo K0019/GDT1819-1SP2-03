@@ -5,6 +5,9 @@
 /* File: Definitions.h
    Use: Misc. constants used in this program that can be changed easily through modifying these values */
 
+constexpr auto PROGRAM_WIDTH = 800;
+constexpr auto PROGRAM_HEIGHT = 600;
+
 // All _FIDELITY and _HORIZONTAL_FIDELITY definitions are the number of vertices per splice
 // All _VERTICAL_FIDELITY definitions are the number of splices per mesh
 
@@ -28,7 +31,7 @@
 #define CYLINDER_FIDELITY 360 / 72
 
 // Lights initialized within the scene
-#define NO_OF_POINTLIGHTS 1
+#define NO_OF_POINTLIGHTS 0
 #define NO_OF_SPOTLIGHTS 2
 
 #endif // !DEFINITIONS_H

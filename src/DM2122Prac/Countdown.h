@@ -12,6 +12,7 @@ public:
 	~Countdown();
 
 	void start();
+	void reset();
 
 	void render(unsigned int uMatrixMVS);
 	bool isCounting() const;

@@ -5,7 +5,7 @@
 		General shader used in most meshes */
 		
 // No. of point lights and spotlights
-#define NO_OF_POINTLIGHTS 1
+#define NO_OF_POINTLIGHTS 0
 #define NO_OF_SPOTLIGHTS 2
 
 // Definition of struct PointLight
@@ -51,7 +51,7 @@ in vec3 normal; // Normal of primitive
 in vec3 pos; // Position of vertex in view space
 in vec2 texCoord; // Texture coordinate of vertex
 in vec3 sunDir; // Sun direction
-in PointLight cPointLights[NO_OF_POINTLIGHTS]; // All the point lights
+//in PointLight cPointLights[NO_OF_POINTLIGHTS]; // All the point lights
 in SpotLight cSpotLights[NO_OF_SPOTLIGHTS]; // All the spotlights
 
 // Ouput data
@@ -72,10 +72,10 @@ void main()
 	color += vec4(vec3(max(dot(-normal, sunDir), 0.0f) * texture(material.diffuse, texCoord)), 0.0f);
 
 	// Add color contributed by each point light
-	for (int i = 0; i < NO_OF_POINTLIGHTS; ++i)
+	/*for (int i = 0; i < NO_OF_POINTLIGHTS; ++i)
 	{
 		color += vec4(calculatePointLight(cPointLights[i], normal, pos), 0.0f);
-	}
+	}*/
 	
 	// Add color contributed by each spotlight
 	for (int i = 0; i < NO_OF_SPOTLIGHTS; ++i)

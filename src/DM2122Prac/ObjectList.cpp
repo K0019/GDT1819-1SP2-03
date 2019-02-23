@@ -17,6 +17,10 @@ ObjectList::~ObjectList()
 	{
 		delete mesh;
 	}
+	for (Object* object : finishLine)
+	{
+		delete object;
+	}
 
 	delete finishLineMesh;
 	ModGate::detector.removeObjects();

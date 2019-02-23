@@ -32,7 +32,7 @@ void WinLoseGraphic::registerWin(int winnerID)
 	}
 }
 
-void WinLoseGraphic::render(unsigned int uMatrixMVS)
+void WinLoseGraphic::render(unsigned int uMatrixMVS, float width, float height)
 {
 	if (showFinish)
 	{
@@ -46,7 +46,7 @@ void WinLoseGraphic::render(unsigned int uMatrixMVS)
 		model.LoadIdentity();
 
 		model.PushMatrix();
-		model.Translate(10.0f, 10.0f, 0.0f);
+		model.Translate(0.0f, 10.0f, 0.0f);
 
 		// Fading finishes
 		for (int i = 0; i < 3; ++i)
@@ -100,7 +100,7 @@ void WinLoseGraphic::render(unsigned int uMatrixMVS)
 		model.LoadIdentity();
 
 		model.PushMatrix();
-		model.Translate(5.0f, 10.0f, 0.0f);
+		model.Translate(-5.0f * width / height, 10.0f, 0.0f);
 		model.Scale(2.0f - size, 2.0f - size, 2.0f - size);
 		glBindBuffer(GL_UNIFORM_BUFFER, uMatrixMVS);
 		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), model.Top().a);
@@ -130,7 +130,7 @@ void WinLoseGraphic::render(unsigned int uMatrixMVS)
 		model.PopMatrix();
 
 		model.PushMatrix();
-		model.Translate(15.0f, 10.0f, 0.0f);
+		model.Translate(5.0f * width / height, 10.0f, 0.0f);
 		model.Scale(2.0f - size, 2.0f - size, 2.0f - size);
 		glBindBuffer(GL_UNIFORM_BUFFER, uMatrixMVS);
 		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), model.Top().a);

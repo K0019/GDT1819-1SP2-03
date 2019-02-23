@@ -4,7 +4,7 @@
 
 /* Initialize static member variables | Resolve LNK2001 */
 double Scene2::deltaTime = 0.0, Scene2::enterBounce = 0.0;
-int Scene2::width = 800, Scene2::height = 600;
+int Scene2::width = PROGRAM_WIDTH, Scene2::height = PROGRAM_HEIGHT;
 unsigned int Scene2::uMatrixMVS = NULL, Scene2::uMatrixP = NULL, Scene2::uColorData = NULL, Scene2::uSpotLight;
 unsigned Scene2::m_programID = 0;
 
@@ -46,22 +46,6 @@ void Scene2::processInput(GLFWwindow* window)
 		enterBounce = 0.0;
 	}
 
-	// Lamp position
-	float lampSpeed = (float)(5.0f * deltaTime); // Lamp speed
-	// Move lamp in respective direction if key is pressed
-	if (isPressed(window, GLFW_KEY_I))
-		lamp[0]->light.position.z += lampSpeed;
-	if (isPressed(window, GLFW_KEY_K))
-		lamp[0]->light.position.z -= lampSpeed;
-	if (isPressed(window, GLFW_KEY_J))
-		lamp[0]->light.position.x += lampSpeed;
-	if (isPressed(window, GLFW_KEY_L))
-		lamp[0]->light.position.x -= lampSpeed;
-	if (isPressed(window, GLFW_KEY_U))
-		lamp[0]->light.position.y += lampSpeed;
-	if (isPressed(window, GLFW_KEY_O))
-		lamp[0]->light.position.y -= lampSpeed;
-
 	// Reset
 	if (isPressed(window, GLFW_KEY_F))
 	{
@@ -86,14 +70,14 @@ void Scene2::processInput(GLFWwindow* window)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
 
-// Function called when window resizes to adapt render viewport
-void Scene2::framebuffer_resize_callback(GLFWwindow* window, int width, int height)
+void Scene2::resize(int width, int height)
 {
-	// Resize viewport
-	glViewport(0, 0, width, height);
-
 	Scene2::width = width;
 	Scene2::height = height;
+
+	Mtx44 projection;
+	projection.SetToPerspective(41.25 * static_cast<double>(width) / static_cast<double>(height), static_cast<double>(width) / static_cast<double>(height), 0.1, 100.0);
+	updateUBO(uMatrixP, 0, sizeof(Mtx44), projection.a);
 }
 
 // Constructor
@@ -147,40 +131,15 @@ void Scene2::Init()
 	MVP[1].SetToLookAt(player->getCam().pos.x, player->getCam().pos.y, player->getCam().pos.z,
 		player->getCam().pos.x + player->getCam().front.x, player->getCam().pos.y + player->getCam().front.y, player->getCam().pos.z + player->getCam().front.z,
 		player->getCam().up.x, player->getCam().up.y, player->getCam().up.z);
-	MVP[2].SetToPerspective(55.0, static_cast<double>(width) / static_cast<double>(height), 0.1, 100.0);
+	MVP[2].SetToPerspective(41.25 * static_cast<double>(width) / static_cast<double>(height), static_cast<double>(width) / static_cast<double>(height), 0.1, 100.0);
 	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixMVS);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, 2 * sizeof(Mtx44), MVP[0].a);
 	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixP);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), MVP[2].a);
 
-	// Initialize each lamp
-	for (int i = 0; i < NO_OF_POINTLIGHTS; ++i)
-	{
-		lamp[i] = new Lamp(uColorData);
-		lamp[i]->light.position = Vector3(0.0f, 10.0f, -10.0f);
-		lamp[i]->light.ambient = Vector3(0.1f, 0.1f, 0.1f);
-		lamp[i]->light.diffuse = Vector3(0.7f, 0.7f, 0.7f);
-		lamp[i]->light.specular = Vector3(0.3f, 0.3f, 0.3f);
-		lamp[i]->light.constant = 0.6f;
-		lamp[i]->light.linear = 0.009f;
-		lamp[i]->light.quadratic = 0.0f;
-	}
-
-	// Initialize each point light within shaders
-	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixMVS);
-	for (int i = 0; i < NO_OF_POINTLIGHTS; ++i)
-	{
-		glBufferSubData(GL_UNIFORM_BUFFER, 2 * sizeof(Mtx44) + 16 + 80 * i, 12, &lamp[i]->light.position.x);
-		glBufferSubData(GL_UNIFORM_BUFFER, 2 * sizeof(Mtx44) + 16 + 80 * i + 12, 4, &lamp[i]->light.constant);
-		glBufferSubData(GL_UNIFORM_BUFFER, 2 * sizeof(Mtx44) + 16 + 80 * i + 16, 4, &lamp[i]->light.linear);
-		glBufferSubData(GL_UNIFORM_BUFFER, 2 * sizeof(Mtx44) + 16 + 80 * i + 20, 4, &lamp[i]->light.quadratic);
-		glBufferSubData(GL_UNIFORM_BUFFER, 2 * sizeof(Mtx44) + 16 + 80 * i + 32, 12, &lamp[i]->light.ambient.x);
-		glBufferSubData(GL_UNIFORM_BUFFER, 2 * sizeof(Mtx44) + 16 + 80 * i + 48, 12, &lamp[i]->light.diffuse.x);
-		glBufferSubData(GL_UNIFORM_BUFFER, 2 * sizeof(Mtx44) + 16 + 80 * i + 64, 12, &lamp[i]->light.specular.x);
-	}
-
 	// Initialize directional light
 	Vector3 sunDir = Vector3(0.4f, -0.35f, 0.85f).Normalize();
+	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixMVS);
 	glBufferSubData(GL_UNIFORM_BUFFER, 2 * sizeof(Mtx44), 12, &sunDir.x);
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
@@ -260,18 +219,15 @@ void Scene2::Update(double dt, GLFWwindow* programID)
 	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixMVS);
 	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(Mtx44), sizeof(Mtx44), view.a);
 
-	// Update point light position within shaders
-	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixMVS);
-	glBufferSubData(GL_UNIFORM_BUFFER, 2 * sizeof(Mtx44) + 16, 12, &lamp[0]->light.position.x);
-
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
-	
 }
 
 // Render the scene
 void Scene2::Render()
 {
+	glBindBufferBase(GL_UNIFORM_BUFFER, 0, uMatrixMVS);
+	glBindBufferBase(GL_UNIFORM_BUFFER, 1, uMatrixP);
+
 	Mtx44 offset;
 	offset.SetToIdentity();
 	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixMVS);
@@ -287,16 +243,6 @@ void Scene2::Render()
 	kart->render(uMatrixMVS); // Draw the kart
 	player->render(); // Draw player (if applicable)
 
-	// Draw the lamps
-	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixMVS);
-	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), offset.a);
-	for (int i = 0; i < NO_OF_POINTLIGHTS; ++i)
-	{
-		offset.SetToTranslation(lamp[i]->light.position.x, lamp[i]->light.position.y, lamp[i]->light.position.z);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), offset.a);
-		lamp[i]->draw();
-	}
-
 	// Draw each object in the world
 	objectList.renderObjects(uMatrixMVS);
 
@@ -306,14 +252,14 @@ void Scene2::Render()
 
 	// Prepare projection matrix for HUD rendering
 	Mtx44 projection;
-	projection.SetToOrtho(0, 20, 0, 20, 0, 0.01);
+	projection.SetToOrtho(-10.0 * static_cast<double>(width) / static_cast<double>(height), 10.0 * static_cast<double>(width) / static_cast<double>(height), 0.0, 20.0, -0.1, 0.1);
 	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixP);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), projection.a);
 
 	// Render text
-	text->PrintTextForward("FPS:" + calculateFPS(), uMatrixMVS, 0.0f, 1.2f, 2.0f);
-	text->PrintTextBackward(kart->getSpeedText(), uMatrixMVS, 19.0f, 2.5f, 1.0f);
-	text->PrintTextBackward("Gear:" + kart->getGear(), uMatrixMVS, 19.0f, 3.5f, 1.0f);
+	text->PrintTextForward("FPS:" + calculateFPS(), uMatrixMVS, (-10.0f * static_cast<float>(width) / static_cast<float>(height)) / 2.0f, 1.2f, 2.0f);
+	text->PrintTextBackward(kart->getSpeedText(), uMatrixMVS, 9.0f * static_cast<float>(width) / static_cast<float>(height), 2.5f, 1.0f);
+	text->PrintTextBackward("Gear:" + kart->getGear(), uMatrixMVS, 9.0f * static_cast<float>(width) / static_cast<float>(height), 3.5f, 1.0f);
 
 	// Render intersection coordinates
 	Vector3 intersection;
@@ -322,7 +268,7 @@ void Scene2::Render()
 		std::stringstream convert;
 		convert.precision(1);
 		convert << std::fixed << intersection.x << ',' << intersection.y << ',' << intersection.z;
-		text->PrintTextForward(convert.str(), uMatrixMVS, 0.0f, 16.0f, 1.0f);
+		text->PrintTextForward(convert.str(), uMatrixMVS, -10.0f * static_cast<float>(width) / static_cast<float>(height), 16.0f, 1.0f);
 	}
 
 	// Render player coordinates
@@ -332,7 +278,7 @@ void Scene2::Render()
 	hotbar->print(uMatrixMVS, uMatrixP, width, height);
 
 	// Reset projection
-	projection.SetToPerspective(55.0, static_cast<double>(width) / static_cast<double>(height), 0.1, 100.0);
+	projection.SetToPerspective(41.25 * static_cast<double>(width) / static_cast<double>(height), static_cast<double>(width) / static_cast<double>(height), 0.1, 100.0);
 	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixP);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), projection.a);
 }
@@ -341,10 +287,6 @@ void Scene2::Render()
 void Scene2::Exit()
 {
 	// Free allocated memory for all the meshes
-	for (int i = 0; i < NO_OF_POINTLIGHTS; ++i)
-	{
-		delete lamp[i];
-	}
 	delete axes;
 	delete floor;
 	delete hotbar;
@@ -361,6 +303,21 @@ void Scene2::Exit()
 	glDeleteBuffers(1, &uMatrixP);
 	glDeleteBuffers(1, &uColorData);
 	glDeleteBuffers(1, &uSpotLight);
+}
+
+void Scene2::saveMap()
+{
+	objectList.saveObject();
+}
+
+void Scene2::loadMap()
+{
+	placeObjHandler->Loadmap();
+}
+
+void Scene2::clearMap()
+{
+	objectList.deleteAll();
 }
 
 // Generate HUD text for FPS
@@ -380,15 +337,15 @@ void Scene2::drawCoordinates() const
 
 	convertX.precision(1);
 	convertX << std::fixed << player->getCam().pos.x;
-	text->PrintTextForward("x:" + convertX.str(), uMatrixMVS, 0.0f, 19.0f, 1.0f);
+	text->PrintTextForward("x:" + convertX.str(), uMatrixMVS, -10.0f * static_cast<float>(width) / static_cast<float>(height), 19.0f, 1.0f);
 
 	convertY.precision(1);
 	convertY << std::fixed << player->getCam().pos.y;
-	text->PrintTextForward("y:" + convertY.str(), uMatrixMVS, 0.0f, 18.0f, 1.0f);
+	text->PrintTextForward("y:" + convertY.str(), uMatrixMVS, -10.0f * static_cast<float>(width) / static_cast<float>(height), 18.0f, 1.0f);
 
 	convertZ.precision(1);
 	convertZ << std::fixed << player->getCam().pos.z;
-	text->PrintTextForward("z:" + convertZ.str(), uMatrixMVS, 0.0f, 17.0f, 1.0f);
+	text->PrintTextForward("z:" + convertZ.str(), uMatrixMVS, -10.0f * static_cast<float>(width) / static_cast<float>(height), 17.0f, 1.0f);
 
-	text->PrintTextForward(std::to_string(Physics::physicsEngine.testCollision()), uMatrixMVS, 0, 15, 1);
+	//text->PrintTextForward(std::to_string(Physics::physicsEngine.testCollision()), uMatrixMVS, -10.0f * static_cast<float>(width) / static_cast<float>(height), 15, 1);
 }
