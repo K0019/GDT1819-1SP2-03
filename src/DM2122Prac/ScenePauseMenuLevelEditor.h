@@ -2,6 +2,7 @@
 #define SCENEPAUSEMENULEVELEDITOR_H
 #include "ScenePauseMenu.h"
 #include "Source/Scene2.h"
+#include "Sound.h"
 #include "UsefulFunctions.h"
 
 class ScenePauseMenuLevelEditor : public ScenePauseMenu

@@ -105,12 +105,15 @@ void ScenePauseMenuLevelEditor::activated(short selection)
 		break;
 	case 1: // Save
 		scene->saveMap();
+		music::player.playsound("");
 		break;
 	case 2: // Load
 		scene->loadMap();
+		music::player.playsound("");
 		break;
 	case 3: // Clear
 		scene->clearMap();
+		music::player.playsound("");
 		break;
 	case 4: // Main Menu
 		stay = false;

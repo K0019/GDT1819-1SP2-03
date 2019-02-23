@@ -22,9 +22,14 @@ void SceneGame::Init()
 
 	// Use most general shader for configuration
 	shader::container.useShader(type::SHADER_2);
+	//music::player.playsound("Sound/test2.mp3", true);
 	m_programID = shader::container.getID(type::SHADER_2);
-	music::player.playsound("Sound/test.mp3", true);
+
 	music::player.setsoundvol(0.1f);
+	music::player.playsound("Sound/test.mp3", true);
+	
+	
+
 	// Generate UBOs
 	glGenBuffers(1, &uMatrixMVS);
 	glGenBuffers(1, &uMatrixP);
@@ -256,55 +261,65 @@ void SceneGame::renderView(unsigned int view)
 				if (player[view]->getCar()->get_used())
 				{
 					GUI[3]->Render();
+					music::player.playsound("");
 					break;
 				}
 				else
 				{
 					GUI[3]->Render();
+					music::player.playsound("");
 					break;
 				}	
 	     	case Kart::e_pikachu:
 				if (player[view]->getCar()->get_used())
 				{
 					GUI[3]->Render();
+					music::player.playsound("");
 					break;
 				}
 				else
 				{
 					GUI[4]->Render();
+					music::player.playsound("");
 					break;
 				}	
 			case Kart::e_eevee:
 				if (player[view]->getCar()->get_used())
 				{
 					GUI[3]->Render();
+					music::player.playsound("");
 					break;
 				}
 				else
 				{
 					GUI[5]->Render();
+					music::player.playsound("");
 					break;
 				}
 			case Kart::e_mew:
 				if (player[view]->getCar()->get_used())
 				{
 					GUI[3]->Render();
+					music::player.playsound("");
 					break;
 				}
 				else
 				{
 					GUI[6]->Render();
+					music::player.playsound("");
 					break;
 				}
 			case Kart::e_squirtle:
 				if (player[view]->getCar()->get_used())
 				{
 					GUI[3]->Render();
+					music::player.playsound("");
 					break;
 				}
 				else
 				{
 					GUI[7]->Render();
+					music::player.playsound("");
 					break;
 				}
 			default:
@@ -323,17 +338,22 @@ void SceneGame::renderView(unsigned int view)
 		{			
 		case Kart::b_stun:
 			GUI[4]->Render();
+			music::player.playsound("");
 			break;
 		case Kart::b_speed:
 			GUI[5]->Render();
+			music::player.playsound("");
 			break;
 		case Kart::b_confuse:
 			GUI[6]->Render();
+			music::player.playsound("");
 			break;
 		case Kart::b_slow:
 			GUI[7]->Render();
+			music::player.playsound("");
 			break;
 		case Kart::b_nothing:
+			music::player.playsound("");
 			break;
 		default:
 			break;

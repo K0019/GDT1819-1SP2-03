@@ -36,6 +36,7 @@ void PlaceObjectHandler::update(GLFWwindow* window, double dt)
 	//{
 	//	Loadmap();
 	//}
+
 	// Rotate selection
 	if (isPressed(window, GLFW_KEY_R))
 	{
@@ -71,6 +72,7 @@ void PlaceObjectHandler::update(GLFWwindow* window, double dt)
 				if (objectList->addObject(hotbar->querySelection(), gridX, gridY, rotation))
 					leftClicked = true;
 			}
+			music::player.playsound("");
 		}
 	}
 	else
@@ -95,6 +97,7 @@ void PlaceObjectHandler::update(GLFWwindow* window, double dt)
 				if (objectList->deleteObject(gridX, gridZ, Object::Rotation::NORTH))
 					rightClicked = true;
 			}
+			music::player.playsound("");
 		}
 	}
 	else

@@ -99,7 +99,7 @@ void Scene2::Init()
 	// Use most general shader for configuration
 	shader::container.useShader(type::SHADER_2);
 	m_programID = shader::container.getID(type::SHADER_2);
-
+	music::player.playsound("",true);
 	// Generate UBOs
 	glGenBuffers(1, &uMatrixMVS);
 	glGenBuffers(1, &uMatrixP);
@@ -178,7 +178,7 @@ void Scene2::Init()
 					Vector3(-3.28f, 1.24f, -1.43f), // Back right
 					Vector3(0.0f, 0.368f, 1.974f),
 					uSpotLight,
-					OBB(Vector3(0.0f, 2.0f, 0.0f), Vector3(1.0f, 0.0f, 0.0f), Vector3(0.0f, 1.0f, 0.0f), Vector3(0.0f, 0.0f, 1.0f), 2.0f, 2.0f, 2.0f)); // Steering wheel
+					OBB(Vector3(0.0f, 2.0f, 0.0f), Vector3(1.0f, 0.0f, 0.0f), Vector3(0.0f, 1.0f, 0.0f), Vector3(0.0f, 0.0f, 1.0f), 2.0f, 2.0f, 2.0f),Vector3()); // Steering wheel
 	ModGate::detector.registerKart(kart);
 	handleLap = new HandleLap(&objectList, { kart });
 
