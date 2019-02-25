@@ -5,12 +5,12 @@ int SceneMainMenu::width = PROGRAM_WIDTH, SceneMainMenu::height = PROGRAM_HEIGHT
 SceneMainMenu::SceneMainMenu()
 	: MenuSelection(3)
 {
-
+	music::player.init();
 }
 
 SceneMainMenu::~SceneMainMenu()
 {
-
+	
 }
 
 void SceneMainMenu::resize(int width, int height)
@@ -22,7 +22,8 @@ void SceneMainMenu::resize(int width, int height)
 void SceneMainMenu::Init()
 {
 	glClearColor(0.0f, 0.0f, 0.4f, 1.0f);
-
+	music::player.setsoundvol(0.15);
+	music::player.playsound(music::player.getMainSound(), true);
 	glGenBuffers(1, &uMatrixMVS);
 	glGenBuffers(1, &uMatrixP);
 
@@ -111,6 +112,7 @@ void SceneMainMenu::activated(short selection)
 {
 	if (!ignoreEnter)
 	{
+		music::player.getEngine()->removeSoundSource(music::player.getMainSound());
 		switch (selection)
 		{
 		case 0:
@@ -133,6 +135,10 @@ SceneMainMenu::Gamemode SceneMainMenu::getGamemode() const
 
 void SceneMainMenu::setBackToMainMenu()
 {
+	
+	music::player.getEngine()->removeAllSoundSources();
+	music::player.init();
+	music::player.playsound(music::player.getMainSound(), true);
 	gamemode = MAIN_MENU;
 	ignoreEnter = true;
 }
