@@ -496,8 +496,9 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 					}
 				}
 
-			}
-			music::player.playsound("");
+			} 
+			
+				music::player.playsound("");
 		}
 		if (gearShiftDelay <= 0.0 && isPressed(window, GLFW_KEY_S))
 		{
