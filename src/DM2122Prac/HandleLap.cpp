@@ -51,8 +51,6 @@ void HandleLap::update()
 				location[i] = newLocation;
 			}
 		}
-
-		std::cout << i << ':' << laps[i] << std::endl;
 	}
 }
 

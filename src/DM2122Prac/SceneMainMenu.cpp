@@ -22,7 +22,7 @@ void SceneMainMenu::resize(int width, int height)
 void SceneMainMenu::Init()
 {
 	glClearColor(0.0f, 0.0f, 0.4f, 1.0f);
-	music::player.setsoundvol(0.15);
+	music::player.setsoundvol(0.15f);
 	music::player.playsound(music::player.getMainSound(), true);
 	glGenBuffers(1, &uMatrixMVS);
 	glGenBuffers(1, &uMatrixP);

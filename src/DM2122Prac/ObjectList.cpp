@@ -295,7 +295,6 @@ void ObjectList::searchTrackPath()
 
 		if (raceTrack.size() > 1 && ((offsetX1 == 0 && offsetZ1 == 0) || (offsetX2 == 0 && offsetZ2 == 0)))
 		{
-			std::cout << "End" << std::endl;
 			break;
 		}
 
@@ -311,7 +310,6 @@ void ObjectList::searchTrackPath()
 
 		if (obj1 != objects.end() || obj2 != objects.end())
 		{
-			std::cout << "found" << std::endl;
 			std::vector<Object*>::iterator objectToPick = (obj1 != objects.end() ? obj1 : obj2);
 
 			raceTrack.push_back(*objectToPick);
@@ -330,7 +328,6 @@ void ObjectList::searchTrackPath()
 		}
 		else
 		{
-			std::cout << "not found" << std::endl;
 			break;
 		}
 	}

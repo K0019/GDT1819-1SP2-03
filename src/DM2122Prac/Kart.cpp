@@ -1593,7 +1593,6 @@ void Kart::changeStatus()
 {
 	int m_random;
 	m_random = (1 + rand() % 5);
-	std::cout << m_random << std::endl;
 	player_used = false;
 	switch (m_random)
 	{

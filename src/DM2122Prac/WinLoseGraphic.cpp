@@ -112,7 +112,7 @@ void WinLoseGraphic::render(unsigned int uMatrixMVS, float width, float height)
 			if (totalTime > 1.0)
 			{
 				float opacity = static_cast<float>((1.0 - 2.0 * fmod(totalTime, 1.0) > 0.0 ? 1.0 - 2.0 * fmod(totalTime, 1.0) : 0.0));
-				float size = 1.5f - 0.5 * opacity;
+				float size = 1.5f - 0.5f * opacity;
 				model.PushMatrix();
 				model.Scale(size, size, size);
 				glBindBuffer(GL_UNIFORM_BUFFER, uMatrixMVS);
@@ -142,7 +142,7 @@ void WinLoseGraphic::render(unsigned int uMatrixMVS, float width, float height)
 			if (totalTime > 1.0)
 			{
 				float opacity = static_cast<float>((1.0 - 2.0 * fmod(totalTime, 1.0) > 0.0 ? 1.0 - 2.0 * fmod(totalTime, 1.0) : 0.0));
-				float size = 1.5f - 0.5 * opacity;
+				float size = 1.5f - 0.5f * opacity;
 				model.PushMatrix();
 				model.Scale(size, size, size);
 				glBindBuffer(GL_UNIFORM_BUFFER, uMatrixMVS);

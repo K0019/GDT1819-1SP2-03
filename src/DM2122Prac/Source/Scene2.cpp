@@ -227,7 +227,7 @@ void Scene2::Update(double dt, GLFWwindow* programID)
 	kart->updateOpenGL(uSpotLight);
 	player->updateCamera(programID);
 
-	handleLap->update();
+	//handleLap->update();
 
 	// Update shaders with new view matrix
 	Mtx44 view;
