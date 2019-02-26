@@ -136,6 +136,7 @@ Kart::~Kart()
 // Move the kart and handle input
 void Kart::update(GLFWwindow* window, double deltaTime)
 {
+	Present = glfwJoystickPresent(GLFW_JOYSTICK_1);
 	if (Present == 1) {
 		axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &axescount);
 
@@ -423,6 +424,7 @@ void Kart::updateOpenGL(unsigned int uSpotLight)
 
 void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight, int PlayerID)
 {
+	Present = glfwJoystickPresent(GLFW_JOYSTICK_1);
 	if (Present == 1) {
 		axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &axescount);
 
