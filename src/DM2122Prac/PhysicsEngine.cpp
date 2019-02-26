@@ -113,7 +113,7 @@ void PhysicsEngine::updateHorizontal()
 		// Remove collisions resulting in response that is in kart velocity direction
 		for (std::vector<PackedCollision>::const_iterator collision = collisions.begin(); collision != collisions.end(); )
 		{
-			if (collision->getInfo().getContactNormal().Dot(m->getVelocity()) >= 0.0f)
+			if (collision->getInfo().getContactNormal().Dot(m->getVelocity()) > 0.0f)
 			{
 				collision = collisions.erase(collision);
 				continue;
@@ -178,109 +178,7 @@ void PhysicsEngine::updateHorizontal()
 	}
 }
 
-void PhysicsEngine::updateVertical()
-{
-	for (auto& m : movingObjects)
-	{
-		for (auto& s : staticObjects)
-		{
-			CollisionInfo AABBtest = CollisionChecker::collide(m->getCollisionBox(), s->getAABB());
-			if (AABBtest.isColliding())
-			{
-				std::vector<PackedCollision> collisions;
-
-				int i = 0;
-
-				for (std::vector<Triangle>::const_iterator iter = s->getTriangles().begin(); iter != s->getTriangles().end(); ++iter)
-				{
-					CollisionInfo triangleTest = CollisionChecker::collide(m->getCollisionBox(), *iter);
-					if (triangleTest.isColliding() && triangleTest.getContactNormal().y > 0.01f)
-					{
-						//std::cout << i << ": " << triangleTest.getDistance() << ' ' << triangleTest.getContactNormal().y << std::endl;
-						collisions.push_back(PackedCollision(triangleTest, &m->getCollisionBox(), &(*iter)));
-					}
-					++i;
-				}
-
-				std::sort(collisions.begin(), collisions.end(), PhysicsEngine::compareLowerDistance);
-
-				//std::cout << "Update vertical" << std::endl;
-				while (collisions.size())
-				{
-					Vector3 move = collisions[0].getInfo().getDistance() * collisions[0].getInfo().getContactNormal();
-					//std::cout << move.x << ' ' << move.y << ' ' << move.z << std::endl;
-					m->moveObject(move);
-
-					collisions.erase(collisions.begin());
-					for (std::vector<PackedCollision>::iterator c = collisions.begin(); c != collisions.end(); )
-					{
-						c->recalculateCollision();
-						if (c->getInfo().getDistance() <= 0.0f)
-						{
-							c = collisions.erase(c);
-							continue;
-						}
-
-						++c;
-					}
-				}
-			}
-		}
-	}
-}
-
-bool PhysicsEngine::testCollision() const
-{
-	for (auto& m : movingObjects)
-	{
-		for (auto& s : staticObjects)
-		{
-			CollisionInfo AABBtest = CollisionChecker::collide(m->getCollisionBox(), s->getAABB());
-			if (AABBtest.isColliding())
-			{
-				for (std::vector<Triangle>::const_iterator iter = s->getTriangles().begin(); iter != s->getTriangles().end(); ++iter)
-				{
-					CollisionInfo triangleTest = CollisionChecker::collide(m->getCollisionBox(), *iter);
-					if (triangleTest.isColliding())
-					{
-						if (s->getPhysicsEnabled())
-						{
-							return true;
-						}
-						else
-						{
-							return true;
-						}
-					}
-				}
-			}
-		}
-	}
-
-	return false;
-}
-
 void PhysicsEngine::empty()
 {
 	staticObjects.clear();
-}
-
-bool PhysicsEngine::compareLowerDistance(const PackedCollision& info1, const PackedCollision& info2)
-{
-	return info1.getInfo().getDistance() > info2.getInfo().getDistance();
-}
-bool PhysicsEngine::compareLowerDistanceWithY(const PackedCollision& info1, const PackedCollision& info2)
-{
-	if (info1.getInfo().getContactNormal().y > 0.01f)
-	{
-		return false;
-	}
-	else if (info2.getInfo().getContactNormal().y > 0.01f)
-	{
-		return true;
-	}
-	else
-	{
-		return compareLowerDistance(info1, info2);
-	}
 }
