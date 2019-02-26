@@ -138,6 +138,7 @@ void Kart::update(GLFWwindow* window, double deltaTime)
 {
 	Present = glfwJoystickPresent(GLFW_JOYSTICK_1);
 	if (Present == 1) {
+		Present = glfwJoystickPresent(GLFW_JOYSTICK_1);
 		axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &axescount);
 
 		std::cout << "No of axes " << axes[0] << std::endl;
@@ -320,8 +321,8 @@ void Kart::update(GLFWwindow* window, double deltaTime)
 	// Calculate Rotation
 	if (speed != 0.0)
 	{
-		double turnDegreeLinear = fabs(turnForce * (speed / 60.0) * 3.5);
-		double turnDegreeQuadratic = fabs(turnForce / (speed / 60.0) * 0.7);
+		double turnDegreeLinear = fabs(turnForce * (speed / 60.0) * 6.0);
+		double turnDegreeQuadratic = fabs(turnForce / (speed / 60.0) * 1.2);
 		double turnDegree = ((turnDegreeLinear < turnDegreeQuadratic) ? (turnDegreeLinear) : (turnDegreeQuadratic));
 		if (turnForce < 0.0) // Rotate left
 			turnDegree = -turnDegree;
@@ -329,7 +330,7 @@ void Kart::update(GLFWwindow* window, double deltaTime)
 			turnDegree = -turnDegree;
 
 		yaw += turnDegree;
-		rotateCollision(static_cast<float>(turnDegree), Vector3(0.0f, 1.0f, 0.0f));
+		//rotateCollision(static_cast<float>(turnDegree), Vector3(0.0f, 1.0f, 0.0f));
 	}
 
 	// Calculate velocity
@@ -426,6 +427,7 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 {
 	Present = glfwJoystickPresent(GLFW_JOYSTICK_1);
 	if (Present == 1) {
+		Present = glfwJoystickPresent(GLFW_JOYSTICK_1);
 		axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &axescount);
 
 		//std::cout << "No of axes " << axescount << std::endl;
@@ -735,8 +737,8 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 		// Calculate Rotation
 		if (speed != 0.0)
 		{
-			double turnDegreeLinear = fabs(turnForce * (speed / 60.0) * 3.5);
-			double turnDegreeQuadratic = fabs(turnForce / (speed / 60.0) * 0.7);
+			double turnDegreeLinear = fabs(turnForce * (speed / 60.0) * 6.0);
+			double turnDegreeQuadratic = fabs(turnForce / (speed / 60.0) * 1.2);
 			double turnDegree = ((turnDegreeLinear < turnDegreeQuadratic) ? (turnDegreeLinear) : (turnDegreeQuadratic));
 			if (turnForce < 0.0) // Rotate left
 				turnDegree = -turnDegree;
@@ -853,7 +855,7 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 		skillDelay -= deltaTime;
 
 		// Speed up/down
-		if (gearShiftDelay <= 0.0 && (isPressed(window, GLFW_KEY_U)))
+		if (gearShiftDelay <= 0.0 && (isPressed(window, GLFW_KEY_UP)))
 		{
 			if (Kart::getInvert2() == false)
 			{
@@ -890,7 +892,7 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 				}
 			}
 		}
-		if (gearShiftDelay <= 0.0 && isPressed(window, GLFW_KEY_J))
+		if (gearShiftDelay <= 0.0 && isPressed(window, GLFW_KEY_DOWN))
 		{
 			if (Kart::getInvert2() == false)
 			{
@@ -928,7 +930,7 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 			}
 		}
 		// Turn input
-		if (isPressed(window, GLFW_KEY_H))
+		if (isPressed(window, GLFW_KEY_LEFT))
 		{
 			if (Kart::getInvert2() == false)
 			{
@@ -941,7 +943,7 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 
 
 		}
-		if (isPressed(window, GLFW_KEY_K))
+		if (isPressed(window, GLFW_KEY_RIGHT))
 		{
 			if (Kart::getInvert2() == false)
 			{
@@ -952,7 +954,7 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 				turnForce += 6.0 * deltaTime;
 			}
 		}
-		if (isPressed(window, GLFW_KEY_I))
+		if (isPressed(window, GLFW_KEY_RIGHT_SHIFT))
 		{
 			std::cout << "here" << std::endl;
 			switch (m_status)
@@ -1254,8 +1256,8 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 		// Calculate Rotation
 		if (speed != 0.0)
 		{
-			double turnDegreeLinear = fabs(turnForce * (speed / 60.0) * 3.5);
-			double turnDegreeQuadratic = fabs(turnForce / (speed / 60.0) * 0.7);
+			double turnDegreeLinear = fabs(turnForce * (speed / 60.0) * 6.0);
+			double turnDegreeQuadratic = fabs(turnForce / (speed / 60.0) * 1.2);
 			double turnDegree = ((turnDegreeLinear < turnDegreeQuadratic) ? (turnDegreeLinear) : (turnDegreeQuadratic));
 			if (turnForce < 0.0) // Rotate left
 				turnDegree = -turnDegree;
@@ -1263,7 +1265,7 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 				turnDegree = -turnDegree;
 
 			yaw += turnDegree;
-			rotateCollision(static_cast<float>(turnDegree), Vector3(0.0f, 1.0f, 0.0f));
+			//rotateCollision(static_cast<float>(turnDegree), Vector3(0.0f, 1.0f, 0.0f));
 		}
 
 		// Calculate velocity
