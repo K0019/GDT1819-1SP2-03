@@ -328,7 +328,7 @@ void Kart::update(GLFWwindow* window, double deltaTime)
 			turnDegree = -turnDegree;
 
 		yaw += turnDegree;
-		rotateCollision(static_cast<float>(turnDegree), Vector3(0.0f, 1.0f, 0.0f));
+		//rotateCollision(static_cast<float>(turnDegree), Vector3(0.0f, 1.0f, 0.0f));
 	}
 
 	// Calculate velocity
@@ -1261,7 +1261,7 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 				turnDegree = -turnDegree;
 
 			yaw += turnDegree;
-			rotateCollision(static_cast<float>(turnDegree), Vector3(0.0f, 1.0f, 0.0f));
+			//rotateCollision(static_cast<float>(turnDegree), Vector3(0.0f, 1.0f, 0.0f));
 		}
 
 		// Calculate velocity
