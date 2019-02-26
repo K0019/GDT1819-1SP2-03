@@ -99,7 +99,6 @@ void Scene2::Init()
 	// Use most general shader for configuration
 	shader::container.useShader(type::SHADER_2);
 	m_programID = shader::container.getID(type::SHADER_2);
-	music::player.playsound("",true);
 	// Generate UBOs
 	glGenBuffers(1, &uMatrixMVS);
 	glGenBuffers(1, &uMatrixP);

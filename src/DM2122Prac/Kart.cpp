@@ -497,8 +497,8 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 					}
 				}
 
-			}
-			music::player.playsound("");
+			} 
+			
 		}
 		if (gearShiftDelay <= 0.0 && isPressed(window, GLFW_KEY_S))
 		{
@@ -536,7 +536,6 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 					}
 				}
 			}
-			music::player.playsound("");
 		}
 		// Turn input
 		if (isPressed(window, GLFW_KEY_A))
@@ -549,7 +548,6 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 			{
 				turnForce -= 6.0 * deltaTime;
 			}
-			music::player.playsound("");
 		}
 		if (isPressed(window, GLFW_KEY_D))
 		{
@@ -561,7 +559,6 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 			{
 				turnForce += 6.0 * deltaTime;
 			}
-			music::player.playsound("");
 		}
 		//use skill
 		if (isPressed(window, GLFW_KEY_Q))
@@ -578,7 +575,6 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 					skillDelay = 0.5;
 					player_used = true;
 				}
-				music::player.playsound("");
 				break;
 			case e_eevee:
 				if (player_used == false)
@@ -587,7 +583,6 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 					skillDelay = 1.5;
 					player_used = true;
 				}
-				music::player.playsound("");
 				break;
 			case e_mew:
 				if (player_used == false)
@@ -596,7 +591,6 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 					skillDelay = 3.5;
 					player_used = true;
 				}
-				music::player.playsound("");
 				break;
 			case e_squirtle:
 				if (player_used == false)
@@ -606,7 +600,6 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 					std::cout << "here" << std::endl;
 					player_used = true;
 				}
-				music::player.playsound("");
 				break;
 			default:
 				player_used = false;
@@ -625,7 +618,7 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 			{
 				player2_invert_control = false;
 			}
-			music::player.playsound("");
+		
 		}
 		if (player2_slow == true)
 		{
@@ -634,7 +627,7 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 			{
 				player2_slow = false;
 			}
-			music::player.playsound("");
+
 		}
 		if (player2_stun == true)
 		{
@@ -643,7 +636,6 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 			{
 				player2_stun = false;
 			}
-			music::player.playsound("");
 		}
 
 		if (player_eevee_up == true)

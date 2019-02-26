@@ -3,6 +3,7 @@
 #include "Source/Scene.h"
 #include "MenuSelection.h"
 #include "MatrixStack.h"
+#include "Sound.h"
 
 class SceneMainMenu : public Scene, public MenuSelection
 {
