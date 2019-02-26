@@ -36,7 +36,7 @@ private:
 	Mesh* icons[2];
 
 	Gamemode gamemode;
-	bool ignoreEnter;
+	bool ignoreEnter, showHelp;
 
 	unsigned int uMatrixMVS, uMatrixP;
 
