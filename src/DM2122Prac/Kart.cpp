@@ -43,6 +43,8 @@ Kart::Kart(Mesh* basic, Mesh* pikachu, Mesh* eevee, Mesh*mew, Mesh*squirtle,
 	, backLeftPos(wheelBackLeftPos)
 	, backRightPos(wheelBackRightPos)
 	, steeringPos(steeringWheelPos)
+	, moveing(0)
+	,stopmove(false)
 {
 	// Initialize spotlights
 	for (int i = 0; i < 2; ++i)
@@ -341,7 +343,28 @@ void Kart::update(GLFWwindow* window, double deltaTime)
 		wheelRotation -= 360.0f;
 	else if (wheelRotation < 0.0f)
 		wheelRotation += 360.0f;
-
+	if (velocity != 0)
+	{
+		
+		if (!music::player.isplaying(music::player.getDriveSound()))
+		{
+			
+			music::player.playsound(music::player.getDriveSound());
+		}
+		else
+		{
+			moveing++;
+			if (music::player.getDriveSound()->getPlayLength() > moveing + 5)
+			{
+				music::player.playsound(music::player.getDriveSound());
+				moveing = 0;
+			}
+		}
+	}
+	else{
+		music::player.getEngine()->removeSoundSource(music::player.getDriveSound());
+		music::player.initdrive();
+	}
 	// Move
 	pos += velocity * static_cast<float>(deltaTime);
 	//pos.y -= 0.5f;
@@ -604,6 +627,11 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 				player_used = false;
 					break;
 			}
+			if (!music::player.isplaying(music::player.getitemSound()))
+			{
+
+				music::player.playsound(music::player.getitemSound());
+			}
 		}
 		//eevee speed up
 		
@@ -741,7 +769,30 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 		}
 
 
+		if (velocity != 0)
+		{
 
+			if (!music::player.isplaying(music::player.getDriveSound()))
+			{
+
+				music::player.playsound(music::player.getDriveSound());
+			}
+			else
+			{
+				moveing++;
+				if (music::player.getDriveSound()->getPlayLength() > moveing + 5)
+				{
+					music::player.playsound(music::player.getDriveSound());
+					moveing = 0;
+				}
+			}
+			stopmove = true;
+		}
+		else if(stopmove) {
+			music::player.getEngine()->removeSoundSource(music::player.getDriveSound());
+			music::player.initdrive();
+			stopmove = false;
+		}
 
 		// Move
 		pos += velocity * static_cast<float>(deltaTime);
@@ -942,6 +993,11 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 				player_used = false;
 				break;
 			}
+			if (!music::player.isplaying(music::player.getitemSound()))
+			{
+
+				music::player.playsound(music::player.getitemSound());
+			}
 		}
 
 		// analog control
@@ -1091,6 +1147,11 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 					player_used = false;
 					break;
 				}
+				if (!music::player.isplaying(music::player.getitemSound()))
+				{
+
+					music::player.playsound(music::player.getitemSound());
+				}
 			}
 		}
 		//eevee speed up
@@ -1227,8 +1288,30 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 		}
 
 
+		if (velocity != 0)
+		{
 
+			if (!music::player.isplaying(music::player.getDriveSound()))
+			{
 
+				music::player.playsound(music::player.getDriveSound());
+			}
+			else
+			{
+				moveing++;
+				if (music::player.getDriveSound()->getPlayLength() > moveing + 5)
+				{
+					music::player.playsound(music::player.getDriveSound());
+					moveing = 0;
+				}
+			}
+			stopmove = true;
+		}
+		else if (stopmove) {
+			music::player.getEngine()->removeSoundSource(music::player.getDriveSound());
+			music::player.initdrive();
+			stopmove = false;
+		}
 		// Move
 		pos += velocity * static_cast<float>(deltaTime);
 
@@ -1533,6 +1616,7 @@ void Kart::changeStatus()
 	default:
 		break;
 	}
+	music::player.playsound(music::player.getTransformSound());
 }
 
 // Set kart velocity to 0

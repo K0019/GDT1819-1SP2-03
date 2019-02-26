@@ -25,7 +25,7 @@ void SceneGame::Init()
 	//music::player.playsound("Sound/test2.mp3", true);
 	m_programID = shader::container.getID(type::SHADER_2);
 	
-	music::player.setsoundvol(0.01f);
+	music::player.setsoundvol(0.1f);
 	music::player.playsound(music::player.getGameSound(), true);
 	
 	

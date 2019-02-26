@@ -4,6 +4,7 @@
 #include "timer.h"
 #include "Source/ShaderPrograms.h"
 #include "MatrixStack.h"
+#include "Sound.h"
 
 class WinLoseGraphic
 {

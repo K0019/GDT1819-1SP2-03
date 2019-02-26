@@ -69,8 +69,18 @@ void PlaceObjectHandler::update(GLFWwindow* window, double dt)
 				int gridY = (static_cast<int>(intersection.z) >> 1) - (intersection.z < 0.0f);
 				
 				// Attempt to add an object
-				if (objectList->addObject(hotbar->querySelection(), gridX, gridY, rotation))
+				if (objectList->addObject(hotbar->querySelection(), gridX, gridY, rotation)) {
 					leftClicked = true;
+					if (!music::player.isplaying(music::player.getCanPlaceSound()))
+					{
+						music::player.playsound(music::player.getCanPlaceSound());
+					}
+				}
+				else
+				{
+					music::player.setsoundvol(0.05f);
+					music::player.playsound(music::player.getCantPlaceSound());
+				}
 			}
 		}
 	}

@@ -29,6 +29,9 @@ void WinLoseGraphic::registerWin(int winnerID)
 		showFinish = true;
 		timer = new StopWatch();
 		timer->startTimer();
+		music::player.getEngine()->stopAllSounds();
+		music::player.playsound(music::player.getWinSound(),true);
+
 	}
 }
 

@@ -108,6 +108,8 @@ private:
 	const float * axes;
 	int buttonscount;
 	const unsigned char* buttons;
+	unsigned int moveing;
+	bool stopmove;
 };
 
 #endif // !KART_H

@@ -53,7 +53,11 @@ void MenuSelection::update(double dt, GLFWwindow* window)
 	{
 		selectionBounce = -1.0;
 	}
+	if (!music::player.isplaying(music::player.getSelectionSound()))
+	{
 
+		music::player.playsound(music::player.getSelectionSound());
+	}
 	if (isPressed(window, GLFW_KEY_ENTER))
 	{
 		activated(selection);
