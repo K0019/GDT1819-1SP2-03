@@ -32,7 +32,7 @@ c_m_Player::c_m_Player(unsigned int uSpotLight)
 			Vector3(-3.28f, 1.24f, -1.43f), // Back right
 			Vector3(0.0f, 0.368f, 1.974f),
 			uSpotLight,
-			OBB(Vector3(0.0f, 4.0f, 0.0f), Vector3(1.0f, 0.0f, 0.0f), Vector3(0.0f, 1.0f, 0.0f), Vector3(0.0f, 0.0f, 1.0f), 2.0f, 2.0f, 2.0f), Vector3(-5.0, 0.0, 2.0)); // Steering wheel
+			OBB(Vector3(0.0f, 4.0f, 0.0f), Vector3(1.0f, 0.0f, 0.0f), Vector3(0.0f, 1.0f, 0.0f), Vector3(0.0f, 0.0f, 1.0f), 2.0f, 2.0f, 2.0f), Vector3(-5.0, 0.0, 2.0), Player_ID - 1); // Steering wheel
 
 	}
 	else
@@ -55,7 +55,7 @@ c_m_Player::c_m_Player(unsigned int uSpotLight)
 			Vector3(-3.28f, 1.24f, -1.43f), // Back right
 			Vector3(0.0f, 0.368f, 1.974f),
 			uSpotLight,
-			OBB(Vector3(0.0f, 4.0f, 0.0f), Vector3(1.0f, 0.0f, 0.0f), Vector3(0.0f, 1.0f, 0.0f), Vector3(0.0f, 0.0f, 1.0f), 2.0f, 2.0f, 2.0f), Vector3(10.0, 0.0, -5.0)); // Steering wheel
+			OBB(Vector3(0.0f, 4.0f, 0.0f), Vector3(1.0f, 0.0f, 0.0f), Vector3(0.0f, 1.0f, 0.0f), Vector3(0.0f, 0.0f, 1.0f), 2.0f, 2.0f, 2.0f), Vector3(10.0, 0.0, -5.0), Player_ID - 1); // Steering wheel
 
 	}
 	ModGate::detector.registerKart(car);
@@ -75,16 +75,23 @@ void c_m_Player::update(GLFWwindow * window, double deltaTime, unsigned int uSpo
 	// Update the kart
 	car->update(window, deltaTime, uSpotLight,myPlayer_ID);
 
+	//// Update camera
+	//Cam.pos = car->getPos();
+	//double effectiveYaw = car->getYaw();
+
+	//Cam.pos.x -= sinf(Math::DegreeToRadian(static_cast<float>(effectiveYaw))) * 12.0f;
+	//Cam.pos.y += 8.0f;
+	//Cam.pos.z -= cosf(Math::DegreeToRadian(static_cast<float>(effectiveYaw))) * 12.0f;
+
+	//Cam.front = (Vector3(car->getPos().x, car->getPos().y + 5.0f, car->getPos().z) - Cam.pos).Normalize();
+}
+
+void c_m_Player::updateCamera()
+{
+
 	// Update camera
 	Cam.pos = car->getPos();
 	double effectiveYaw = car->getYaw();
-	//// Camera position rotation
-	//if (isPressed(window, GLFW_KEY_DOWN))
-	//	effectiveYaw += 180.0;
-	//else if (isPressed(window, GLFW_KEY_LEFT))
-	//	effectiveYaw += 90.0;
-	//else if (isPressed(window, GLFW_KEY_RIGHT))
-	//	effectiveYaw += 270.0;
 
 	Cam.pos.x -= sinf(Math::DegreeToRadian(static_cast<float>(effectiveYaw))) * 12.0f;
 	Cam.pos.y += 8.0f;

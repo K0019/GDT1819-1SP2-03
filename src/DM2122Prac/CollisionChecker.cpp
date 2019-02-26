@@ -213,5 +213,5 @@ CollisionInfo CollisionChecker::collide(const OBB* lhs, const Triangle* rhs)
 			}
 		}
 	}
-	return CollisionInfo(true, collisionNormal, distance + 0.05f);
+	return CollisionInfo(true, collisionNormal, distance + 0.001f);
 }

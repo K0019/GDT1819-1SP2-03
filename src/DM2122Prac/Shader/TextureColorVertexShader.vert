@@ -6,7 +6,7 @@
 
 // No. of point lights and spotlights
 #define NO_OF_POINTLIGHTS 0
-#define NO_OF_SPOTLIGHTS 2
+#define NO_OF_SPOTLIGHTS 4
 
 // Info about primitive
 layout(location = 2) in vec3 vertexPosition_modelspace;
@@ -50,9 +50,9 @@ out VS_OUT
 	vec3 aPos; // Vertex info
 	vec2 aTexCoord; // Texture info
 
-	vec3 aSunDir; // Directional light
+	//vec3 aSunDir; // Directional light
 	//PointLight aPointLights[NO_OF_POINTLIGHTS]; // Point lights
-	SpotLight aSpotLights[NO_OF_SPOTLIGHTS]; // Spotlights
+	//SpotLight aSpotLights[NO_OF_SPOTLIGHTS]; // Spotlights
 } vs_out;
 
 // Uniform block for model and view matrices, directional and point lights
@@ -67,10 +67,10 @@ layout (std140) uniform MatrixMV // 208
 };
 
 // Uniform block for spotlights
-layout (std140) uniform uSpotLight
+/*layout (std140) uniform uSpotLight
 {
 	SpotLight vSpotLights[NO_OF_SPOTLIGHTS]; // 0, 112 * NO_OF_SPOTLIGHTS
-};
+};*/
 
 void main()
 {
@@ -82,7 +82,7 @@ void main()
 	vs_out.aTexCoord = inTexCoord;
 	
 	// Convert directional light direction to view space
-	vs_out.aSunDir = normalize(vec3(mat4(mat3(view)) * vec4(sunDir, 1.0f)));
+	//vs_out.aSunDir = normalize(vec3(mat4(mat3(view)) * vec4(sunDir, 1.0f)));
 
 	// Convert point lights' positions to view space
 	/*for (int i = 0; i < NO_OF_POINTLIGHTS; ++i)
@@ -92,11 +92,11 @@ void main()
 	}*/
 	
 	// Convert spotlights' positions to view space
-	for (int i = 0; i < NO_OF_SPOTLIGHTS; ++i)
+	/*for (int i = 0; i < NO_OF_SPOTLIGHTS; ++i)
 	{
 		vs_out.aSpotLights[i] = vSpotLights[i];
 		vs_out.aSpotLights[i].position = vec3(view * vec4(vSpotLights[i].position, 1.0f));
 		vs_out.aSpotLights[i].direction = vec3(mat4(mat3(view)) * vec4(vSpotLights[i].direction, 1.0f));
-	}
+	}*/
 }
 

@@ -24,7 +24,7 @@ public:
          Mesh* basic_wheel, Mesh* pikachu_wheel, Mesh* eevee_wheel, Mesh* mew_wheel, Mesh* squirtle_wheel,Mesh* steeringWheel,
 		const Vector3& wheelFrontLeftPos, const Vector3& wheelFrontRightPos, 
 		const Vector3& wheelBackLeftPos, const Vector3& wheelBackRightPos,
-		const Vector3& steeringWheelPos, unsigned int uSpotLight, const OBB& obb,const Vector3& pos1); // Constructor
+		const Vector3& steeringWheelPos, unsigned int uSpotLight, const OBB& obb,const Vector3& pos1, int ID); // Constructor
 	~Kart(); // Destructor
 
 	void update(GLFWwindow* window, double deltaTime); // Move the kart and handle input
@@ -90,7 +90,7 @@ protected:
 private:
 	buff m_buff;
 	status m_status;
-	Vector3 pos, velocity; // Position and velocity of kart
+	Vector3 pos; // Position and velocity of kart
 	double yaw, pitch, roll, speed, turnForce, wheelRotation; // Misc. variables (UNUSED - pitch & roll)
 	Mesh* basic, * pikachu, * eevee , * mew , * squirtle , * basic_wheel, *pikachu_wheel, *eevee_wheel, *mew_wheel, *squirtle_wheel, * steeringWheel; // Meshes loaded for kart
 	Vector3 frontLeftPos, frontRightPos, backLeftPos, backRightPos, steeringPos; // Position of the wheel and steering wheel relative to kart position
@@ -110,6 +110,7 @@ private:
 	const unsigned char* buttons;
 	unsigned int moveing;
 	bool stopmove;
+	int ID;
 };
 
 #endif // !KART_H

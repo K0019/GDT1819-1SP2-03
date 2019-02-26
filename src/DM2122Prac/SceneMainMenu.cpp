@@ -3,7 +3,7 @@
 int SceneMainMenu::width = PROGRAM_WIDTH, SceneMainMenu::height = PROGRAM_HEIGHT;
 
 SceneMainMenu::SceneMainMenu()
-	: MenuSelection(3)
+	: MenuSelection(4)
 {
 	music::player.init();
 }
@@ -50,6 +50,10 @@ void SceneMainMenu::Init()
 
 	gamemode = MAIN_MENU;
 	ignoreEnter = false;
+	showHelp = false;
+
+	icons[0] = MeshBuilder::GenerateXYPlane("Image//game_icon.tga", 15.0f, 8.0f, 1, type::SHADER_TEXT);
+	icons[1] = MeshBuilder::GenerateXYPlane("Image//help_menu.tga", 20.0f, 15.0f, 1, type::SHADER_TEXT);
 }
 
 void SceneMainMenu::Update(double dt, GLFWwindow* window)
@@ -58,7 +62,21 @@ void SceneMainMenu::Update(double dt, GLFWwindow* window)
 	{
 		ignoreEnter = false;
 	}
-	MenuSelection::update(dt, window);
+	if (!showHelp)
+	{
+		MenuSelection::update(dt, window);
+	}
+	else
+	{
+		if (!ignoreEnter)
+		{
+			if (isPressed(window, GLFW_KEY_ENTER))
+			{
+				ignoreEnter = true;
+				showHelp = false;
+			}
+		}
+	}
 }
 
 void SceneMainMenu::Render()
@@ -75,27 +93,55 @@ void SceneMainMenu::Render()
 	MS model;
 	model.PushMatrix(); // 0
 	model.LoadIdentity();
-	model.Translate(0.0f, 7.0f, 0.0f);
 
-	for (int i = 0; i < 3; ++i)
+	if (showHelp)
+	{
+		model.PushMatrix();
+		model.Translate(0.0f, 10.0f, 0.0f);
+		updateUBO(uMatrixMVS, 0, sizeof(Mtx44), model.Top().a);
+		icons[1]->Render();
+		model.PopMatrix();
+
+		model.PushMatrix();
+		model.Translate(0.0, 2.0f, 0.0f);
+		updateUBO(uMatrixMVS, 0, sizeof(Mtx44), model.Top().a);
+		render(2);
+		model.PopMatrix();
+		text->PrintTextForward("Back", uMatrixMVS, -1.35f, 1.8f, 0.9f);
+	}
+	else
 	{
 		model.PushMatrix(); // 1
-		model.Translate(0.0f, static_cast<float>(-i) * 2.5f, 0.0f);
+		model.Translate(0.0f, 15.0f, 0.0f);
 		updateUBO(uMatrixMVS, 0, sizeof(Mtx44), model.Top().a);
-		render(i);
+		icons[0]->Render();
 		model.PopMatrix(); // 1
 
-		switch (i)
+		model.Translate(0.0f, 9.5f, 0.0f);
+
+		for (int i = 0; i < 4; ++i)
 		{
-		case 0:
-			text->PrintTextForward("Multiplayer", uMatrixMVS, -3.65f, 7.3f - static_cast<float>(i) * 2.775f, 0.9f);
-			break;
-		case 1:
-			text->PrintTextForward("Level Editor", uMatrixMVS, -3.95f, 7.3f - static_cast<float>(i) * 2.775f, 0.9f);
-			break;
-		case 2:
-			text->PrintTextForward("Quit", uMatrixMVS, -1.35f, 7.3f - static_cast<float>(i) * 2.775f, 0.9f);
-			break;
+			model.PushMatrix(); // 1
+			model.Translate(0.0f, static_cast<float>(-i) * 2.5f, 0.0f);
+			updateUBO(uMatrixMVS, 0, sizeof(Mtx44), model.Top().a);
+			render(i);
+			model.PopMatrix(); // 1
+
+			switch (i)
+			{
+			case 0:
+				text->PrintTextForward("Multiplayer", uMatrixMVS, -3.65f, 10.05f - static_cast<float>(i) * 2.775f, 0.9f);
+				break;
+			case 1:
+				text->PrintTextForward("Level Editor", uMatrixMVS, -3.95f, 10.05f - static_cast<float>(i) * 2.775f, 0.9f);
+				break;
+			case 2:
+				text->PrintTextForward("Help", uMatrixMVS, -1.35f, 10.05f - static_cast<float>(i) * 2.775f, 0.9f);
+				break;
+			case 3:
+				text->PrintTextForward("Quit", uMatrixMVS, -1.35f, 10.05f - static_cast<float>(i) * 2.775f, 0.9f);
+				break;
+			}
 		}
 	}
 
@@ -104,6 +150,11 @@ void SceneMainMenu::Render()
 
 void SceneMainMenu::Exit()
 {
+	for (int i = 0; i < 2; ++i)
+	{
+		delete icons[i];
+	}
+
 	glDeleteBuffers(1, &uMatrixMVS);
 	glDeleteBuffers(1, &uMatrixP);
 }
@@ -122,10 +173,14 @@ void SceneMainMenu::activated(short selection)
 			gamemode = LEVEL_EDITOR;
 			break;
 		case 2:
+			showHelp = true;
+			break;
+		case 3:
 			gamemode = EXIT;
 			break;
 		}
 	}
+	ignoreEnter = true;
 }
 
 SceneMainMenu::Gamemode SceneMainMenu::getGamemode() const

@@ -20,6 +20,8 @@ public:
 	void update();
 
 	bool testCollision() const;
+
+	void empty();
 protected:
 	static bool compareLowerDistance(const PackedCollision& info1, const PackedCollision& info2);
 	static bool compareLowerDistanceWithY(const PackedCollision& info1, const PackedCollision& info2);

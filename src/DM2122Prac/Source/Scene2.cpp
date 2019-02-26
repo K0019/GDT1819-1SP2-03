@@ -119,7 +119,7 @@ void Scene2::Init()
 	glBindBufferBase(GL_UNIFORM_BUFFER, 2, uColorData);
 
 	glBindBuffer(GL_UNIFORM_BUFFER, uSpotLight);
-	glBufferData(GL_UNIFORM_BUFFER, 224, NULL, GL_DYNAMIC_DRAW);
+	glBufferData(GL_UNIFORM_BUFFER, 448, NULL, GL_DYNAMIC_DRAW);
 	glBindBufferBase(GL_UNIFORM_BUFFER, 3, uSpotLight);
 
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
@@ -141,6 +141,23 @@ void Scene2::Init()
 	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixMVS);
 	glBufferSubData(GL_UNIFORM_BUFFER, 2 * sizeof(Mtx44), 12, &sunDir.x);
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+	SpotLight spotLight;
+	spotLight.ambient = spotLight.diffuse = spotLight.specular = Vector3();
+	glBindBuffer(GL_UNIFORM_BUFFER, uSpotLight);
+	for (int i = 2; i < 4; ++i)
+	{
+		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i, 12, &spotLight.position.x);
+		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 12, 4, &spotLight.constant);
+		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 16, 4, &spotLight.linear);
+		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 20, 4, &spotLight.quadratic);
+		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 32, 12, &spotLight.ambient.x);
+		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 48, 12, &spotLight.diffuse.x);
+		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 64, 12, &spotLight.specular.x);
+		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 80, 12, &spotLight.direction.x);
+		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 92, 4, &spotLight.cosInner);
+		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 96, 4, &spotLight.cosOuter);
+	}
 
 	// Allocate memory for each object required in Scene2
 	axes = new Base3DPoly(MeshBuilder::GenerateAxes());
@@ -177,7 +194,7 @@ void Scene2::Init()
 					Vector3(-3.28f, 1.24f, -1.43f), // Back right
 					Vector3(0.0f, 0.368f, 1.974f),
 					uSpotLight,
-					OBB(Vector3(0.0f, 2.0f, 0.0f), Vector3(1.0f, 0.0f, 0.0f), Vector3(0.0f, 1.0f, 0.0f), Vector3(0.0f, 0.0f, 1.0f), 2.0f, 2.0f, 2.0f),Vector3()); // Steering wheel
+					OBB(Vector3(0.0f, 2.0f, 0.0f), Vector3(1.0f, 0.0f, 0.0f), Vector3(0.0f, 1.0f, 0.0f), Vector3(0.0f, 0.0f, 1.0f), 2.0f, 2.0f, 2.0f), Vector3(), 0); // Steering wheel
 	ModGate::detector.registerKart(kart);
 	handleLap = new HandleLap(&objectList, { kart });
 

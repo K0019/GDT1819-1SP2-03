@@ -16,6 +16,7 @@ public:
 	~c_m_Player();
 	
 	void update(GLFWwindow* window, double deltaTime, unsigned int uSpotLight); // Handle input
+	void updateCamera();
 
 	void render(unsigned int uMatrixMVS) const;
 

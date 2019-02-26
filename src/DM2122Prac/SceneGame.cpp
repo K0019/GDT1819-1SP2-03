@@ -50,7 +50,7 @@ void SceneGame::Init()
 	glBindBufferBase(GL_UNIFORM_BUFFER, 2, uColorData);
 
 	glBindBuffer(GL_UNIFORM_BUFFER, uSpotLight);
-	glBufferData(GL_UNIFORM_BUFFER, 224, NULL, GL_DYNAMIC_DRAW);
+	glBufferData(GL_UNIFORM_BUFFER, 448, NULL, GL_DYNAMIC_DRAW);
 	glBindBufferBase(GL_UNIFORM_BUFFER, 3, uSpotLight);
 
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
@@ -137,6 +137,9 @@ void SceneGame::Update(double dt, GLFWwindow * programID)
 	Physics::physicsEngine.update();
 	ModGate::detector.update();
 	handleLap->update();
+	player[0]->updateCamera();
+	player[1]->updateCamera();
+
 
 	winLoseGraphic->registerWin(handleLap->getWinner());
 
@@ -229,8 +232,9 @@ void SceneGame::renderView(unsigned int view)
 	projection.SetToOrtho(-10.0 * static_cast<double>(width / 2) / static_cast<double>(height), 10.0 * static_cast<double>(width / 2) / static_cast<double>(height), 0.0, 20.0, -0.1, 0.1);
 	glBindBuffer(GL_UNIFORM_BUFFER, uMatrixP);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Mtx44), projection.a);
-	text->PrintTextBackward(player[view]->getCar()->getSpeedText(), uMatrixMVS, 9.0f * static_cast<float>(width / 2) / static_cast<float>(height), 2.5f, 1.0f);
-	text->PrintTextBackward("Gear:" + player[view]->getCar()->getGear(), uMatrixMVS, 9.0f * static_cast<float>(width / 2) / static_cast<float>(height), 3.5f, 1.0f);
+	text->PrintTextBackward(player[view]->getCar()->getSpeedText(), uMatrixMVS, 9.0f * static_cast<float>(width / 2) / static_cast<float>(height), 3.5f, 1.0f);
+	text->PrintTextBackward("Gear:" + player[view]->getCar()->getGear(), uMatrixMVS, 9.0f * static_cast<float>(width / 2) / static_cast<float>(height), 4.5f, 1.0f);
+	text->PrintTextForward("Lap:" + std::to_string(handleLap->getLaps(player[view]->getCar()) + 1), uMatrixMVS, -9.0f * static_cast<float>(width / 2) / static_cast<float>(height), 3.5f, 1.0f);
 
 	MS model;
 	model.LoadIdentity();

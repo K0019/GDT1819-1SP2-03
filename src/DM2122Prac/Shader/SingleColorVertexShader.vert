@@ -6,7 +6,7 @@
 
 // No. of point lights
 #define NO_OF_POINTLIGHTS 0
-#define NO_OF_SPOTLIGHTS 2
+#define NO_OF_SPOTLIGHTS 4
 
 // Info about primitive
 layout(location = 2) in vec3 vertexPosition_modelspace;
@@ -48,10 +48,15 @@ out VS_OUT
 {
 	vec3 aPos; // Vertex info
 	
-	vec3 aSunDir; // Directional light
+	//vec3 aSunDir; // Directional light
 	//PointLight aPointLights[NO_OF_POINTLIGHTS]; // Point lights
-	SpotLight aSpotLights[NO_OF_SPOTLIGHTS]; // Spotlights
+	//SpotLight aSpotLights[2]; // Spotlights
 } vs_out;
+
+/*out SPOTLIGHT2_OUT
+{
+	SpotLight aSpotLights[2];
+} spotlight2_out;*/
 
 // Uniform block for model and view matrices, directional and point lights
 layout (std140) uniform MatrixMV // 208
@@ -65,10 +70,10 @@ layout (std140) uniform MatrixMV // 208
 };
 
 // Uniform block for spotlights
-layout (std140) uniform uSpotLight
+/*layout (std140) uniform uSpotLight
 {
 	SpotLight vSpotLights[NO_OF_SPOTLIGHTS]; // 0, 112 * NO_OF_SPOTLIGHTS
-};
+};*/
 
 void main()
 {
@@ -79,7 +84,7 @@ void main()
 	vs_out.aPos = vec3(view * model * vec4(vertexPosition_modelspace, 1.0f));
 
 	// Convert directional light direction to view space
-	vs_out.aSunDir = normalize(vec3(mat4(mat3(view)) * vec4(sunDir, 1.0f)));
+	//vs_out.aSunDir = normalize(vec3(mat4(mat3(view)) * vec4(sunDir, 1.0f)));
 
 	// Convert point lights' positions to view space
 	/*for (int i = 0; i < NO_OF_POINTLIGHTS; ++i)
@@ -89,11 +94,17 @@ void main()
 	}*/
 	
 	// Convert spotlights' positions to view space
-	for (int i = 0; i < NO_OF_SPOTLIGHTS; ++i)
+	/*for (int i = 0; i < 2; ++i)
 	{
 		vs_out.aSpotLights[i] = vSpotLights[i];
 		vs_out.aSpotLights[i].position = vec3(view * vec4(vSpotLights[i].position, 1.0f));
 		vs_out.aSpotLights[i].direction = vec3(mat4(mat3(view)) * vec4(vSpotLights[i].direction, 1.0f));
 	}
+	for (int i = 2; i < 4; ++i)
+	{
+		spotlight2_out.aSpotLights[i - 2] = vSpotLights[i];
+		spotlight2_out.aSpotLights[i - 2].position = vec3(view * vec4(vSpotLights[i].position, 1.0f));
+		spotlight2_out.aSpotLights[i - 2].direction = vec3(mat4(mat3(view)) * vec4(vSpotLights[i].direction, 1.0f));
+	}*/
 }
 

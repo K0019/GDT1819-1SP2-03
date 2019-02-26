@@ -107,6 +107,21 @@ int HandleLap::getPlacing(const Kart* kart) const
 	return placing;
 }
 
+int HandleLap::getLaps(const Kart* kart) const
+{
+	int index = 0;
+	for (auto& k : karts)
+	{
+		if (kart == k)
+		{
+			break;
+		}
+		++index;
+	}
+
+	return laps[index];
+}
+
 int HandleLap::getWinner() const
 {
 	for (int i = 0, size = static_cast<int>(karts.size()); i < size; ++i)
