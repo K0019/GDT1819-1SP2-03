@@ -18,6 +18,7 @@
 #include "UsefulFunctions.h"
 #include "c_m_Player.h"
 #include "HandleLap.h"
+#include "Sound.h"
 
 #include "PlaceObjectHandler.h"
 

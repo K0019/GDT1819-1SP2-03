@@ -163,14 +163,16 @@ void SceneMainMenu::activated(short selection)
 {
 	if (!ignoreEnter)
 	{
-		music::player.getEngine()->removeSoundSource(music::player.getMainSound());
+		
 		switch (selection)
 		{
 		case 0:
 			gamemode = HEAD_TO_HEAD;
+			music::player.getEngine()->removeSoundSource(music::player.getMainSound());
 			break;
 		case 1:
 			gamemode = LEVEL_EDITOR;
+			music::player.getEngine()->removeSoundSource(music::player.getMainSound());
 			break;
 		case 2:
 			showHelp = true;

@@ -16,7 +16,9 @@ Sound::Sound()
 Sound::~Sound()
 {
 	--count;
-	snd->drop();
+	if (snd != nullptr) {
+		snd->drop();
+	}
 	engine->removeAllSoundSources();
 	engine->drop(); // delete engine
 }
@@ -31,6 +33,7 @@ void Sound::init()
 	drive = engine->addSoundSourceFromFile("Sound/Drive.mp3");
 	game = engine->addSoundSourceFromFile("Sound/Game.mp3");
 	win = engine->addSoundSourceFromFile("Sound/win.mp3");
+	calm = engine->addSoundSourceFromFile("Sound/calm.mp3");
 	main = engine->addSoundSourceFromFile("Sound/Main.mp3");
 	selections = engine->addSoundSourceFromFile("Sound/Picking.mp3");
 	ableToPlace = engine->addSoundSourceFromFile("Sound/CorrectPlace.mp3");
@@ -72,6 +75,11 @@ ISoundSource * Sound::getDriveSound()
 ISoundSource * Sound::getGameSound()
 {
 	return game;
+}
+
+ISoundSource * Sound::getClamSound()
+{
+	return calm;
 }
 
 ISoundSource * Sound::getitemSound()

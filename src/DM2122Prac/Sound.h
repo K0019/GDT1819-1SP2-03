@@ -19,6 +19,7 @@ public:
 	ISoundSource* getTransformSound();
 	ISoundSource* getDriveSound();
 	ISoundSource* getGameSound();
+	ISoundSource* getClamSound();
 	ISoundSource* getitemSound();
 	ISoundSource* getWinSound();
 	ISoundSource* getMainSound();
@@ -32,7 +33,7 @@ public:
 private:
 	static short count; // Count How many sounds is playing
 	ISoundEngine* engine;
-	ISoundSource* transform, *drive, *game, *main, *selections, *ableToPlace, *unableToPlace, *item ,* win;
+	ISoundSource* transform, *drive, *game, *main, *selections, *ableToPlace, *unableToPlace, *item ,* win,*calm;
 	ISound * snd;
 };
 
