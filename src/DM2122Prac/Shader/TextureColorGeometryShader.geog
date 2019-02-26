@@ -6,7 +6,7 @@
 
 // No. of point lights and spotlights
 #define NO_OF_POINTLIGHTS 0
-#define NO_OF_SPOTLIGHTS 2
+#define NO_OF_SPOTLIGHTS 4
 
 // Info about primitive from vertex shader
 layout (triangles) in; // Draw type
@@ -49,18 +49,18 @@ in VS_OUT
 	vec3 aPos; // Vertex info
 	vec2 aTexCoord; // Texture info
 
-	vec3 aSunDir; // Sun direction
+	//vec3 aSunDir; // Sun direction
 	//PointLight aPointLights[NO_OF_POINTLIGHTS]; // Point lights
-	SpotLight aSpotLights[NO_OF_SPOTLIGHTS]; // Spotlights
+	//SpotLight aSpotLights[NO_OF_SPOTLIGHTS]; // Spotlights
 } gs_in[];
 
 // Output to fragment shader
 out vec3 normal; // Normal of primitive
 out vec3 pos; // Position of vertex in view space
 out vec2 texCoord; // Texture coordinate of vertex
-out vec3 sunDir; // Directional light
+//out vec3 sunDir; // Directional light
 //out PointLight cPointLights[NO_OF_POINTLIGHTS]; // All the point lights
-out SpotLight cSpotLights[NO_OF_SPOTLIGHTS]; // All the spotlights
+//out SpotLight cSpotLights[NO_OF_SPOTLIGHTS]; // All the spotlights
 
 // Uniform block for projection matrix
 layout (std140) uniform MatrixP
@@ -79,15 +79,15 @@ void main()
 	normal = normalize(cross(vector1, vector2)); // Cross to get normal
 
 	// Pass on lights
-	sunDir = gs_in[0].aSunDir;
+	//sunDir = gs_in[0].aSunDir;
 	/*for (int i = 0; i < NO_OF_POINTLIGHTS; ++i)
 	{
 		cPointLights[i] = gs_in[0].aPointLights[i];
 	}*/
-	for (int i = 0; i < NO_OF_SPOTLIGHTS; ++i)
+	/*for (int i = 0; i < NO_OF_SPOTLIGHTS; ++i)
 	{
 		cSpotLights[i] = gs_in[0].aSpotLights[i];
-	}
+	}*/
 
 	// This geometry shader follows the following flow:
 	// 1. Set vertex position for fragment shader

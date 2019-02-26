@@ -173,6 +173,7 @@ void Application::Run()
 		}
 		scene->Exit();
 		delete scene;
+		Physics::physicsEngine.empty();
 		mainMenu->setBackToMainMenu();
 	} //Check if the ESC key had been pressed or if the window had been closed
 	mainMenu->Exit();

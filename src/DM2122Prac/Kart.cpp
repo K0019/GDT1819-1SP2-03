@@ -14,10 +14,9 @@ Kart::Kart(Mesh* basic, Mesh* pikachu, Mesh* eevee, Mesh*mew, Mesh*squirtle,
 	Mesh* basic_wheel, Mesh* pikachu_wheel, Mesh* eevee_wheel, Mesh* mew_wheel, Mesh* squirtle_wheel, Mesh* steeringWheel,
 	const Vector3& wheelFrontLeftPos, const Vector3& wheelFrontRightPos,
 	const Vector3& wheelBackLeftPos, const Vector3& wheelBackRightPos,
-	const Vector3& steeringWheelPos, unsigned int uSpotLight, const OBB& obb , const Vector3& pos1)
+	const Vector3& steeringWheelPos, unsigned int uSpotLight, const OBB& obb , const Vector3& pos1, int ID)
 	: MovingPhysicsObject(obb)
 	, pos(pos1)
-	, velocity(Vector3())
 	, yaw(90.0)
 	, pitch(0.0)
 	, roll(0.0)
@@ -43,6 +42,7 @@ Kart::Kart(Mesh* basic, Mesh* pikachu, Mesh* eevee, Mesh*mew, Mesh*squirtle,
 	, backLeftPos(wheelBackLeftPos)
 	, backRightPos(wheelBackRightPos)
 	, steeringPos(steeringWheelPos)
+	, ID(ID)
 {
 	// Initialize spotlights
 	for (int i = 0; i < 2; ++i)
@@ -89,18 +89,18 @@ Kart::Kart(Mesh* basic, Mesh* pikachu, Mesh* eevee, Mesh*mew, Mesh*squirtle,
 
 	// Update opengl spotlights
 	glBindBuffer(GL_UNIFORM_BUFFER, uSpotLight);
-	for (int i = 0; i < 2; ++i)
+	for (int i = (ID << 1); i < 2 + (ID << 1); ++i)
 	{
-		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i, 12, &spotLights[i].position.x);
-		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 12, 4, &spotLights[i].constant);
-		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 16, 4, &spotLights[i].linear);
-		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 20, 4, &spotLights[i].quadratic);
-		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 32, 12, &spotLights[i].ambient.x);
-		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 48, 12, &spotLights[i].diffuse.x);
-		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 64, 12, &spotLights[i].specular.x);
-		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 80, 12, &spotLights[i].direction.x);
-		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 92, 4, &spotLights[i].cosInner);
-		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 96, 4, &spotLights[i].cosOuter);
+		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i, 12, &spotLights[i - (ID << 1)].position.x);
+		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 12, 4, &spotLights[i - (ID << 1)].constant);
+		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 16, 4, &spotLights[i - (ID << 1)].linear);
+		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 20, 4, &spotLights[i - (ID << 1)].quadratic);
+		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 32, 12, &spotLights[i - (ID << 1)].ambient.x);
+		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 48, 12, &spotLights[i - (ID << 1)].diffuse.x);
+		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 64, 12, &spotLights[i - (ID << 1)].specular.x);
+		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 80, 12, &spotLights[i - (ID << 1)].direction.x);
+		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 92, 4, &spotLights[i - (ID << 1)].cosInner);
+		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 96, 4, &spotLights[i - (ID << 1)].cosOuter);
 	}
 
 	srand((unsigned)time(NULL));
@@ -326,6 +326,7 @@ void Kart::update(GLFWwindow* window, double deltaTime)
 			turnDegree = -turnDegree;
 
 		yaw += turnDegree;
+		rotateCollision(static_cast<float>(turnDegree), Vector3(0.0f, 1.0f, 0.0f));
 	}
 
 	// Calculate velocity
@@ -348,7 +349,7 @@ void Kart::update(GLFWwindow* window, double deltaTime)
 	if (pos.y < 0.0f)
 		pos.y = 0.0f;
 	// Update OBB
-	setCollisionPosition(Vector3(pos.x, pos.y + 6.0f, pos.z));
+	setCollisionPosition(Vector3(pos.x, pos.y + 3.0f, pos.z));
 }
 
 void Kart::updateOpenGL(unsigned int uSpotLight)
@@ -382,18 +383,18 @@ void Kart::updateOpenGL(unsigned int uSpotLight)
 
 	// Update opengl spotlights
 	glBindBuffer(GL_UNIFORM_BUFFER, uSpotLight);
-	for (int i = 0; i < 2; ++i)
+	for (int i = (ID << 1); i < 2 + (ID << 1); ++i)
 	{
-		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i, 12, &spotLights[i].position.x);
-		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 12, 4, &spotLights[i].constant);
-		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 16, 4, &spotLights[i].linear);
-		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 20, 4, &spotLights[i].quadratic);
-		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 32, 12, &spotLights[i].ambient.x);
-		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 48, 12, &spotLights[i].diffuse.x);
-		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 64, 12, &spotLights[i].specular.x);
-		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 80, 12, &spotLights[i].direction.x);
-		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 92, 4, &spotLights[i].cosInner);
-		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 96, 4, &spotLights[i].cosOuter);
+		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i, 12, &spotLights[i - (ID << 1)].position.x);
+		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 12, 4, &spotLights[i - (ID << 1)].constant);
+		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 16, 4, &spotLights[i - (ID << 1)].linear);
+		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 20, 4, &spotLights[i - (ID << 1)].quadratic);
+		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 32, 12, &spotLights[i - (ID << 1)].ambient.x);
+		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 48, 12, &spotLights[i - (ID << 1)].diffuse.x);
+		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 64, 12, &spotLights[i - (ID << 1)].specular.x);
+		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 80, 12, &spotLights[i - (ID << 1)].direction.x);
+		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 92, 4, &spotLights[i - (ID << 1)].cosInner);
+		glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 96, 4, &spotLights[i - (ID << 1)].cosOuter);
 	}
 }
 
@@ -783,18 +784,18 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 
 		// Update opengl spotlights
 		glBindBuffer(GL_UNIFORM_BUFFER, uSpotLight);
-		for (int i = 0; i < 2; ++i)
+		for (int i = (ID << 1); i < 2 + (ID << 1); ++i)
 		{
-			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i, 12, &spotLights[i].position.x);
-			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 12, 4, &spotLights[i].constant);
-			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 16, 4, &spotLights[i].linear);
-			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 20, 4, &spotLights[i].quadratic);
-			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 32, 12, &spotLights[i].ambient.x);
-			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 48, 12, &spotLights[i].diffuse.x);
-			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 64, 12, &spotLights[i].specular.x);
-			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 80, 12, &spotLights[i].direction.x);
-			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 92, 4, &spotLights[i].cosInner);
-			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 96, 4, &spotLights[i].cosOuter);
+			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i, 12, &spotLights[i - (ID << 1)].position.x);
+			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 12, 4, &spotLights[i - (ID << 1)].constant);
+			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 16, 4, &spotLights[i - (ID << 1)].linear);
+			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 20, 4, &spotLights[i - (ID << 1)].quadratic);
+			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 32, 12, &spotLights[i - (ID << 1)].ambient.x);
+			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 48, 12, &spotLights[i - (ID << 1)].diffuse.x);
+			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 64, 12, &spotLights[i - (ID << 1)].specular.x);
+			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 80, 12, &spotLights[i - (ID << 1)].direction.x);
+			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 92, 4, &spotLights[i - (ID << 1)].cosInner);
+			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 96, 4, &spotLights[i - (ID << 1)].cosOuter);
 		}
 
 		// Update OBB
@@ -1206,7 +1207,8 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 			if (speed < 0.0) // Reverse
 				turnDegree = -turnDegree;
 
-			yaw += turnDegree;	
+			yaw += turnDegree;
+			rotateCollision(static_cast<float>(turnDegree), Vector3(0.0f, 1.0f, 0.0f));
 		}
 
 		// Calculate velocity
@@ -1269,18 +1271,18 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 
 		// Update opengl spotlights
 		glBindBuffer(GL_UNIFORM_BUFFER, uSpotLight);
-		for (int i = 0; i < 2; ++i)
+		for (int i = (ID << 1); i < 2 + (ID << 1); ++i)
 		{
-			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i, 12, &spotLights[i].position.x);
-			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 12, 4, &spotLights[i].constant);
-			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 16, 4, &spotLights[i].linear);
-			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 20, 4, &spotLights[i].quadratic);
-			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 32, 12, &spotLights[i].ambient.x);
-			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 48, 12, &spotLights[i].diffuse.x);
-			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 64, 12, &spotLights[i].specular.x);
-			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 80, 12, &spotLights[i].direction.x);
-			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 92, 4, &spotLights[i].cosInner);
-			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 96, 4, &spotLights[i].cosOuter);
+			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i, 12, &spotLights[i - (ID << 1)].position.x);
+			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 12, 4, &spotLights[i - (ID << 1)].constant);
+			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 16, 4, &spotLights[i - (ID << 1)].linear);
+			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 20, 4, &spotLights[i - (ID << 1)].quadratic);
+			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 32, 12, &spotLights[i - (ID << 1)].ambient.x);
+			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 48, 12, &spotLights[i - (ID << 1)].diffuse.x);
+			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 64, 12, &spotLights[i - (ID << 1)].specular.x);
+			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 80, 12, &spotLights[i - (ID << 1)].direction.x);
+			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 92, 4, &spotLights[i - (ID << 1)].cosInner);
+			glBufferSubData(GL_UNIFORM_BUFFER, 112 * i + 96, 4, &spotLights[i - (ID << 1)].cosOuter);
 		}
 
 		// Update OBB

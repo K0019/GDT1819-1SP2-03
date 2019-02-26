@@ -49,6 +49,9 @@ void SceneMainMenu::Init()
 
 	gamemode = MAIN_MENU;
 	ignoreEnter = false;
+
+	icons[0] = MeshBuilder::GenerateXYPlane("Image//game_icon.tga", 15.0f, 8.0f, 1, type::SHADER_TEXT);
+	icons[1] = nullptr;
 }
 
 void SceneMainMenu::Update(double dt, GLFWwindow* window)
@@ -74,6 +77,13 @@ void SceneMainMenu::Render()
 	MS model;
 	model.PushMatrix(); // 0
 	model.LoadIdentity();
+
+	model.PushMatrix(); // 1
+	model.Translate(0.0f, 15.0f, 0.0f);
+	updateUBO(uMatrixMVS, 0, sizeof(Mtx44), model.Top().a);
+	icons[0]->Render();
+	model.PopMatrix(); // 1
+
 	model.Translate(0.0f, 7.0f, 0.0f);
 
 	for (int i = 0; i < 3; ++i)
@@ -103,6 +113,11 @@ void SceneMainMenu::Render()
 
 void SceneMainMenu::Exit()
 {
+	for (int i = 0; i < 2; ++i)
+	{
+		delete icons[i];
+	}
+
 	glDeleteBuffers(1, &uMatrixMVS);
 	glDeleteBuffers(1, &uMatrixP);
 }

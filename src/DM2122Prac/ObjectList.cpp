@@ -19,7 +19,7 @@ ObjectList::~ObjectList()
 	}
 	for (Object* object : finishLine)
 	{
-		delete object;
+		//delete object;
 	}
 
 	delete finishLineMesh;
@@ -79,7 +79,17 @@ void ObjectList::saveObject()
 
 void ObjectList::deleteAll()
 {
+	//Physics::physicsEngine.empty();
+	for (Object* object : objects)
+	{
+		delete object;
+	}
 	objects.clear();
+
+	/*for (Object* object : finishLine)
+	{
+		
+	}*/
 }
 
 // Attempt to delete any object that intersects a certain grid area and rotation
