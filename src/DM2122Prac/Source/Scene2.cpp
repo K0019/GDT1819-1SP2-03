@@ -202,6 +202,8 @@ void Scene2::Init()
 	placeObjHandler = new PlaceObjectHandler(&objectList, player, hotbar);
 	
 
+	music::player.playsound(music::player.getClamSound());
+
 	// Enable culling and depth test
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
