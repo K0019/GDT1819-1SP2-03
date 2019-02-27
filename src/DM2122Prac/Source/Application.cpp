@@ -73,7 +73,7 @@ void Application::Init()
 
 
 	//Create a window and create its OpenGL context
-	m_window = glfwCreateWindow(PROGRAM_WIDTH, PROGRAM_HEIGHT, "Assignment 2", NULL, NULL);
+	m_window = glfwCreateWindow(PROGRAM_WIDTH, PROGRAM_HEIGHT, "PokeKart", NULL, NULL);
 
 	//If the window couldn't be created
 	if (!m_window)
