@@ -103,7 +103,7 @@ void SceneMainMenu::Render()
 		model.PopMatrix();
 
 		model.PushMatrix();
-		model.Translate(0.0, 2.0f, 0.0f);
+		model.Translate(0.0, 1.5f, 0.0f);
 		updateUBO(uMatrixMVS, 0, sizeof(Mtx44), model.Top().a);
 		render(2);
 		model.PopMatrix();
@@ -117,7 +117,7 @@ void SceneMainMenu::Render()
 		icons[0]->Render();
 		model.PopMatrix(); // 1
 
-		model.Translate(0.0f, 9.5f, 0.0f);
+		model.Translate(0.0f, 9.0f, 0.0f);
 
 		for (int i = 0; i < 4; ++i)
 		{

@@ -6,8 +6,8 @@ MenuSelection::MenuSelection(short noOfButtons)
 	, selection(0)
 	, selectionBounce(-1.0)
 {
-	button[0] = MeshBuilder::GenerateXYPlane("Image//selectedBoxMenu.tga", 8.0f, 2.0f, 1, type::SHADER_TEXT);
-	button[1] = MeshBuilder::GenerateXYPlane("Image//unselectedBoxMenu.tga", 8.0f, 2.0f, 1, type::SHADER_TEXT);
+	button[0] = MeshBuilder::GenerateXYPlane("Image//Red.tga", 10.0f, 8.0f, 1, type::SHADER_TEXT);
+	button[1] = MeshBuilder::GenerateXYPlane("Image//Blue.tga", 10.0f, 8.0f, 1, type::SHADER_TEXT);
 
 	text = MeshBuilder::GenerateText(16, 16, "Image//calibri.tga");
 }

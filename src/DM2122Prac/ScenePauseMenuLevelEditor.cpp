@@ -57,7 +57,7 @@ void ScenePauseMenuLevelEditor::Render()
 	MS model;
 	model.PushMatrix(); // 0
 	model.LoadIdentity();
-	model.Translate(0.0f, 15.0f, 0.0f);
+	model.Translate(0.0f, 14.5f, 0.0f);
 
 	for (int i = 0; i < 5; ++i)
 	{
