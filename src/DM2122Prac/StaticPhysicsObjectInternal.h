@@ -1,8 +1,8 @@
 #ifndef STATICPHYSICSOBJECTINTERNAL_H
 #define STATICPHYSICSOBJECTINTERNAL_H
-#include "PhysicsObject.h"
+#include "CollisionChecker.h"
 
-class StaticPhysicsObjectInternal : public PhysicsObject
+class StaticPhysicsObjectInternal
 {
 public:
 	StaticPhysicsObjectInternal(const AABB& box, bool physicsEnabled);
