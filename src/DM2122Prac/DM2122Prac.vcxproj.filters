@@ -135,9 +135,6 @@
     <ClCompile Include="Triangle.cpp">
       <Filter>Source Files\Objects\Physics\Colliders</Filter>
     </ClCompile>
-    <ClCompile Include="PhysicsObject.cpp">
-      <Filter>Source Files\Objects\Physics</Filter>
-    </ClCompile>
     <ClCompile Include="MovingPhysicsObjectInternal.cpp">
       <Filter>Source Files\Objects\Physics</Filter>
     </ClCompile>
@@ -316,9 +313,6 @@
     </ClInclude>
     <ClInclude Include="Triangle.h">
       <Filter>Header Files\Physics\Colliders</Filter>
-    </ClInclude>
-    <ClInclude Include="PhysicsObject.h">
-      <Filter>Header Files\Physics</Filter>
     </ClInclude>
     <ClInclude Include="MovingPhysicsObjectInternal.h">
       <Filter>Header Files\Physics</Filter>

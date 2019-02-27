@@ -1,9 +1,9 @@
 #ifndef MOVINGPHYSICSOBJECTINTERNAL_H
 #define MOVINGPHYSICSOBJECTINTERNAL_H
-#include "PhysicsObject.h"
+#include "CollisionChecker.h"
 #include "Vector3.h"
 
-class MovingPhysicsObjectInternal : public PhysicsObject
+class MovingPhysicsObjectInternal
 {
 public:
 	MovingPhysicsObjectInternal(const OBB& box);
