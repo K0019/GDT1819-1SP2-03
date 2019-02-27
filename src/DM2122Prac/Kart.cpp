@@ -913,11 +913,11 @@ void Kart::update(GLFWwindow * window, double deltaTime, unsigned int uSpotLight
 			}
 			if (Kart::getInvert2() == true)
 			{
-				if (!isDriveGear) // Reverse
+				if (isDriveGear) // Driving
 				{
 					speed += 21.0 * deltaTime;
 				}
-				else // Driving
+				else // Reverse
 				{
 					speed += 50.0 * deltaTime;
 					if (speed > 0.0) // Check gear change
